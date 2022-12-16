@@ -1,0 +1,35 @@
+name: 'docker-build-and-push'
+description: 'Docker build and push'
+inputs:
+  context:
+    description: 'Docker context'
+    required: false
+    default: '.'
+  release-version:
+    description: 'Release Tag used for Image'
+    required: false
+    default: latest
+  repository:
+    description: 'Image repository'
+    required: true
+outputs:
+  image-url:
+    description: "ECR Image URL"
+    value: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.release-version }}
+runs:
+  using: "composite"
+  steps:
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - uses: docker/setup-buildx-action@v2
+    - name: Build and push image
+      id: docker-build-and-push
+      uses: docker/build-push-action@v3
+      with:
+        context: ${{ inputs.context }}
+        build-args: "VERSION_TAG=${{ inputs.release-version }}"
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.release-version }},${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max

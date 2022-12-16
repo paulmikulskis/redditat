@@ -1,0 +1,31 @@
+{
+  "name": "@yungsten/test-wrap",
+  "main": "src/index.ts",
+  "version": "0.0.0",
+  "packageManager": "yarn@3.3.0",
+  "scripts": {
+    "build": "tsc --build",
+    "start": "ts-node --transpile-only src/index.ts",
+    "lint": "eslint .",
+    "dev": "NODE_ENV=dev nodemon src/index.ts --watch './**/*.ts' --watch ../../packages"
+  },
+  "dependencies": {
+    "@yungsten/reddit-wrap": "*",
+    "date-fns": "^2.29.3",
+    "dotenv": "^16.0.3",
+    "express": "~4.16.1",
+    "express-validator": "^6.14.2",
+    "morgan": "^1.10.0",
+    "morgan-json": "^1.1.0",
+    "super-expressive": "^1.4.2",
+    "ts-node": "^10.4.0",
+    "tsc": "^2.0.4",
+    "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "@types/morgan-json": "^1.1.0",
+    "nodemon": "^2.0.15"
+  }
+}

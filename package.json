@@ -1,0 +1,30 @@
+{
+  "name": "redditat",
+  "packageManager": "yarn@3.3.0",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "dev-api": "turbo run dev --filter api",
+    "dev-workers": "turbo run dev --filter workers",
+    "seed": "turbo run seed",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "release": "tsc --p packages/sdk/tsconfig.json && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.25.2",
+    "eslint-config-custom": "*",
+    "lint-staged": "^13.0.3",
+    "nodemon": "^2.0.15",
+    "npm-run-all": "^4.1.5",
+    "prettier": "latest",
+    "turbo": "latest"
+  }
+}

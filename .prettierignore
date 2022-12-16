@@ -1,0 +1,12 @@
+node_modules
+
+/build
+/public/build
+.env
+
+/cypress/screenshots
+/cypress/videos
+/postgres-data
+
+/apps/styles/tailwind.css
+/apps/styles/app.css

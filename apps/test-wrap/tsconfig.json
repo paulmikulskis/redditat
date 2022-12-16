@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "sourceMap": true,
+    "outDir": "dist",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": [
+      "node"
+    ],
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": false,
+    "noUncheckedIndexedAccess": true,
+  },
+  "include": ["src", "test"]
+}

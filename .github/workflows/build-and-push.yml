@@ -1,0 +1,54 @@
+name: Build and Push
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      repository:
+        required: true
+        type: string
+        description: Image repository
+      context:
+        required: true
+        type: string
+        description: Docker context
+      pre-build:
+        required: false
+        default: "echo No pre-build script to run"
+        type: string
+        description: Pre-build script
+    secrets:
+      AWS_ROLE:
+        required: true
+      AWS_ACCESS_KEY:
+        required: true
+      AWS_SECRET_KEY:
+        required: true
+    outputs:
+      image-url:
+        description: "Image URL"
+        value: ${{ jobs.build-and-push.outputs.image-url }}
+
+jobs:
+  build-and-push:
+    name: Build and Push
+    runs-on: ubuntu-latest
+    outputs:
+      image-url: ${{ steps.docker-build-and-push.outputs.image-url }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 3600
+      - name: Build Image and Push to Repository
+        uses: ./.github/actions/docker-build-and-push
+        id: docker-build-and-push
+        with:
+          context: ${{ inputs.context }}
+          repository: ${{ inputs.repository }}
