@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
-    "target": "esnext",
     "sourceMap": true,
     "outDir": "dist",
-    "module": "commonjs",
-    "lib": ["esnext"],
+    "rootDir": "src",
+    "module": "CommonJS",
+    "lib": ["es6", "DOM"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "esnext",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": [
-      "node"
-    ],
+    "types": ["node"],
     "skipLibCheck": true,
     "strict": true,
     "noEmit": false,
-    "noUncheckedIndexedAccess": true,
   },
-  "include": ["src", "test"]
+  "include": ["src", "test", "**/*.ts"],
+  "exclude": ["dist"]
 }

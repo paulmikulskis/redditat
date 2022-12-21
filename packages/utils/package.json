@@ -1,5 +1,5 @@
 {
-  "name": "@yungsten/reddit-wrap",
+  "name": "@yungsten/redditat-utils",
   "main": "src/index.ts",
   "version": "0.0.0",
   "packageManager": "yarn@3.3.0",
@@ -11,8 +11,12 @@
     "clean": "rimraf .turbo dist node_modules"
   },
   "dependencies": {
-    "snoowrap": "^1.23.0",
-    "traw": "*"
+    "aws-sdk": "^2.1211.0",
+    "date-fns": "^2.29.2",
+    "dotenv": "^16.0.1",
+    "minio": "^7.0.32",
+    "tslog": "^3.3.3",
+    "zod": "^3.17.10"
   },
   "devDependencies": {
     "tsc": "^2.0.4",

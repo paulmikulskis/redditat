@@ -4,5 +4,6 @@
   "trailingComma": "es5",
   "bracketSameLine": false,
   "arrowParens": "always",
-  "tabWidth": 2
+  "tabWidth": 2,
+  "editor.formatOnSave": true
 }

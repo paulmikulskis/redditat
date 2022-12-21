@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "packageManager": "yarn@3.3.0",
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc",
     "start": "ts-node --transpile-only src/index.ts",
     "lint": "eslint .",
-    "dev": "NODE_ENV=dev nodemon src/index.ts --watch './**/*.ts' --watch ../../packages"
+    "dev": "NODE_ENV=development ts-node --transpile-only src/index.ts"
   },
   "dependencies": {
+    "@types/node": "^18.11.16",
     "@yungsten/reddit-wrap": "*",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
