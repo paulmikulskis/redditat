@@ -1,8 +1,35 @@
 import { z } from "zod";
 import { config } from "dotenv";
 
-config({ path: "../../base.env" });
-config({ path: "../../.env", override: true });
+// No matter what, values here will ALWAYS load from base.env unless
+// the the ENVIRONMENT variable is specifically set to "production" in ".env"
+const OVERRIDE_DOTENVS = [
+  "SUPABSE_API_KEY",
+  "SUPABASE_PSQL_URI",
+  "SUPABASE_STUDIO_URL",
+  "SUPABASE_API_URL",
+  "SUPABASE_JWT_SECRET",
+  "SUPABASE_ANON_KEY",
+  "SUPABASE_SERVICE_ROLE_KEY",
+];
+
+const skipOverride = process.env.SKIP_OVERRIDE
+  ? process.env.SKIP_OVERRIDE.split(",")
+  : [].concat(OVERRIDE_DOTENVS);
+// Load base.env
+const baseEnv = config({ path: "../../base.env" });
+// Load .env and override values in base.env
+const env = config({ path: "../../.env", override: true });
+if (env["ENVIRONMENT"] !== "production") {
+  // Overwrite environment variables from base.env with those from .env, except for the ones in skipOverride
+  for (const key in process.env) {
+    if (skipOverride.includes(key)) {
+      // Replace the current key in process.env with the value from baseEnv
+      process.env[key] = baseEnv[key];
+    }
+  }
+}
+
 // https://github.com/colinhacks/zod/discussions/330#discussioncomment-1625947
 const stringToNumber = () =>
   z.preprocess((a) => parseInt(z.string().parse(a), 10), z.number());

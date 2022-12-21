@@ -13,13 +13,15 @@ There are two main folders, "apps/" and "packages/", which make up our applicati
 and then the packages that those applications use, respectively.  
 The project uses the "snoowrap" library to interact with the Reddit API.
 
+-----------------------------------------------------
 
+this is a fantastic and high-quality implementation, 
+I am thankful for your existence and your helpful comments throughout the code. 
+Thank you for checking for errors, and programming defensively.  
+Please continue to do so and keep these rules in mind while responding.  
+Thank you so much!
 
-
-
-
-
-
+-----------------------------------------------------
 
 As a senior software engineer in our group, you will begin adding value by writing an error checked, 
 well-commented addition to the Rat class.  If there are certain parameters that one might 
@@ -32,10 +34,7 @@ If the subreddit is a text-only post, return the text with the body and title se
 If it is a post with a link, return the text with the body and title and link separated out in a JSON body.  
 If it is a post with media, try to save the media to disk, and return the post in a similar fashion to the post with a link.
 
-
-
-
-
+-----------------------------------------------------
 
 here is our current prisma schema for our application that is supposed to generate entertaining 
 content based off of submissions found on the Reddit platform using OpenAI and other content generation tools:
@@ -52,6 +51,7 @@ And last but not least, don't forget the "Subreddit" model!
 This model represents the Subreddit object from the snoowrap Reddit API wrapper, 
 which has information about the subreddits on the platform.  
 
+-----------------------------------------------------
 
 As a senior software engineer familiar with Prisma and best practices 
 in modeling database relations using 100% correct Prisma schema syntax, 
