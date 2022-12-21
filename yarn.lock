@@ -813,6 +813,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/minio@npm:^7.0.15":
+  version: 7.0.15
+  resolution: "@types/minio@npm:7.0.15"
+  dependencies:
+    "@types/node": "*"
+  checksum: ff4f7e8608d38d437bd6a9019211184874b0e5acaadd5a8eae0416efd8d788016b06d55f9b3c659533bd58ef3782737e54807fd0bf2a4410a007ed4f44ab64bb
+  languageName: node
+  linkType: hard
+
 "@types/mocha@npm:^9.1.0":
   version: 9.1.1
   resolution: "@types/mocha@npm:9.1.1"
@@ -970,6 +979,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@yungsten/reddit-wrap@workspace:packages/reddit-wrap"
   dependencies:
+    "@yungsten/redditat-utils": "*"
     snoowrap: ^1.23.0
     traw: "*"
     tsc: ^2.0.4
@@ -977,11 +987,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yungsten/redditat-utils@workspace:packages/utils":
+"@yungsten/redditat-utils@*, @yungsten/redditat-utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@yungsten/redditat-utils@workspace:packages/utils"
   dependencies:
+    "@types/minio": ^7.0.15
     aws-sdk: ^2.1211.0
+    date-fns: ^2.29.2
     dotenv: ^16.0.1
     minio: ^7.0.32
     tsc: ^2.0.4
@@ -2282,7 +2294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.29.3":
+"date-fns@npm:^2.29.2, date-fns@npm:^2.29.3":
   version: 2.29.3
   resolution: "date-fns@npm:2.29.3"
   checksum: e01cf5b62af04e05dfff921bb9c9933310ed0e1ae9a81eb8653452e64dc841acf7f6e01e1a5ae5644d0337e9a7f936175fd2cb6819dc122fdd9c5e86c56be484

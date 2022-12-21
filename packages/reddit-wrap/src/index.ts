@@ -1,6 +1,7 @@
 import { tokenRequestor, traw as RedditClient, userAgent, credentialedRequestor, basic_authentication, bearer_authentication, authCodeGrantRequestor, axiosCreate } from 'traw/src';
 import snoowrap from 'snoowrap'
 import axios from 'axios'
+import { env } from '@yungsten/redditat-utils'
 const agent = new userAgent(
   'OSX',
   'scrape_2',
@@ -9,10 +10,10 @@ const agent = new userAgent(
 )
 
 const rclient = new snoowrap({
-  userAgent: 'tingletee',
-  clientId: 'oYg4AiaFbdn2D9ybVVghvQ',
-  clientSecret: 'xIB-AKImki-ebWFCJA7w_dcWIdcoZQ',
-  refreshToken: '26326736-cH0gfD9_xQgltnCJH3G4WEhQe8VPaA'
+  userAgent: env.REDDIT_BOT_USER_AGENT,
+  clientId: env.REDDIT_BOT_CLIENT_ID,
+  clientSecret: env.REDDIT_BOT_CLIENT_SECRET,
+  refreshToken: env.REDDIT_BOT_REFRESH_TOKEN
 });
 
 console.log(`created reddit client`)
@@ -32,6 +33,7 @@ export async function getLatest(subreddit: string): Promise<any> {
     console.log(`requesting for this user...`)
 
     // Return the first item in the response data
+    console.log(JSON.stringify(a))
     return a;
     
 }

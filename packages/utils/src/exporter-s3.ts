@@ -4,7 +4,7 @@
 import * as AWS from "aws-sdk"
 import { Logger } from "tslog"
 import { getSizeInBytes } from "./helper-funcs"
-import { env } from "./index"
+import { validatedEnv as env } from "./validatedEnv"
 
 const logger = new Logger()
 

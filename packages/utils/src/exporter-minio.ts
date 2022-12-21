@@ -4,7 +4,7 @@
 import { BucketItemFromList, Client } from "minio"
 import { Logger } from "tslog"
 import { getSizeInBytes } from "./helper-funcs"
-import { env } from "./index"
+import { validatedEnv as env } from "./validatedEnv"
 
 const logger = new Logger()
 
@@ -24,31 +24,31 @@ const minioClient = new Client({
 })
 
 // ensure there is a Bucket on the MinIO server:
-minioClient.listBuckets().then(
-  (buckets: BucketItemFromList[]) => {
-    const bucketNames = buckets.map((bucket) => bucket.name)
-    if (bucketNames.indexOf(DUTCHIE_BUCKET_NAME) < 0) {
-      minioClient.makeBucket(DUTCHIE_BUCKET_NAME, "us-east-1", (err) => {
-        if (err) {
-          logger.error(
-            `the bucket '${DUTCHIE_BUCKET_NAME}' did not exist, and the MinIO Client was unable to create it!`
-          )
-          logger.error(`no information will be saved at the MinIO destination...`)
-        }
-        logger.info(
-          `Bucket created successfully in 'us-east-1' on host '${MINIO_ENDPOINT}:${MINIO_PORT}'`
-        )
-      })
-    }
-  },
-  (err) => {
-    logger.error(`ERROR: minio Client cannot listBuckets on '${MINIO_ENDPOINT}:${MINIO_PORT}'`)
-    if (err) {
-      logger.error(err)
-    }
-    logger.error(`no information will be saved at the MinIO destination...`)
-  }
-)
+// minioClient.listBuckets().then(
+//   (buckets: BucketItemFromList[]) => {
+//     const bucketNames = buckets.map((bucket) => bucket.name)
+//     if (bucketNames.indexOf(DUTCHIE_BUCKET_NAME) < 0) {
+//       minioClient.makeBucket(DUTCHIE_BUCKET_NAME, "us-east-1", (err) => {
+//         if (err) {
+//           logger.error(
+//             `the bucket '${DUTCHIE_BUCKET_NAME}' did not exist, and the MinIO Client was unable to create it!`
+//           )
+//           logger.error(`no information will be saved at the MinIO destination...`)
+//         }
+//         logger.info(
+//           `Bucket created successfully in 'us-east-1' on host '${MINIO_ENDPOINT}:${MINIO_PORT}'`
+//         )
+//       })
+//     }
+//   },
+//   (err) => {
+//     logger.error(`ERROR: minio Client cannot listBuckets on '${MINIO_ENDPOINT}:${MINIO_PORT}'`)
+//     if (err) {
+//       logger.error(err)
+//     }
+//     logger.error(`no information will be saved at the MinIO destination...`)
+//   }
+// )
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const uploadToMinIO = (data: any, key: string, bucketName = "dutchiedata"): Promise<any> => {
