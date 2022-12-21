@@ -1,7 +1,6 @@
-import axios, { AxiosInstance } from 'axios';
-import { Logger } from "tslog"
-const logger = new Logger()
-
+import axios, { AxiosInstance } from "axios";
+import { Logger } from "tslog";
+const logger = new Logger();
 
 const DEFAULT_TIMEOUT = 10000; // 10 seconds
 /**
@@ -16,8 +15,8 @@ export async function request(
   options: RequestOptions,
   retryCount: number = 0
 ): Promise<HttpResponse> {
-  console.log(`senting ${options.method} request to ${options.url}`)
-  const headers = options.headers ? options.headers : undefined
+  console.log(`senting ${options.method} request to ${options.url}`);
+  const headers = options.headers ? options.headers : undefined;
   const axiosInstance: AxiosInstance = axios.create({
     timeout: options.timeout || DEFAULT_TIMEOUT,
     headers: headers,
@@ -26,13 +25,16 @@ export async function request(
     params: options.params,
     responseType: options.responseType,
   });
-  
+
   try {
     const response = await axiosInstance(options.url);
-    const headersArray = Object.entries(response.headers).length > 1 ?
-      Object.entries(response.headers)
-        .map(([key, value]) => [key || '', (Array.isArray(value) ? value.join(', ') : value) || '']) as HeadersInit :
-      undefined
+    const headersArray =
+      Object.entries(response.headers).length > 1
+        ? (Object.entries(response.headers).map(([key, value]) => [
+            key || "",
+            (Array.isArray(value) ? value.join(", ") : value) || "",
+          ]) as HeadersInit)
+        : undefined;
     const headers = new Headers(headersArray);
     return {
       statusCode: response.status,
@@ -58,18 +60,18 @@ export class RequestOptions {
   json?: any;
   form?: any;
   constructor(
-    readonly method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE',
+    readonly method: string,
     readonly url: string,
     readonly headers?: { [key: string]: string },
     readonly params?: { [key: string]: string | number | boolean },
     readonly data?: any,
-    readonly responseType?: 'json' | 'text' | 'stream' | 'arraybuffer',
+    readonly responseType?: "json" | "text" | "stream" | "arraybuffer",
     readonly timeout?: number,
     readonly withCredentials?: boolean,
     readonly auth?: {
       username: string;
       password: string;
-    },
+    }
   ) {}
 }
 
@@ -79,12 +81,7 @@ class HttpResponse {
   body?: any;
   headers?: Headers;
 
-  constructor(
-    statusCode: number,
-    statusMessage: string,
-    body?: any,
-    headers?: Headers
-  ) {
+  constructor(statusCode: number, statusMessage: string, body?: any, headers?: Headers) {
     this.statusCode = statusCode;
     this.statusMessage = statusMessage;
     this.headers = headers;
