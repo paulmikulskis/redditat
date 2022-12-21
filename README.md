@@ -12,7 +12,7 @@ docker compose -f docker-compose.yml up -d --build --remove-orphans
 ```
 
 then run `yarn run build` at least once  
-Then to get the webapp running, run `yarn run dev`. This will first run any migrations, and then start the application.
+Then to get the app going, run `yarn run dev`. This will first run any migrations, and then start the application.
 
 ## GitHub Actions
 
@@ -22,7 +22,7 @@ We use GitHub Actions for continuous integration and deployment. Anything that g
 
 ### Type Checking
 
-This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `npm run typecheck`.
+This project uses TypeScript. It's recommended to get TypeScript set up for your editor to get a really great in-editor experience with type checking and auto-complete. To run type checking across the whole project, run `yarn run typecheck`.
 
 ### Linting
 
