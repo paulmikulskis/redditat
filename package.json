@@ -16,7 +16,8 @@
     "seed": "turbo run seed",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "release": "tsc --p packages/sdk/tsconfig.json && changeset publish"
+    "release": "tsc --p packages/sdk/tsconfig.json && changeset publish",
+    "turboclean": "make turboclean"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",

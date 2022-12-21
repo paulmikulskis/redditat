@@ -1,19 +1,19 @@
 /**
  * Helper functions for writing data to MinIO
  */
-import { BucketItemFromList, Client } from "minio"
-import { Logger } from "tslog"
-import { getSizeInBytes } from "./helper-funcs"
-import { validatedEnv as env } from "./validatedEnv"
+import { BucketItemFromList, Client } from "minio";
+import { Logger } from "tslog";
+import { getSizeInBytes } from "./helper-funcs";
+import { validatedEnv as env } from "./validatedEnv";
 
-const logger = new Logger()
+const logger = new Logger();
 
-const MINIO_ENDPOINT = env.MINIO_ENDPOINT
-const MINIO_PORT = env.MINIO_PORT
-const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY
-const MINIO_SECRET_KEY = env.MINIO_SECRET_KEY
+const MINIO_ENDPOINT = env.MINIO_ENDPOINT;
+const MINIO_PORT = env.MINIO_PORT;
+const MINIO_ACCESS_KEY = env.MINIO_ACCESS_KEY;
+const MINIO_SECRET_KEY = env.MINIO_SECRET_KEY;
 
-const DUTCHIE_BUCKET_NAME = "dutchiedata"
+const DUTCHIE_BUCKET_NAME = "dutchiedata";
 
 const minioClient = new Client({
   endPoint: MINIO_ENDPOINT,
@@ -21,7 +21,7 @@ const minioClient = new Client({
   useSSL: false,
   accessKey: MINIO_ACCESS_KEY,
   secretKey: MINIO_SECRET_KEY,
-})
+});
 
 // ensure there is a Bucket on the MinIO server:
 // minioClient.listBuckets().then(
@@ -51,34 +51,38 @@ const minioClient = new Client({
 // )
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const uploadToMinIO = (data: any, key: string, bucketName = "dutchiedata"): Promise<any> => {
-  let parsedData: string
+export const uploadToMinIO = (
+  data: any,
+  key: string,
+  bucketName = "dutchiedata"
+): Promise<any> => {
+  let parsedData: string;
   try {
-    parsedData = JSON.stringify(data)
+    parsedData = JSON.stringify(data);
   } catch (e) {
     logger.error(
       `ERROR: cannot upload file '${key}' to MinIO, data passed is not JSON-serializable!`
-    )
-    return new Promise((_resolve, reject) => reject())
+    );
+    return new Promise((_resolve, reject) => reject());
   }
   logger.info(
     `attempting to upload ${getSizeInBytes(
       parsedData
     )} bytes as filename '${key}' to MinIO bucket '${bucketName}'`
-  )
+  );
 
   return new Promise((resolve, reject) => {
     minioClient.putObject(bucketName, key, parsedData, (err: Error, etag: string) => {
       if (err) {
-        logger.warn(`error uploading to S3 bucket '${bucketName}', ${err.message}`)
-        return reject(err)
+        logger.warn(`error uploading to S3 bucket '${bucketName}', ${err.message}`);
+        return reject(err);
       }
       logger.info(
         `successfully uploaded file '${JSON.stringify(
           etag
         )}' to MinIO bucket '${bucketName}' on '${MINIO_ENDPOINT}:${MINIO_PORT}'`
-      )
-      return resolve(data)
-    })
-  })
-}
+      );
+      return resolve(data);
+    });
+  });
+};

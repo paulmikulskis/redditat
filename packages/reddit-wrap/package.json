@@ -11,7 +11,7 @@
     "clean": "rimraf .turbo dist node_modules"
   },
   "dependencies": {
-    "@yungsten/redditat-utils": "*",
+    "@yungsten/utils": "*",
     "axios": "^1.2.1",
     "cheerio": "^1.0.0-rc.12",
     "snoowrap": "^1.23.0"

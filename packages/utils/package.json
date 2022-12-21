@@ -1,5 +1,5 @@
 {
-  "name": "@yungsten/redditat-utils",
+  "name": "@yungsten/utils",
   "main": "src/index.ts",
   "version": "0.0.0",
   "packageManager": "yarn@3.3.0",
@@ -14,11 +14,11 @@
     "@types/minio": "^7.0.15",
     "aws-sdk": "^2.1211.0",
     "axios": "^1.2.1",
-    "date-fns": "^2.29.2",
+    "date-fns": "^2.29.3",
     "dotenv": "^16.0.1",
     "minio": "^7.0.32",
     "node-fetch": "^3.3.0",
-    "tslog": "^3.3.3",
+    "tslog": "^4.6.0",
     "zod": "^3.17.10"
   },
   "devDependencies": {
