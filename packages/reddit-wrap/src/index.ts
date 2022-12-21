@@ -1,49 +1,75 @@
-import { tokenRequestor, traw as RedditClient, userAgent, credentialedRequestor, basic_authentication, bearer_authentication, authCodeGrantRequestor, axiosCreate } from 'traw/src';
 import snoowrap from 'snoowrap'
-import axios from 'axios'
+import { Listing, RedditUser, Submission } from 'snoowrap'
 import { env } from '@yungsten/redditat-utils'
-const agent = new userAgent(
-  'OSX',
-  'scrape_2',
-  '1.0',
-  'theburritoeater'
-)
+import { writeFileSync } from 'fs'
+import { promisify } from 'util'
+import { resolve } from 'path';
+import { types, requests } from '@yungsten/redditat-utils'
+import { submissionContainsImage, submissionPointsToImageDomains, getImgurUrl } from './utils/postUtils'
 
-const rclient = new snoowrap({
+
+export const rclient = new snoowrap({
   userAgent: env.REDDIT_BOT_USER_AGENT,
   clientId: env.REDDIT_BOT_CLIENT_ID,
   clientSecret: env.REDDIT_BOT_CLIENT_SECRET,
   refreshToken: env.REDDIT_BOT_REFRESH_TOKEN
 });
 
-console.log(`created reddit client`)
-
-
-export async function getLatest(subreddit: string): Promise<any> {
-  const a = await rclient.getHot()
-  a.map(post => post.title)
-    // Make a GET request to the /r/{subreddit}/new endpoint
-    const options = { 
-      url: `/r/${subreddit}/new`,
-      params: {
-        sort: 'new',
-        limit: 1,
-      }, 
-    };
-    console.log(`requesting for this user...`)
-
-    // Return the first item in the response data
-    console.log(JSON.stringify(a))
-    return a;
-    
-}
-
-
-class Rat {
-  client: snoowrap
+export class Rat {
+  client: snoowrap;
 
   constructor(snoowrapClient: snoowrap) {
-    this.client = snoowrapClient
+    this.client = snoowrapClient;
   }
-  
+
+
+  /**
+   * Fetches the latest submission from the given subreddit and returns the submission details.
+   * If the submission is a text post, returns the body and title. If the submission is an image, 
+   * returns the body, title, and a link to the image.
+   *
+   * @param {string} subreddit - The subreddit to fetch the latest submission from.
+   * @returns {Promise<Result<{ body: string, title: string, link?: string } | undefined, Error>>} A promise that resolves to a `Result` object containing the submission details or an error if the request fails.
+   */
+  async getLatestFrom(subreddit: string): Promise<types.Result<{ body: string; title: string; link?: string } | undefined, undefined | Error>> {
+    try {
+      const submissions = await this.client.getSubreddit(subreddit).getTop({
+        limit: 50,
+        time: 'day'
+      })
+      const submission = submissions[0] as Submission;
+      if (submission.is_self) {
+        console.log('got text post')
+        return new types.Result(true, { body: submission.selftext, title: submission.title });
+      } 
+      else if (submissionContainsImage(submission) || submissionPointsToImageDomains(submission)) {
+        console.log('got image post')
+        const imageURLs = await getImgurUrl(submission.url)
+        const thisImageUrl = imageURLs ? imageURLs[0] : '' // get first URL available for image
+        const mediaResponse = await requests.request({
+          url: thisImageUrl,
+          method: 'GET',
+          responseType: 'arraybuffer',
+          headers: {'Content-Type': 'application/octet-stream'}
+        })
+        const mediaPath = resolve(process.cwd(), 'media', `${submission.id}.${thisImageUrl.substring(thisImageUrl.lastIndexOf('.')+1).split('?')[0]}`)
+        // could also try the preview: submission.preview.images[0].source.url
+        writeFileSync(mediaPath, mediaResponse.body, 'binary');
+        return new types.Result(true, {
+          body: submission.selftext,
+          title: submission.title,
+          link: mediaPath,
+        }, undefined)
+      } else {
+        console.log(`error writing or fetching file ${submission.url}`)
+        return new types.Result(true,{ body: submission.selftext, title: submission.title, link: submission.url }, undefined)
+      }
+    } catch (error) {
+      console.log(JSON.stringify(error))
+      return new types.Result(false, undefined, new Error('unknown error in getLatestFrom'))
+    }
+  }
+
+
 }
+ 

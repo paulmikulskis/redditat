@@ -12,8 +12,9 @@
   },
   "dependencies": {
     "@yungsten/redditat-utils": "*",
-    "snoowrap": "^1.23.0",
-    "traw": "*"
+    "axios": "^1.2.1",
+    "cheerio": "^1.0.0-rc.12",
+    "snoowrap": "^1.23.0"
   },
   "devDependencies": {
     "tsc": "^2.0.4",

@@ -13,3 +13,21 @@ There are two main folders, "apps/" and "packages/", which make up our applicati
 and then the packages that those applications use, respectively.  
 The project uses the "snoowrap" library to interact with the Reddit API.
 
+
+
+
+
+
+
+
+
+As a senior software engineer in our group, you will begin adding value by writing an error checked, 
+well-commented addition to the Rat class.  If there are certain parameters that one might 
+want easily configurable such as which subreddit we might pull data from, 
+please ensure those parameters are configurable via the environment variables, similar to the snoowrap class.
+
+Can you please add a method called "getLatestFrom" that grabs the latest hot post from the current day 
+from the given subreddit.  The return value should be a Typescript Result type.  
+If the subreddit is a text-only post, return the text with the body and title separated out in a JSON body.  
+If it is a post with a link, return the text with the body and title and link separated out in a JSON body.  
+If it is a post with media, try to save the media to disk, and return the post in a similar fashion to the post with a link.
