@@ -1,5 +1,5 @@
-import { request } from "@yungsten/redditat-utils/src/requests";
-import { env } from "@yungsten/redditat-utils";
+import { request } from "@yungsten/utils/src/requests";
+import { env } from "@yungsten/utils";
 
 export type ImageResolution = "1024x1024" | "512x512" | "256x256";
 

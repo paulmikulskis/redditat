@@ -1,5 +1,5 @@
 import { TextEncoder } from "util";
-import { env } from "@yungsten/redditat-utils";
+import { env } from "@yungsten/utils";
 
 export const getSizeInBytes = (obj: any) => {
   let str = null;

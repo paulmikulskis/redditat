@@ -1,10 +1,10 @@
 import snoowrap from "snoowrap";
 import { Comment, RedditUser, Submission } from "snoowrap";
-import { env } from "@yungsten/redditat-utils";
+import { env } from "@yungsten/utils";
 import { writeFileSync } from "fs";
 import { promisify } from "util";
 import { resolve } from "path";
-import { types, requests } from "@yungsten/redditat-utils";
+import { types, requests } from "@yungsten/utils";
 import {
   submissionContainsImage,
   submissionPointsToImageDomains,
