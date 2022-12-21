@@ -37,3 +37,13 @@ export async function getLatest(subreddit: string): Promise<any> {
     return a;
     
 }
+
+
+class Rat {
+  client: snoowrap
+
+  constructor(snoowrapClient: snoowrap) {
+    this.client = snoowrapClient
+  }
+  
+}
