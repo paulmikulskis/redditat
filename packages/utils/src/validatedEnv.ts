@@ -29,6 +29,11 @@ export const ValidatedEnv = z.object({
   REDDIT_BOT_CLIENT_ID: z.string().min(1),
   REDDIT_BOT_USER_AGENT: z.string().min(1),
   OPEN_AI_API_KEY: z.string().default(""),
+  SUPABASE_PUBLIC_KEY: z.string().min(1),
+  SUPABSE_SERVICE_ROLE: z.string().min(1),
+  SUPABASE_PROJECT_URL: z.string().min(1),
+  SUPABSE_API_KEY: z.string().min(1),
+  SUPABASE_PSQL_URI: z.string().min(1),
 });
 export type ValidatedEnv = z.TypeOf<typeof ValidatedEnv>;
 export const validatedEnv = ValidatedEnv.parse(process.env);

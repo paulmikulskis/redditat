@@ -409,6 +409,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@prisma/client@npm:^4.8.0":
+  version: 4.8.0
+  resolution: "@prisma/client@npm:4.8.0"
+  dependencies:
+    "@prisma/engines-version": 4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe
+  peerDependencies:
+    prisma: "*"
+  peerDependenciesMeta:
+    prisma:
+      optional: true
+  checksum: c0256721bd4e07fb1fdf4d0857489379769af1eaac0aec79387e32092e63e1246a95fef634f6c07bf1bdddc7c11f3e073c78e5c92b9a708f559773a3f656f94a
+  languageName: node
+  linkType: hard
+
+"@prisma/engines-version@npm:4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe":
+  version: 4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe
+  resolution: "@prisma/engines-version@npm:4.8.0-61.d6e67a83f971b175a593ccc12e15c4a757f93ffe"
+  checksum: 839c9ecaad0b3b64bf0a641c3cb4103237b8e0e1f23c5ba47fdabaab853590f765e5323fb664588f954be56cd6c1a19c1a01617cd826c48a5e9221f3e82b2a28
+  languageName: node
+  linkType: hard
+
+"@prisma/engines@npm:4.8.0":
+  version: 4.8.0
+  resolution: "@prisma/engines@npm:4.8.0"
+  checksum: 5c1198905d7bf850c02cd59f244055003fc2a03ce99e715a0a872f568fb024aa4b347804829c8630964ff41b64cf8fa3e08c8cd2a444ad29c215c4b1dd9701b0
+  languageName: node
+  linkType: hard
+
 "@rushstack/eslint-patch@npm:^1.1.3":
   version: 1.2.0
   resolution: "@rushstack/eslint-patch@npm:1.2.0"
@@ -5072,6 +5100,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prisma@npm:^4.4.0":
+  version: 4.8.0
+  resolution: "prisma@npm:4.8.0"
+  dependencies:
+    "@prisma/engines": 4.8.0
+  bin:
+    prisma: build/index.js
+    prisma2: build/index.js
+  checksum: 22ebaa32c51fb2938626d742d9ae68be5ad49a44dad2046bfe40439a64d06e8f84d4915f66100554d7840c3c5228c6b5c4216d9f5a698d5dd11a46ab528654cf
+  languageName: node
+  linkType: hard
+
 "promise-chains@npm:^0.3.11":
   version: 0.3.12
   resolution: "promise-chains@npm:0.3.12"
@@ -6279,6 +6319,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"treasury-database@workspace:packages/database":
+  version: 0.0.0-use.local
+  resolution: "treasury-database@workspace:packages/database"
+  dependencies:
+    "@prisma/client": ^4.8.0
+    "@yungsten/utils": "*"
+    prisma: ^4.4.0
+    ts-results: ^3.3.0
+    tsc: ^2.0.4
+    typescript: ^4.9.4
+  languageName: unknown
+  linkType: soft
+
 "trim-newlines@npm:^3.0.0":
   version: 3.0.1
   resolution: "trim-newlines@npm:3.0.1"
@@ -6321,6 +6374,13 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
+  languageName: node
+  linkType: hard
+
+"ts-results@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "ts-results@npm:3.3.0"
+  checksum: 426c272901d7a0cf8e9539ed90739d03f8e99245fb669beabba8c6729b92da6574698018f9dc8d5d92e8a3e833a40899f855192208ff8dd7e4a68178f7740132
   languageName: node
   linkType: hard
 
