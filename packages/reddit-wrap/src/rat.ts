@@ -53,8 +53,7 @@ export class Rat {
    * @returns {Promise<Result<{ id: string, body: string, title: string, link?: string }, String>>} A promise that resolves to a `Result` object containing the submission summary or an error if the request fails.
    */
   async getSubmissionSummary(
-    submissionId: string,
-    client: snoowrap
+    submissionId: string
   ): Promise<Result<{ id: string; body: string; title: string; link?: string }, String>> {
     try {
       // Fetch the submission from Reddit
