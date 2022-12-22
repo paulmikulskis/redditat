@@ -60,11 +60,18 @@ const voices: string[] = [
   "en_female_emotional", // peaceful
 ];
 
+/**
+ * Connects to the TikTok TTS API and generates an audio file from the given request text.
+ *
+ * @param {string} req_text - The text to be transformed into speech.
+ * @param {string} [session_id="26c41c9e408ce0bb1e9b758e81d774b2"] - The session ID for the TikTok account.
+ * @param {string} [text_speaker="en_us_001"] - The code for the desired voice for the text-to-speech synthesis.
+ * @returns {Object} - An object containing the status, status code, duration, data, speaker, and log of the request.
+ */
 export const tts = async (
   req_text: string,
   session_id: string = "26c41c9e408ce0bb1e9b758e81d774b2",
-  text_speaker: string = "en_us_001",
-  filename: string = "voice.mp3"
+  text_speaker: string = "en_us_001"
 ) => {
   let ttsText = req_text;
   ttsText = ttsText.replace("+", "plus");
@@ -96,14 +103,15 @@ export const tts = async (
 
   const decodedString = Buffer.from(vstr, "base64");
 
-  const out = fs.createWriteStream(filename);
-  out.write(decodedString);
-  out.close();
+  // const out = fs.createWriteStream(filename);
+  // out.write(decodedString);
+  // out.close();
 
   const output_data = {
     status: msg,
     status_code: scode,
     duration: dur,
+    data: decodedString,
     speaker: spkr,
     log: log,
   };
@@ -116,8 +124,7 @@ export const tts = async (
 export const tts_batch = async (
   session_id: string,
   text_speaker: string = "en_us_002",
-  req_text: string = "TikTok Text to Speech",
-  filename: string = "voice.mp3"
+  req_text: string = "TikTok Text to Speech"
 ) => {
   req_text = req_text.replace("+", "plus");
   req_text = req_text.replace(" ", "+");
@@ -127,6 +134,7 @@ export const tts_batch = async (
     "User-Agent":
       "com.zhiliaoapp.musically/2022600030 (Linux; U; Android 7.1.2; es_ES; SM-G988N; Build/NRD90M;tt-ok/3.12.13.1)",
     Cookie: `sessionid=${session_id}`,
+    "Accept-Encoding": "*",
   };
   const url = `https://api16-normal-useast5.us.tiktokv.com/media/api/text/speech/invoke/?text_speaker=${text_speaker}&req_text=${req_text}&speaker_map_type=0&aid=1233`;
 
@@ -148,13 +156,14 @@ export const tts_batch = async (
 
   const decodedString = Buffer.from(vstr, "base64").toString("utf8");
 
-  fs.writeFileSync(filename, decodedString);
+  //fs.writeFileSync(filename, decodedString);
 
   const output_data = {
     status: msg.charAt(0).toUpperCase() + msg.slice(1),
     status_code: scode,
     duration: dur,
     speaker: spkr,
+    data: decodedString,
     log: log,
   };
 
