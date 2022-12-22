@@ -2,6 +2,7 @@ import fs from "fs";
 import { requests } from ".";
 
 // https://twitter.com/scanlime/status/1512598559769702406
+// https://github.com/oscie57/tiktok-voice/blob/main/main.py
 
 const voices: string[] = [
   // DISNEY VOICES
@@ -113,57 +114,6 @@ export const tts = async (
     duration: dur,
     data: decodedString,
     speaker: spkr,
-    log: log,
-  };
-
-  console.log(output_data);
-
-  return output_data;
-};
-
-export const tts_batch = async (
-  session_id: string,
-  text_speaker: string = "en_us_002",
-  req_text: string = "TikTok Text to Speech"
-) => {
-  req_text = req_text.replace("+", "plus");
-  req_text = req_text.replace(" ", "+");
-  req_text = req_text.replace("&", "and");
-
-  const headers = {
-    "User-Agent":
-      "com.zhiliaoapp.musically/2022600030 (Linux; U; Android 7.1.2; es_ES; SM-G988N; Build/NRD90M;tt-ok/3.12.13.1)",
-    Cookie: `sessionid=${session_id}`,
-    "Accept-Encoding": "*",
-  };
-  const url = `https://api16-normal-useast5.us.tiktokv.com/media/api/text/speech/invoke/?text_speaker=${text_speaker}&req_text=${req_text}&speaker_map_type=0&aid=1233`;
-
-  const r = await requests.request({ method: "POST", url, headers });
-
-  if (r.body["message"] === "Couldn't load speech. Try again.") {
-    const output_data = { status: "Session ID is invalid", status_code: 5 };
-    console.log(output_data);
-    return output_data;
-  }
-
-  const vstr = r.body["data"]["v_str"];
-  const msg = r.body["message"];
-  const scode = r.body["status_code"];
-  const log = r.body["extra"]["log_id"];
-
-  const dur = r.body["data"]["duration"];
-  const spkr = r.body["data"]["speaker"];
-
-  const decodedString = Buffer.from(vstr, "base64").toString("utf8");
-
-  //fs.writeFileSync(filename, decodedString);
-
-  const output_data = {
-    status: msg.charAt(0).toUpperCase() + msg.slice(1),
-    status_code: scode,
-    duration: dur,
-    speaker: spkr,
-    data: decodedString,
     log: log,
   };
 

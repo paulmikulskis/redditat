@@ -18,6 +18,7 @@
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.1",
     "minio": "^7.0.32",
+    "music-metadata": "^8.1.0",
     "node-fetch": "^3.3.0",
     "tslog": "^4.6.0",
     "zod": "^3.17.10"
