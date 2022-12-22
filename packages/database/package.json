@@ -1,11 +1,12 @@
 {
-  "name": "treasury-database",
+  "name": "@yungsten/redditat-database",
   "version": "0.0.0",
   "scripts": {
     "lint": "eslint --cache --cache-location node_modules/.cache/eslint .",
-    "db:make": "prisma generate && prisma migrate deploy",
+    "db:make": "yarn db:generate && yarn db:push",
     "db:generate": "prisma generate",
-    "db:push": "prisma migrate deploy",
+    "db:push": "cp ../../base.env .env && prisma migrate deploy",
+    "db:pushprod": "cp ../../.env .env && prisma migrate deploy",
     "build": "tsc --build",
     "typecheck": "tsc -b"
   },

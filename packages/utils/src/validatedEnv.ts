@@ -13,13 +13,13 @@ const OVERRIDE_DOTENVS = [
   "SUPABASE_SERVICE_ROLE_KEY",
 ];
 
-const skipOverride = process.env.SKIP_OVERRIDE
-  ? process.env.SKIP_OVERRIDE.split(",")
-  : [].concat(OVERRIDE_DOTENVS);
+const skipOverride = (
+  process.env.SKIP_OVERRIDE ? process.env.SKIP_OVERRIDE.split(",") : []
+).concat(OVERRIDE_DOTENVS);
 // Load base.env
-const baseEnv = config({ path: "../../base.env" });
+const baseEnv = config({ path: "../../base.env" }).parsed || {};
 // Load .env and override values in base.env
-const env = config({ path: "../../.env", override: true });
+const env = config({ path: "../../.env", override: true }).parsed || {};
 if (env["ENVIRONMENT"] !== "production") {
   // Overwrite environment variables from base.env with those from .env, except for the ones in skipOverride
   for (const key in process.env) {

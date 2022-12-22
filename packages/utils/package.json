@@ -11,6 +11,7 @@
     "clean": "rimraf .turbo dist node_modules"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.2.1",
     "@types/minio": "^7.0.15",
     "aws-sdk": "^2.1211.0",
     "axios": "^1.2.1",

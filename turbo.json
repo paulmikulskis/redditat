@@ -4,6 +4,12 @@
     "db:generate": {
       "cache": true
     },
+    "db:make": {
+      "cache": false
+    },
+    "db:makeprod": {
+      "cache": false
+    },
     "build": {
       "dependsOn": ["db:generate"],
       "outputs": ["dist/**"],
