@@ -6,3 +6,4 @@ export * as types from "./types";
 export * as requests from "./requests";
 export * as minio from "./exporter-minio";
 export { validatedEnv as env } from "./validatedEnv";
+export * as tikTokTts from "./tikTokTts";

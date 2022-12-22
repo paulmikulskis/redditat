@@ -1,6 +1,3 @@
-import { request } from "https";
-import { parse } from "url";
-import { ArgumentParser } from "argparse";
 import fs from "fs";
 import { requests } from ".";
 
@@ -64,22 +61,24 @@ const voices: string[] = [
 ];
 
 export const tts = async (
+  req_text: string,
   session_id: string = "26c41c9e408ce0bb1e9b758e81d774b2",
-  text_speaker: string = "en_us_002",
-  req_text: string = "TikTok Text To Speech",
+  text_speaker: string = "en_us_001",
   filename: string = "voice.mp3"
 ) => {
-  req_text = req_text.replace("+", "plus");
-  req_text = req_text.replace(" ", "+");
-  req_text = req_text.replace("&", "and");
+  let ttsText = req_text;
+  ttsText = ttsText.replace("+", "plus");
+  ttsText = ttsText.replace(" ", "+");
+  ttsText = ttsText.replace("&", "and");
 
   const headers = {
     "User-Agent":
       "com.zhiliaoapp.musically/2022600030 (Linux; U; Android 7.1.2; es_ES; SM-G988N; Build/NRD90M;tt-ok/3.12.13.1)",
     Cookie: `sessionid=${session_id}`,
+    "Accept-Encoding": "*",
   };
-  const url = `https://api16-normal-useast5.us.tiktokv.com/media/api/text/speech/invoke/?text_speaker=${text_speaker}&req_text=${req_text}&speaker_map_type=0&aid=1233`;
-  const r = await requests.request({ method: "GET", url, headers });
+  const url = `https://api16-normal-useast5.us.tiktokv.com/media/api/text/speech/invoke/?text_speaker=${text_speaker}&req_text=${ttsText}&speaker_map_type=0&aid=1233`;
+  const r = await requests.request({ method: "POST", url, headers });
 
   if (r.body["message"] == "Couldn't load speech. Try again.") {
     const output_data = { status: "Session ID is invalid", status_code: 5 };
@@ -95,14 +94,14 @@ export const tts = async (
   const dur = r.body["data"]["duration"];
   const spkr = r.body["data"]["speaker"];
 
-  const decodedString = Buffer.from(vstr, "base64").toString("utf8");
+  const decodedString = Buffer.from(vstr, "base64");
 
   const out = fs.createWriteStream(filename);
   out.write(decodedString);
   out.close();
 
   const output_data = {
-    status: msg.capitalize(),
+    status: msg,
     status_code: scode,
     duration: dur,
     speaker: spkr,
@@ -131,7 +130,7 @@ export const tts_batch = async (
   };
   const url = `https://api16-normal-useast5.us.tiktokv.com/media/api/text/speech/invoke/?text_speaker=${text_speaker}&req_text=${req_text}&speaker_map_type=0&aid=1233`;
 
-  const r = await requests.request({ method: "GET", url, headers });
+  const r = await requests.request({ method: "POST", url, headers });
 
   if (r.body["message"] === "Couldn't load speech. Try again.") {
     const output_data = { status: "Session ID is invalid", status_code: 5 };
