@@ -12,6 +12,7 @@ import {
 } from "./utils/postUtils";
 import { getCommentDetails } from "./utils/commentUtils";
 import { CommentDetails } from "./types";
+import { Ok, Err, Result } from "ts-results";
 
 export const rclient = new snoowrap({
   userAgent: env.REDDIT_BOT_USER_AGENT,
@@ -20,11 +21,56 @@ export const rclient = new snoowrap({
   refreshToken: env.REDDIT_BOT_REFRESH_TOKEN,
 });
 
+/**
+ * The `Rat` class is a utility class for interacting with the Reddit API using the snoowrap library.
+ *
+ * @remarks
+ * This class provides methods for fetching Reddit submissions and storing them as media files.
+ *
+ * @example
+ * ```
+ * const rat = new Rat(snoowrapClient);
+ * const submissionSummary = await rat.getSubmissionSummary("abc123");
+ * if (submissionSummary.isOk()) {
+ *   console.log(submissionSummary.value.title);
+ * } else {
+ *   console.error(submissionSummary.error);
+ * }
+ * ```
+ */
 export class Rat {
   client: snoowrap;
 
   constructor(snoowrapClient: snoowrap) {
     this.client = snoowrapClient;
+  }
+
+  /**
+   * Fetch a summary of a Reddit submission based on the given submission ID.
+   *
+   * @param {string} submissionId - The submission ID of the Reddit post.
+   * @param {snoowrap} client - The snoowrap client to use to make the request.
+   * @returns {Promise<Result<{ id: string, body: string, title: string, link?: string }, String>>} A promise that resolves to a `Result` object containing the submission summary or an error if the request fails.
+   */
+  async getSubmissionSummary(
+    submissionId: string,
+    client: snoowrap
+  ): Promise<Result<{ id: string; body: string; title: string; link?: string }, String>> {
+    try {
+      // Fetch the submission from Reddit
+      const submission: Submission = this.client.getSubmission(submissionId);
+      // Return the submission summary as a JSON object
+      return Ok({
+        id: submission.id,
+        body: submission.selftext,
+        title: submission.title,
+        link: submission.url,
+      });
+    } catch (error: unknown) {
+      const err = error as Error;
+      // Return the error in the result if the request fails
+      return Err(err.message);
+    }
   }
 
   /**
@@ -38,7 +84,8 @@ export class Rat {
    */
   async getLatestFrom(
     subreddit: string,
-    topAmount: number = 1
+    topAmount: number = 1,
+    saveObjects: boolean = true
   ): Promise<
     types.Result<
       { id: string; body: string; title: string; link?: string } | undefined,
@@ -53,7 +100,7 @@ export class Rat {
       const submission = submissions[0] as Submission;
       if (submission.is_self) {
         console.log("got text post");
-        return new types.Result(true, {
+        return Ok({
           id: submission.id,
           body: submission.selftext,
           title: submission.title,
@@ -62,54 +109,26 @@ export class Rat {
         submissionContainsImage(submission) ||
         submissionPointsToImageDomains(submission)
       ) {
-        console.log("got image post");
-        const imageURLs = await getImgurUrl(submission.url);
-        const thisImageUrl = imageURLs ? imageURLs[0] : ""; // get first URL available for image
-        const mediaResponse = await requests.request({
-          url: thisImageUrl,
-          method: "GET",
-          responseType: "arraybuffer",
-          headers: { "Content-Type": "application/octet-stream" },
+        let mediaPath;
+        if (saveObjects) mediaPath = this.storePostImage(submission.url);
+        return Ok({
+          id: submission.id,
+          body: submission.selftext,
+          title: submission.title,
+          link: mediaPath,
         });
-        const mediaPath = resolve(
-          process.cwd(),
-          "media",
-          `${submission.id}.${
-            thisImageUrl.substring(thisImageUrl.lastIndexOf(".") + 1).split("?")[0]
-          }`
-        );
-        // could also try the preview: submission.preview.images[0].source.url
-        writeFileSync(mediaPath, mediaResponse.body, "binary");
-        return new types.Result(
-          true,
-          {
-            id: submission.id,
-            body: submission.selftext,
-            title: submission.title,
-            link: mediaPath,
-          },
-          undefined
-        );
       } else {
         console.log(`error writing or fetching file ${submission.url}`);
-        return new types.Result(
-          true,
-          {
-            id: submission.id,
-            body: submission.selftext,
-            title: submission.title,
-            link: submission.url,
-          },
-          undefined
-        );
+        return Ok({
+          id: submission.id,
+          body: submission.selftext,
+          title: submission.title,
+          link: submission.url,
+        });
       }
     } catch (error) {
       console.log(JSON.stringify(error));
-      return new types.Result(
-        false,
-        undefined,
-        new Error("unknown error in getLatestFrom")
-      );
+      return Err(new Error("unknown error in getLatestFrom"));
     }
   }
 
@@ -122,5 +141,41 @@ export class Rat {
   async getCommentTree(submissionId: string): Promise<CommentDetails[]> {
     const submission = this.client.getSubmission(submissionId);
     return submission.comments.map(getCommentDetails);
+  }
+
+  /**
+   * Downloads and stores an image from the provided url.
+   *
+   * @param url - The url of the page that contains the image.
+   * @returns The path to the stored image on the filesystem, or an empty string if the image could not be stored.
+   */
+  async storePostImage(url: string): Promise<string | undefined> {
+    try {
+      const imageURLs = await getImgurUrl(url);
+      // If there are no image URLs, return undefined
+      if (!imageURLs || imageURLs.length === 0) return undefined;
+      // Get the first image URL available
+      const thisImageUrl = imageURLs[0];
+      // Make a GET request to the image URL to download the image
+      const mediaResponse = await requests.request({
+        url: thisImageUrl,
+        method: "GET",
+        responseType: "arraybuffer",
+        headers: { "Content-Type": "application/octet-stream" },
+      });
+      // Generate a file name for the image based on the url
+      const fileName = `${url}.${
+        thisImageUrl.substring(thisImageUrl.lastIndexOf(".") + 1).split("?")[0]
+      }`;
+      const mediaPath = resolve(process.cwd(), "media", fileName);
+      // Write the image to the filesystem
+      writeFileSync(mediaPath, mediaResponse.body, "binary");
+      // Return the file path of the stored image
+      return mediaPath;
+    } catch (error) {
+      // An error occurred while trying to download and store the image
+      console.error(error);
+      return undefined;
+    }
   }
 }

@@ -78,7 +78,7 @@ export class RedditContent {
   async getAllContentRequestsWithin(
     db: PrismaClient,
     range: number = 24 * 365 * 20,
-    userId: string = "defaultUser"
+    userId?: string
   ): Promise<Result<ContentGenerationTask[], string>> {
     try {
       // Query the database for ContentGenerationTask entries
