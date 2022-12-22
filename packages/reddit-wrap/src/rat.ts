@@ -85,12 +85,7 @@ export class Rat {
     subreddit: string,
     topAmount: number = 1,
     saveObjects: boolean = true
-  ): Promise<
-    types.Result<
-      { id: string; body: string; title: string; link?: string } | undefined,
-      undefined | Error
-    >
-  > {
+  ): Promise<Result<{ id: string; body: string; title: string; link?: string }, Error>> {
     try {
       const submissions = await this.client.getSubreddit(subreddit).getTop({
         limit: topAmount,
@@ -109,7 +104,7 @@ export class Rat {
         submissionPointsToImageDomains(submission)
       ) {
         let mediaPath;
-        if (saveObjects) mediaPath = this.storePostImage(submission.url);
+        if (saveObjects) mediaPath = await this.storePostImage(submission.url);
         return Ok({
           id: submission.id,
           body: submission.selftext,

@@ -10,7 +10,7 @@ import { CommentDetails } from "../types";
 export const getCommentDetails = (comment: Comment): CommentDetails => {
   return {
     author: comment.author.name,
-    authorKarma: comment.author.link_karma,
+    authorKarma: comment.author.name !== "[deleted]" ? comment.author.link_karma : 0,
     commentKarma: comment.score,
     numReplies: comment.replies.length,
     text: comment.body,
