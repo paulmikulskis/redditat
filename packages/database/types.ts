@@ -27,3 +27,11 @@ export class RequestError extends Error {}
 export class ServerError extends Error {}
 export class DbError extends ServerError {}
 export class AuditLogDbError extends DbError {}
+
+export interface Media {
+  uri: string;
+  type?: "jpeg" | "jpg" | "png" | "mp3" | "m4a" | "mp4" | "wav" | "bytes";
+  sizeBytes?: number;
+}
+
+export type TaskStatus = "IN_PROGRESS" | "SUCCESS" | "ERROR" | "CREATED";

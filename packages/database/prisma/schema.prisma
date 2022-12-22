@@ -194,37 +194,40 @@ model AuditLog {
 }
 
 model ContentGenerationTask {
-  id              String     @id() @unique()
-  status          TaskStatus @default(IN_PROGRESS)
-  submissionId    String     @unique
+  id              String      @id() @default(dbgenerated("uuid_generate_v4()"))
+  status          TaskStatus  @default(CREATED)
+  submissionId    String      @unique
   subredditUrl    String
-  startTime       DateTime
+  startTime       DateTime    @default(now())
   endTime         DateTime?
-  resources       Resources? @relation(fields: [resourcesId], references: [id])
+  resources       Resources[]
   errorMessage    String?
   errorStackTrace String?
-  subreddit       Subreddit  @relation(fields: [subredditUrl], references: [url])
-  resourcesId     String?
+  subreddit       Subreddit?  @relation(fields: [subredditUrl], references: [url])
+  program         String
+  user            String      @default("defaultUser")
 }
 
 enum TaskStatus {
   IN_PROGRESS
   SUCCESS
   ERROR
+  CREATED
 }
 
 model Resources {
-  id                    String                  @id() @unique()
+  id                    String                  @id() @default(dbgenerated("uuid_generate_v4()"))
   videoUri              String?
   script                String?
-  media                 Image[]                 @relation()
+  media                 GenerationMedia[]
   ContentGenerationTask ContentGenerationTask[]
 }
 
-model Image {
-  id          String     @id() @unique()
-  url         String
-  Resources   Resources? @relation(fields: [resourcesId], references: [id])
+model GenerationMedia {
+  uri         String      @id() @unique()
+  type        String      @default("bytes")
+  sizeBytes   Decimal     @default(-1)
+  Resources   Resources[]
   resourcesId String?
 }
 
