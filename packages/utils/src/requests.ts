@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { Logger } from "tslog";
 const logger = new Logger();
 
-const DEFAULT_TIMEOUT = 10000; // 10 seconds
+const DEFAULT_TIMEOUT = 100000; // 10 seconds
 /**
  * Makes an HTTP request and returns a stream.
  *

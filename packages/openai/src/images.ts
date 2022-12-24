@@ -1,7 +1,11 @@
 import { request } from "@yungsten/utils/src/requests";
 import { env } from "@yungsten/utils";
-
+import openai from "openai";
+import { getClient } from "./helper-funcs";
+import { generateResponse } from "./completions";
 export type ImageResolution = "1024x1024" | "512x512" | "256x256";
+
+const openAiClient = getClient();
 
 /**
  * Generates an image using the OpenAI DALL-E API.
@@ -13,36 +17,48 @@ export type ImageResolution = "1024x1024" | "512x512" | "256x256";
  */
 export async function generateImage(
   prompt: string,
-  resolution: ImageResolution = "256x256"
-): Promise<Buffer> {
+  resolution: ImageResolution = "1024x1024"
+): Promise<Buffer | undefined> {
   const model = "image-alpha-001";
-  const apiKey = env.OPEN_AI_API_KEY;
-  if (!apiKey) {
-    throw new Error("OPEN_AI_API_KEY is not set");
-  }
-  const options = {
-    method: "POST",
-    url: "https://api.openai.com/v1/images/generations",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    data: {
-      prompt: prompt,
-      model: model,
-      size: resolution,
-      response_format: "url",
-    },
-  };
-  const response = await request(options);
-  if (response.statusCode !== 200) {
-    throw new Error(`Failed to generate image: ${response.statusMessage}`);
-  }
-  const imageUrl = response.body.data.url;
-  const imageResponse = await request({
-    method: "GET",
-    url: imageUrl,
-    responseType: "arraybuffer",
+  const completion = await openAiClient.createImage({
+    prompt: prompt,
+    size: resolution,
+    n: 1,
+    response_format: "b64_json",
   });
-  return Buffer.from(imageResponse.body);
+  const data = completion.data.data[0].b64_json;
+  return Buffer.from(data || "", "base64");
 }
+
+export const generateRedditPromptImage = async (
+  prompt: string,
+  resolution: ImageResolution = "1024x1024"
+): Promise<Buffer | undefined> => {
+  const dallePromptPrefix = "high-res beautiful colorful anime of";
+  const promptPrefix =
+    "describe in no longer than two sentences of a scene that relates to the focus of the following prompt: ";
+  const promptSuffix = ".  Output the description only";
+  const davinciPrompt = `${promptPrefix}${prompt} ${promptSuffix}`;
+  const interpretation = await generateResponse(`${davinciPrompt}`);
+  const finalPrompt = `${dallePromptPrefix} ${interpretation}`;
+  if (!finalPrompt) return;
+  console.log(`generating image with prompt: "${finalPrompt}"`);
+  return generateImage(finalPrompt, resolution);
+};
+
+export const generateRedditPromptResponseImage = async (
+  prompt: string,
+  originalPrompt: string,
+  resolution: ImageResolution = "1024x1024"
+): Promise<Buffer | undefined> => {
+  const dallePromptPrefix = "high-res beautiful colorful anime of";
+  const promptPrefix =
+    "output a concrete description no longer than two sentences of a scene that relates to the focus of the following idea: ";
+  const promptSuffix = "Output the description only";
+  const davinciPrompt = `${promptPrefix}${originalPrompt} ${prompt} ${promptSuffix}`;
+  const interpretation = await generateResponse(`${davinciPrompt}`);
+  const finalPrompt = `${dallePromptPrefix} ${interpretation}`;
+  if (!finalPrompt) return;
+  console.log(`generating image with prompt: "${finalPrompt}"`);
+  return generateImage(finalPrompt, resolution);
+};

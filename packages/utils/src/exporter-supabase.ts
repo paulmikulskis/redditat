@@ -2,7 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { env } from "./index";
 
 //supabase storage API docs: https://supabase.github.io/storage-api/#/
-const supabase = createClient(env.SUPABSE_API_KEY, env.SUPABSE_API_KEY);
+const supabase = createClient(env.SUPABASE_PROJECT_URL, env.SUPABSE_API_KEY);
 
 /**
  * Queries for objects in the specified bucket by object key.
@@ -25,7 +25,7 @@ export const queryObjectsByKey = async (bucketName: string, objectKey: string) =
   try {
     const bucket = supabase.storage.from(bucketName);
     const result = await bucket.download(objectKey);
-    return result;
+    return result.data;
   } catch (error) {
     console.error(
       `Error querying object with key "${objectKey}" in bucket "${bucketName}":`,
@@ -50,19 +50,17 @@ export const uploadObject = async (
   bucketName: string,
   key: string,
   object: any
-): Promise<boolean> => {
-  // Create a Blob from the object being uploaded
-  const objectBlob = new Blob([JSON.stringify(object)], { type: "application/json" });
-
+): Promise<string> => {
   // Get the bucket to upload the object to
   const bucket = supabase.storage.from(bucketName);
 
   // Attempt to upload the object to the bucket
   try {
+    console.log(`attemting to upload object '${key}' to bucket ${bucketName}`);
     // Use the .upload method from the bucket to upload the object
     // Set the upsert option to false to prevent overwriting existing objects with the same key
     // Set the cacheControl option to 3600 seconds (1 hour) to set the object's cache expiration time
-    const { data, error } = await bucket.upload(key, objectBlob, {
+    const { data, error } = await bucket.upload(key, object, {
       cacheControl: "3600",
       upsert: false,
     });
@@ -70,14 +68,19 @@ export const uploadObject = async (
     // If the upload was successful, log the object's key
     if (data) {
       console.log(`Successfully uploaded object with key ${key}`);
-      return true;
+      return key;
     } else {
-      // If the upload failed, throw an error with the returned Supabase error message
-      throw new Error(error.message);
+      console.log(`was not able to upload to supabase...${error.message}`);
+      return "";
     }
   } catch (error) {
+    const err = error as Error;
     // Log the error message if the upload failed
-    console.error(`Error uploading object: ${error.message}`);
+    console.error(`Error uploading object: ${err.message}`);
+    if (err.message === "The resource already exists") {
+      return key;
+    }
+    return "";
   }
 };
 
@@ -94,7 +97,7 @@ export const listBucket = async (
   path: string = "",
   limit: number = 100
 ): Promise<string[]> => {
-  const fileNames = [];
+  const fileNames: string[] = [];
   try {
     // Get the bucket object
     const bucket = supabase.storage.from(bucketName);
@@ -107,19 +110,54 @@ export const listBucket = async (
     });
 
     // Check if there are any files in the bucket
-    if (result.data.length === 0) {
+    if (result.data?.length === 0) {
       console.log(`No files found in bucket "${bucketName}"`);
       return [];
     }
 
     // Print the filenames of all the files in the bucket
     console.log(`Files found in bucket "${bucketName}":`);
-    result.data.forEach((file) => {
+    result.data?.forEach((file) => {
       fileNames.push(file.name);
     });
     return fileNames;
   } catch (error) {
-    console.error(`Error listing files in bucket "${bucketName}": ${error.message}`);
+    const err = error as Error;
+    console.error(`Error listing files in bucket "${bucketName}": ${err.message}`);
     return [];
+  }
+};
+
+/**
+ * Returns whether or not a folder exists in a given bucket.
+ *
+ * @param {string} bucketName The name of the bucket to check for the folder.
+ * @param {string} folderName The name of the folder to check for.
+ * @returns {boolean} True if the folder exists in the bucket, false otherwise.
+ */
+export const folderExists = async (
+  bucketName: string,
+  folderName: string
+): Promise<boolean> => {
+  try {
+    // Get the bucket object
+    const bucket = supabase.storage.from(bucketName);
+
+    // List all files in the bucket
+    const result = await bucket.list("", {
+      limit: 1, // Only need to check one file to see if the folder exists
+      offset: 0, // Start from the beginning
+      sortBy: { column: "name", order: "asc" }, // Sort the results by name in ascending order
+      search: folderName, // Check for files with names that start with the folder name
+    });
+
+    // Check if there are any files in the bucket that match the folder name
+    return (result.data?.length || -1) > 0;
+  } catch (error) {
+    const err = error as Error;
+    console.error(
+      `Error checking for folder "${folderName}" in bucket "${bucketName}": ${err.message}`
+    );
+    return false;
   }
 };

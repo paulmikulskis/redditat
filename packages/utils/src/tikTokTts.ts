@@ -89,8 +89,13 @@ export const tts = async (
   const r = await requests.request({ method: "POST", url, headers });
 
   if (r.body["message"] == "Couldn't load speech. Try again.") {
-    const output_data = { status: "Session ID is invalid", status_code: 5 };
-    console.log(output_data);
+    const output_data = {
+      status: "Session ID is invalid",
+      status_code: 500,
+      duration: 0,
+      data: undefined,
+      speaker: undefined,
+    };
     return output_data;
   }
 
@@ -114,10 +119,7 @@ export const tts = async (
     duration: dur,
     data: decodedString,
     speaker: spkr,
-    log: log,
   };
-
-  console.log(output_data);
 
   return output_data;
 };

@@ -84,42 +84,64 @@ export class Rat {
   async getLatestFrom(
     subreddit: string,
     topAmount: number = 1,
+    over18: boolean = false,
     saveObjects: boolean = true
-  ): Promise<Result<{ id: string; body: string; title: string; link?: string }, Error>> {
+  ): Promise<
+    Result<
+      {
+        id: string;
+        body: string;
+        title: string;
+        link?: string;
+        submission: Submission;
+      }[],
+      Error
+    >
+  > {
+    const filteredSubmissions = [];
     try {
       const submissions = await this.client.getSubreddit(subreddit).getTop({
-        limit: topAmount,
+        limit: topAmount + 10,
         time: "day",
       });
-      const submission = submissions[0] as Submission;
-      if (submission.is_self) {
-        console.log("got text post");
-        return Ok({
-          id: submission.id,
-          body: submission.selftext,
-          title: submission.title,
-        });
-      } else if (
-        submissionContainsImage(submission) ||
-        submissionPointsToImageDomains(submission)
-      ) {
-        let mediaPath;
-        if (saveObjects) mediaPath = await this.storePostImage(submission.url);
-        return Ok({
-          id: submission.id,
-          body: submission.selftext,
-          title: submission.title,
-          link: mediaPath,
-        });
-      } else {
-        console.log(`error writing or fetching file ${submission.url}`);
-        return Ok({
-          id: submission.id,
-          body: submission.selftext,
-          title: submission.title,
-          link: submission.url,
-        });
+      for (const submission of submissions) {
+        if (submission.over_18 !== over18) continue;
+        console.log(
+          `filtered out submission ${submission.id} with ${submission.comments.length} comments`
+        );
+        if (submission.is_self) {
+          console.log("got text post");
+          filteredSubmissions.push({
+            id: submission.id,
+            body: submission.selftext,
+            title: submission.title,
+            submission: Object.create(submission),
+          });
+        } else if (
+          submissionContainsImage(submission) ||
+          submissionPointsToImageDomains(submission)
+        ) {
+          let mediaPath;
+          if (saveObjects) mediaPath = await this.storePostImage(submission.url);
+          filteredSubmissions.push({
+            id: submission.id,
+            body: submission.selftext,
+            title: submission.title,
+            link: mediaPath,
+            submission: Object.create(submission),
+          });
+        } else {
+          console.log(`error writing or fetching file ${submission.url}`);
+          filteredSubmissions.push({
+            id: submission.id,
+            body: submission.selftext,
+            title: submission.title,
+            link: submission.url,
+            submission: Object.create(submission),
+          });
+        }
       }
+      return Ok(filteredSubmissions.slice(0, topAmount));
     } catch (error) {
       console.log(JSON.stringify(error));
       return Err(new Error("unknown error in getLatestFrom"));
@@ -130,11 +152,17 @@ export class Rat {
    * Returns a tree of comments for the given submission.
    *
    * @param {string} submissionId - The ID of the submission to get comments for.
+   * @param {number} maxLen - Max length in characters of comments that will end up in the commentTree
    * @returns {Promise<Comment[]>} A promise that resolves to an array of comment objects.
    */
-  async getCommentTree(submissionId: string): Promise<CommentDetails[]> {
+  async getCommentTree(
+    submissionId: string,
+    maxLen: number = 80
+  ): Promise<CommentDetails[]> {
     const submission = this.client.getSubmission(submissionId);
-    return submission.comments.map(getCommentDetails);
+    return submission.comments
+      .map(getCommentDetails)
+      .filter((commentDetails) => commentDetails.text.length < maxLen);
   }
 
   /**

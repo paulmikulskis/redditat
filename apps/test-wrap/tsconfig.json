@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "outDir": "dist",
     "rootDir": "src",
@@ -14,7 +15,7 @@
     "types": ["node"],
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": false,
+    "noEmit": false
   },
   "include": ["src", "test", "**/*.ts"],
   "exclude": ["dist"]

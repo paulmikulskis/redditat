@@ -1,5 +1,6 @@
 import { TextEncoder } from "util";
 import { format } from "date-fns";
+import { Readable } from "stream";
 
 export const getSizeInBytes = (obj: any) => {
   let str = null;
@@ -42,4 +43,49 @@ export const hourlyOf = (directory: string): string => {
 export const minuteByMinuteOf = (directory: string): string => {
   const dat = format(new Date(), "MM-dd-yyyy:HH:mm");
   return `${directory}/${dat}.json`;
+};
+
+/**
+ * Converts a given Blob into a Readable stream, which can be consumed by libraries such as FFmpeg.
+ * @param {Blob} blob - The Blob to be converted into a Readable stream.
+ * @returns {Readable} - A Readable stream that can be consumed by libraries such as FFmpeg.
+ */
+export const toReadable = async (blob: Blob): Promise<Readable> => {
+  const stream = new Readable();
+  stream.push(Buffer.from(await blob.arrayBuffer()));
+  stream.push(null);
+  return stream;
+};
+
+export const bufferToReadable = async (blob: Buffer): Promise<Readable> => {
+  const stream = new Readable();
+  stream.push(Buffer.from(blob.buffer));
+  stream.push(null);
+  return stream;
+};
+
+/**
+ * Converts a Blob object to a Buffer.
+ * @param {Blob} blob The Blob object to be converted to a Buffer.
+ * @returns {Buffer} A Buffer object containing the data from the Blob.
+ */
+export const blobToBuffer = (blob: Blob): Promise<Buffer> => {
+  return new Promise(async (resolve, reject) => {
+    const reader = new Readable();
+    reader._read = () => {}; // _read is a no-op, needed because Readable expects it
+    reader.push(Buffer.from(await blob.arrayBuffer()));
+    reader.push(null);
+
+    const chunks: any[] = [];
+    reader.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+    reader.on("end", () => {
+      const buffer = Buffer.concat(chunks);
+      resolve(buffer);
+    });
+    reader.on("error", (err) => {
+      reject(err);
+    });
+  });
 };

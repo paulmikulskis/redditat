@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@types/node": "^18.11.16",
+    "@yungsten/openai": "*",
     "@yungsten/reddit-wrap": "*",
     "@yungsten/utils": "*",
     "date-fns": "^2.29.3",

@@ -3,15 +3,7 @@ import { config } from "dotenv";
 
 // No matter what, values here will ALWAYS load from base.env unless
 // the the ENVIRONMENT variable is specifically set to "production" in ".env"
-const OVERRIDE_DOTENVS = [
-  "SUPABSE_API_KEY",
-  "SUPABASE_PSQL_URI",
-  "SUPABASE_STUDIO_URL",
-  "SUPABASE_API_URL",
-  "SUPABASE_JWT_SECRET",
-  "SUPABASE_ANON_KEY",
-  "SUPABASE_SERVICE_ROLE_KEY",
-];
+const OVERRIDE_DOTENVS = ["SUPABASE_PSQL_URI"];
 
 const skipOverride = (
   process.env.SKIP_OVERRIDE ? process.env.SKIP_OVERRIDE.split(",") : []
