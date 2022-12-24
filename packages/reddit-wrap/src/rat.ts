@@ -101,13 +101,13 @@ export class Rat {
     const filteredSubmissions = [];
     try {
       const submissions = await this.client.getSubreddit(subreddit).getTop({
-        limit: topAmount + 10,
+        limit: topAmount + 15,
         time: "day",
       });
       for (const submission of submissions) {
         if (submission.over_18 !== over18) continue;
         console.log(
-          `filtered out submission ${submission.id} with ${submission.comments.length} comments`
+          `found submission ${submission.id} with ${submission.comments.length} comments`
         );
         if (submission.is_self) {
           console.log("got text post");

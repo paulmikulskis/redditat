@@ -16,11 +16,12 @@ async function test(): Promise<void> {
   const PHOTO_BUCKET_NAME = "photo";
   const PHOTO_FILETYPE = "png";
   const VERSION = 53;
+  const TOP_POST_NUMBER = 2;
   const COMMENTS_TO_GET = 4;
   const render = new ffmpegHelper.FfmpegMachine();
 
   const a = new Rat(rclient);
-  const value = await a.getLatestFrom(SUBREDDIT_NAME);
+  const value = await a.getLatestFrom(SUBREDDIT_NAME, TOP_POST_NUMBER);
   if (value.ok) {
     const val = value.val[0];
     if (val) {
