@@ -10,6 +10,7 @@
     "dev": "NODE_ENV=development ts-node --transpile-only src/index.ts"
   },
   "dependencies": {
+    "@yungsten/prom": "*",
     "@types/node": "^18.11.16",
     "@yungsten/openai": "*",
     "@yungsten/reddit-wrap": "*",

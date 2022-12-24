@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Base",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "rootDir": "./src",
+    "noEmit": true,
+    "module": "CommonJS",
+    "lib": ["DOM", "es6"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "es6",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"],
+    "skipLibCheck": true,
+    "strict": false,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist"]
+}

@@ -917,6 +917,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@yungsten/prom@workspace:packages/prom":
+  version: 0.0.0-use.local
+  resolution: "@yungsten/prom@workspace:packages/prom"
+  dependencies:
+    "@ffprobe-installer/ffprobe": ^1.4.1
+    "@types/fluent-ffmpeg": ^2.1.20
+    "@yungsten/utils": "*"
+    date-fns: ^2.29.3
+    ffmpeg-static: ^5.1.0
+    ffprobe: ^1.1.2
+    fluent-ffmpeg: ^2.1.2
+    fluent-ffmpeg-multistream: ^1.0.0
+    get-audio-duration: ^3.1.1
+    global: ^4.4.0
+    id3-parser: ^2.0.0
+    tsc: ^2.0.4
+    tslog: ^4.6.0
+    typescript: ^4.9.4
+    zod: ^3.17.10
+  languageName: unknown
+  linkType: soft
+
 "@yungsten/reddit-wrap@*, @yungsten/reddit-wrap@workspace:packages/reddit-wrap":
   version: 0.0.0-use.local
   resolution: "@yungsten/reddit-wrap@workspace:packages/reddit-wrap"

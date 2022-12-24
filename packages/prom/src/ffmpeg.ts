@@ -1,9 +1,8 @@
 import ffmpeg, { AudioVideoFilter } from "fluent-ffmpeg";
-import { queryObjectsByKey } from "./exporter-supabase";
-import { helperFuncs } from ".";
-import { blobToBuffer, getSizeInBytes } from "./helper-funcs";
+import { helperFuncs, supabaseExporter, parsing } from "@yungsten/utils";
 import * as fs from "fs";
-import { maxCharsPerLine } from "./parsing";
+import { getFfmpeg } from "./files";
+const { promisify } = require("util");
 
 // https://gist.github.com/Saccarab/c8e0540e8a9ba26c771c2808c804e066
 export type ScriptItem = {
@@ -57,21 +56,44 @@ export class FfmpegMachine {
     );
   };
 
+  warpAudio = async (
+    warpSpeed: number,
+    outputFolderName: string,
+    outputFileName: string,
+    audioFormat: string,
+    fileSuffix: string = "sped"
+  ): Promise<void> => {
+    const instance = getFfmpeg()
+      .input(`${outputFolderName}/${outputFileName}.${audioFormat}`)
+      .audioFilters(`atempo=${warpSpeed}`)
+      .on("error", function (err) {
+        console.log("An error occurred: " + err.message);
+      })
+      .on("end", function () {
+        console.log("finished warping audio ");
+        return;
+      })
+      .saveToFile(`${outputFolderName}/${outputFileName}-${fileSuffix}.${audioFormat}`);
+    const endPromise = promisify(instance.once).bind(instance)("end");
+    return endPromise;
+  };
+
   combineAudio = async (
     script: ScriptItem[],
     outputFileName: string = "combinedAudio",
     outputFormat: string = "mp3",
     outputFolderName: string = "media"
   ) => {
+    const warpAudio = this.warpAudio;
     const outputFilePath = `${outputFolderName}/${outputFileName}.${outputFormat}`;
 
-    let command;
+    const command = getFfmpeg();
     // Iterate through each script item and add the text, image, and audio to the video
     for (let i = 0; i < script.length; i++) {
       const item = script[i];
       console.log(`processing script item ${i}`);
       console.log(`audio key: ${item.audioUrl}`);
-      const audio = await queryObjectsByKey("audio", item.audioUrl);
+      const audio = await supabaseExporter.queryObjectsByKey("audio", item.audioUrl);
       if (!audio || audio === null) {
         console.log(
           `audio ${item.audioUrl} is null or undefined!  skipping audio generation`
@@ -83,48 +105,35 @@ export class FfmpegMachine {
         await helperFuncs.blobToBuffer(audio)
       );
       const audioReadable = await helperFuncs.toReadable(audio);
-      console.log(`FFMEG audio data contains ${getSizeInBytes(audioReadable)} bytes`);
+      console.log(
+        `FFMEG audio data contains ${helperFuncs.getSizeInBytes(audioReadable)} bytes`
+      );
       if (audio != null && audio) {
         console.log(
-          `about to add ${getSizeInBytes(
+          `about to add ${helperFuncs.getSizeInBytes(
             audioReadable
           )} readable bytes to the FFMPEG stream from the audio`
         );
-        if (!command) {
-          command = ffmpeg();
-          command
-            .setFfprobePath(require("@ffprobe-installer/ffprobe").path)
-            .mergeAdd(`${outputFolderName}/audio${i}.${outputFormat}`);
-        } else {
-          command
-            .mergeAdd(`${outputFolderName}/audio${i}.${outputFormat}`)
-            .inputFormat(outputFormat);
-        }
+        command
+          .mergeAdd(`${outputFolderName}/audio${i}.${outputFormat}`)
+          .inputFormat(outputFormat);
       }
     }
-    if (command) {
-      await command
-        .on("error", function (err) {
-          console.log("An error occurred: " + err.message);
-        })
-        .on("end", function () {
-          console.log("Merging audio finished !");
-          const command2 = ffmpeg();
-          command2.setFfprobePath(require("@ffprobe-installer/ffprobe").path);
-          command2
-            .input(`${outputFolderName}/${outputFileName}.${AUDIO_FORMAT}`)
-            .audioFilters(`atempo=${AUDIO_SPEED}`)
-            .on("error", function (err) {
-              console.log("An error occurred: " + err.message);
-            })
-            .on("end", function () {
-              console.log("Merging all images finished!");
-              return outputFilePath;
-            })
-            .saveToFile(`${outputFolderName}/${outputFileName}-sped.${AUDIO_FORMAT}`);
-        })
-        .mergeToFile(outputFilePath);
-    }
+    command
+      .on("error", function (err) {
+        console.log("An error occurred: " + err.message);
+      })
+      .on("end", async function () {
+        console.log("Merging audio finished !");
+        await warpAudio(
+          AUDIO_SPEED,
+          outputFolderName,
+          outputFileName,
+          AUDIO_FORMAT,
+          "sped"
+        );
+      })
+      .mergeToFile(outputFilePath);
   };
 
   combineImages = async (
@@ -150,7 +159,7 @@ export class FfmpegMachine {
       const item = script[i];
       console.log(`processing script item ${i}`);
       console.log(`image key: ${item.imageUrl}`);
-      const image = await queryObjectsByKey("photo", item.imageUrl);
+      const image = await supabaseExporter.queryObjectsByKey("photo", item.imageUrl);
       if (!image || image === null) {
         console.log(
           `image ${item.imageUrl} is null or undefined!  skipping image generation`
@@ -162,14 +171,17 @@ export class FfmpegMachine {
         await helperFuncs.blobToBuffer(image)
       );
       const imageReadable = await helperFuncs.toReadable(image);
-      console.log(`FFMEG image data contains ${getSizeInBytes(imageReadable)} bytes`);
+      console.log(
+        `FFMEG image data contains ${helperFuncs.getSizeInBytes(imageReadable)} bytes`
+      );
       if (image != null && image) {
         console.log(
-          `about to add ${getSizeInBytes(
+          `about to add ${helperFuncs.getSizeInBytes(
             imageReadable
           )} readable bytes to the FFMPEG stream from the image`
         );
-        const titleText = maxCharsPerLine(item.text, 22)
+        const titleText = parsing
+          .maxCharsPerLine(item.text, 22)
           .replace("[", "\\\\\\[")
           .replace("]", "\\\\\\]");
         command

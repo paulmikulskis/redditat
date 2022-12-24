@@ -1,0 +1,33 @@
+{
+  "name": "@yungsten/prom",
+  "main": "src/index.ts",
+  "version": "0.0.0",
+  "description": "a library that allows us to process media data and files using popular tools like ffmpeg. It provides a simple, easy-to-use interface for common media processing tasks",
+  "packageManager": "yarn@3.3.0",
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build -w --preserveWatchOutput",
+    "test": "echo 'note implemented yet!'",
+    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
+    "clean": "rimraf .turbo dist node_modules"
+  },
+  "dependencies": {
+    "@ffprobe-installer/ffprobe": "^1.4.1",
+    "@types/fluent-ffmpeg": "^2.1.20",
+    "@yungsten/utils": "*",
+    "date-fns": "^2.29.3",
+    "ffmpeg-static": "^5.1.0",
+    "ffprobe": "^1.1.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "fluent-ffmpeg-multistream": "^1.0.0",
+    "get-audio-duration": "^3.1.1",
+    "global": "^4.4.0",
+    "id3-parser": "^2.0.0",
+    "tslog": "^4.6.0",
+    "zod": "^3.17.10"
+  },
+  "devDependencies": {
+    "tsc": "^2.0.4",
+    "typescript": "^4.9.4"
+  }
+}

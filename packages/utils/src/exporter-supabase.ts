@@ -45,7 +45,6 @@ export const queryObjectsByKey = async (bucketName: string, objectKey: string) =
  *          { data: { path: string }, error: null } if the object was successfully uploaded,
  *          or { data: null, error: StorageError } if there was an error.
  */
-
 export const uploadObject = async (
   bucketName: string,
   key: string,
@@ -157,6 +156,48 @@ export const folderExists = async (
     const err = error as Error;
     console.error(
       `Error checking for folder "${folderName}" in bucket "${bucketName}": ${err.message}`
+    );
+    return false;
+  }
+};
+
+/**
+ * Returns whether or not a file exists in a given bucket.
+ *
+ * @param {string} bucketName The name of the bucket to check for the file.
+ * @param {string} fileName The name of the file to check for.
+ * @param {string} [path] An optional search glob to narrow down the lookup.
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether or not the file exists in the bucket.
+ *
+ * @example
+ * const fileExists = await fileExists('my-bucket', 'my-file.txt');
+ * console.log(fileExists); // true or false
+ *
+ * @throws {Error} If there is an error while attempting to list the files in the bucket.
+ */
+export const fileExists = async (
+  bucketName: string,
+  fileName: string,
+  path?: string
+): Promise<boolean> => {
+  try {
+    // Get the bucket object
+    const bucket = supabase.storage.from(bucketName);
+
+    // List all files in the bucket
+    const result = await bucket.list(path || "", {
+      limit: 1, // Only need to check one file to see if the file exists
+      offset: 0, // Start from the beginning
+      sortBy: { column: "name", order: "asc" }, // Sort the results by name in ascending order
+      search: fileName, // Check for files with names that match the file name
+    });
+
+    // Check if there are any files in the bucket that match the file name
+    return (result.data?.length || -1) > 0;
+  } catch (error) {
+    const err = error as Error;
+    console.error(
+      `Error checking for file "${fileName}" in bucket "${bucketName}": ${err.message}`
     );
     return false;
   }
