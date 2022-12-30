@@ -1,4 +1,6 @@
-/* eslint-disable @next/next/no-img-element */
+import styles from "../styles/Home.module.css";
+import Switch from "@mui/material/Switch";
+import { FileGridTable } from "./FileGridTable";
 import React, { useState, useEffect } from "react";
 import { Grid, Chip, IconButton } from "@material-ui/core";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -10,61 +12,35 @@ import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { theme as defaultTheme } from "../utils/theme";
-import Checkbox from "@mui/material/Checkbox";
+import { FileGridViewport } from "./FileGridViewport";
 import { MEDIA_FILES_TYPES_SUPPORTED } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  gridItem: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "spa",
-    "&:hover": {
-      backgroundColor: defaultTheme.palette.divider,
-    },
+    minHeight: "400px",
+    maxHeight: "800px",
   },
-  image: {},
-  filePath: {
-    flexGrow: 1,
-  },
-  tags: {
-    padding: "1rem",
-    display: "flex",
-  },
-  menu: {
+  box: {
     width: "100%",
-    display: "flex",
-    alignItems: "center",
   },
 }));
 
-interface File {
+export interface File {
   path: string;
   preview: any;
   tags: string[];
   date: number;
 }
 
-interface Props {
-  folder: string;
-}
-
-const Item = styled(Box)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  color: theme.palette.text.secondary,
-  backgroundColor: "transparent",
-}));
-
-export const FileGrid: React.FC<Props> = ({ folder }) => {
+export const FileGrid: React.FC = () => {
+  const folder = "dyana/postem";
+  const classes = useStyles();
+  const [batch, setBatch] = useState<number>(1);
   const [files, setFiles] = useState<File[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
-  const [hoverRows, setHoverRows] = useState<string>("");
-  const [batch, setBatch] = useState(1);
-  const classes = useStyles();
+  const selectSetters = [selected, setSelected];
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -86,142 +62,28 @@ export const FileGrid: React.FC<Props> = ({ folder }) => {
     fetchFiles();
   }, [batch, folder]);
 
-  const handleSelection = (path: string) => {
-    if (selected.includes(path)) {
-      setSelected(selected.filter((p) => p !== path));
-    } else {
-      setSelected([...selected, path]);
-    }
-  };
-
-  const handleScroll = (event: any) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.target;
-    if (scrollTop + clientHeight >= scrollHeight) {
-      setBatch(batch + 1);
-    }
-  };
-
-  const generateMediaPreviewGridItem = (file: File) => {
-    return (
-      // media preview grid item
-      <Grid key={file.path} item xs="auto" className={classes.image}>
-        <Stack
-          direction="row"
-          divider={<Divider orientation="vertical" flexItem />}
-          spacing={1}
-        >
-          <Item>
-            <img
-              style={{ width: "128px", height: "128px" }}
-              src={`data:image/*;base64,${
-                file.preview
-                  ? Buffer.from(file.preview, "binary")?.toString("base64")
-                  : undefined
-              }`}
-              alt={file.path.slice(file.path.lastIndexOf("/") + 1)}
-            />
-          </Item>
-        </Stack>
-      </Grid>
-    );
-  };
-
-  const generatefileInfoGridItem = (file: File) => {
-    return (
-      <Grid key={file.path} item xs={3} className={classes.filePath}>
-        <Item>
-          <p>{file.path}</p>
-        </Item>
-      </Grid>
-    );
-  };
-
-  const generateTagsGridItem = (file: File) => {
-    return (
-      <Grid item xs={3} className={classes.tags}>
-        <Item>
-          <Stack direction="row" divider={<p>.</p>} spacing={1}>
-            {file.tags.map((tag) => (
-              <Chip key={tag} label={tag} color="primary" />
-            ))}
-          </Stack>
-        </Item>
-      </Grid>
-    );
-  };
-
-  const generateMoreOptionsGridItem = (file: File) => {
-    return (
-      <Grid item xs={1} className={classes.menu}>
-        <Item>
-          <IconButton aria-label="more options">
-            <MoreHorizIcon color={"action"} />
-          </IconButton>
-        </Item>
-      </Grid>
-    );
-  };
-
-  const generateSelectionGridItem = (file: File) => {
-    return (
-      <Grid item xs={1} className={classes.menu}>
-        <Item>
-          <Checkbox
-            color="secondary"
-            //@ts-ignore
-            size="large"
-            onClick={() => handleSelection(file.path)}
-          />
-        </Item>
-      </Grid>
-    );
-  };
-
-  const mouseOver = (file: File) => {
-    setHoverRows(file.path);
-  };
-
-  const mouseOut = (file: File) => {
-    setHoverRows("");
-  };
-
-  const generateGridRow = (file: File) => {
-    return (
-      <div>
-        <Divider />
-        <Grid
-          onMouseOver={() => mouseOver(file)}
-          onMouseOut={() => mouseOut(file)}
-          className={classes.root}
-          container
-          justifyContent="space-between"
-          direction="row"
-          style={{
-            padding: "0.25rem 1rem 0.25rem 1rem",
-            backgroundColor:
-              selected.includes(file.path) || hoverRows === file.path
-                ? defaultTheme.palette.divider
-                : defaultTheme.palette.background.default,
-          }}
-        >
-          {generateSelectionGridItem(file)}
-          {generateMediaPreviewGridItem(file)}
-          {generatefileInfoGridItem(file)}
-          {generateTagsGridItem(file)}
-          {generateMoreOptionsGridItem(file)}
-        </Grid>
-      </div>
-    );
-  };
-
   return (
-    <Box sx={{ width: "100%" }}>
-      <Grid container direction="column" onScroll={handleScroll}>
-        {files.map((file) => generateGridRow(file))}
+    <Box className={classes.box}>
+      <Grid container direction="row" spacing={2}>
+        <Grid item xs={12} md={8} className={classes.gridItem}>
+          <FileGridTable
+            folder="dyana/postem"
+            files={files}
+            setFiles={setFiles}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        </Grid>
+        <Grid item xs={12} md={4} className={classes.gridItem}>
+          <FileGridViewport
+            folder="dyana/postem"
+            files={files}
+            setFiles={setFiles}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        </Grid>
       </Grid>
-      <Divider />
     </Box>
   );
 };
-
-export default FileGrid;

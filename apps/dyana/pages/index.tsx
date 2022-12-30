@@ -1,5 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Switch from "@mui/material/Switch";
+import { FileGridTable } from "../components/FileGridTable";
 import { FileGrid } from "../components/FileGrid";
 import React, { useState, useEffect } from "react";
 import { Grid, Chip, IconButton } from "@material-ui/core";
@@ -12,13 +13,11 @@ import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { theme as defaultTheme } from "../utils/theme";
+import { Typography } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
-  gridItem: {
-    display: "flex",
-    alignItems: "center",
-    minHeight: "400px",
-    maxHeight: "800px",
+  appContentBox: {
+    width: "90%",
   },
 }));
 
@@ -27,31 +26,17 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div>
-        <span>With default Theme:</span>
-      </div>
-      <Grid container direction="row" spacing={2}>
-        <Grid item xs={12} md={8} className={classes.gridItem}>
-          <FileGrid folder="dyana/postem" />
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          md={4}
-          className={classes.gridItem}
-          style={{
-            color: defaultTheme.palette.primary.light,
-          }}
-        >
-          <Paper
-            style={{
-              color: defaultTheme.palette.primary.light,
-              width: "100%",
-              height: "100%",
-            }}
-          ></Paper>
-        </Grid>
-      </Grid>
+      <Stack
+        direction="column"
+        spacing={3}
+        style={{ width: "90%" }}
+        justifyContent="flex-start"
+      >
+        <Typography variant="h5">Recent Files Browser</Typography>
+        <Box>
+          <FileGrid />
+        </Box>
+      </Stack>
     </div>
   );
 }
