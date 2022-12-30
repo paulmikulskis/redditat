@@ -1,11 +1,11 @@
 import { Rat, rclient, commentUtils, parsing } from "@yungsten/reddit-wrap";
-import { supabaseExporter, helperFuncs } from "@yungsten/utils";
+import { supabase, helperFuncs, queues } from "@yungsten/utils";
 import { images } from "@yungsten/openai";
 import { ffmpegHelper, tikTokTts, files } from "@yungsten/prom";
 import { Result, Err, Ok } from "ts-results";
-
 import * as fs from "fs";
 
+const supabaseClient = new supabase.YungSupabaseClient();
 async function test(): Promise<void> {
   const SUBREDDIT_NAME = "AskReddit";
   const AUDIO_BUCKET_NAME = "audio";
@@ -15,7 +15,9 @@ async function test(): Promise<void> {
   const TOP_POST_NUMBER = 3;
   const COMMENTS_TO_GET = 4;
   const render = new ffmpegHelper.FfmpegMachine();
-
+  console.log("ABOUT TO GET REDIS QUEUE!!!");
+  queues.getQueue("dany-test");
+  console.log("YES YES YES YES GOT THE QUE YES YES YES YES");
   const a = new Rat(rclient);
   const value = await a.getLatestFrom(SUBREDDIT_NAME, TOP_POST_NUMBER);
   if (value.ok) {
@@ -24,17 +26,19 @@ async function test(): Promise<void> {
       const textPosting = val;
       const scriptObjects: ffmpegHelper.ScriptItem[] = [];
       const prompt = textPosting.title;
-      let { speechDuration, photoFilePath, audioFilePath } =
-        await requestAndUploadTtsScriptMedia(
-          prompt,
-          prompt,
-          textPosting.id,
-          0,
-          VERSION,
-          PHOTO_BUCKET_NAME,
-          AUDIO_BUCKET_NAME,
-          PHOTO_FILETYPE
-        );
+      const uploadRes = await requestAndUploadTtsScriptMedia(
+        prompt,
+        prompt,
+        textPosting.id,
+        0,
+        VERSION,
+        PHOTO_BUCKET_NAME,
+        AUDIO_BUCKET_NAME,
+        PHOTO_FILETYPE
+      );
+
+      let { speechDuration, photoFilePath, audioFilePath } = uploadRes.unwrap();
+
       console.log(
         `-------\n  * about to create script item with:\n  *   photoFilePath: "${photoFilePath}"\n *   audioFilePath: "${audioFilePath}"\n *   duration: "${
           typeof speechDuration === "string"
@@ -55,14 +59,18 @@ async function test(): Promise<void> {
       comTree.forEach((com) => console.log(`  -> ${com.author}: ${com.text}`));
       for (let i = 0; i < comTree.length; i++) {
         const comment = comTree[i];
-        let { speechDuration, photoFilePath, audioFilePath } =
-          await requestAndUploadTtsScriptMedia(
-            prompt,
-            comment.text,
-            textPosting.id,
-            i + 1,
-            VERSION
-          );
+        const uploadRes = await requestAndUploadTtsScriptMedia(
+          prompt,
+          prompt,
+          textPosting.id,
+          0,
+          VERSION,
+          PHOTO_BUCKET_NAME,
+          AUDIO_BUCKET_NAME,
+          PHOTO_FILETYPE
+        );
+
+        let { speechDuration, photoFilePath, audioFilePath } = uploadRes.unwrap();
         console.log(
           `-------\n  * about to create script item with:\n  *   photoFilePath: "${photoFilePath}"\n  *   audioFilePath: "${audioFilePath}"\n  *   duration: "${
             typeof speechDuration === "string"
@@ -87,7 +95,7 @@ async function test(): Promise<void> {
 }
 
 const callbackHandler = async (filePath: string) => {
-  supabaseExporter.uploadObject(
+  supabaseClient.uploadObject(
     "outputs",
     `tts/${new Date().getTime()}.mp4`,
     fs.readFileSync(filePath)
@@ -109,7 +117,7 @@ export const requestAndUploadTtsScriptMedia2 = async (
   const photoFileName = `${index}-v${version}.${photoFiletype}`;
   const photoFilePath = `${submissionId}/${index}-v${version}.${photoFiletype}`;
   const audioFilePath = `${submissionId}/${index}-v${version}.${audioFiletype}`;
-  if (!(await supabaseExporter.fileExists("photo", photoFileName, submissionId))) {
+  if (!(await supabaseClient.fileExists("photo", photoFileName, submissionId))) {
     console.log(
       `file '${photoFileName}' does not exist bucket '${photoBucketName}/${submissionId}' requesting media generation...`
     );
@@ -123,14 +131,14 @@ export const requestAndUploadTtsScriptMedia2 = async (
     } else {
       photo = await images.generateRedditPromptResponseImage(text, postPrompt);
     }
-    await supabaseExporter.uploadObject(audioBucketName, audioFilePath, speech.data);
-    await supabaseExporter.uploadObject(photoBucketName, photoFilePath, photo);
+    await supabaseClient.uploadObject(audioBucketName, audioFilePath, speech.data);
+    await supabaseClient.uploadObject(photoBucketName, photoFilePath, photo);
     speechDuration = await files.getAudioDuration(speech.data);
   } else {
     console.log(
       `folder '${submissionId} exists, so checking audio file for duration: '${audioFilePath}'`
     );
-    const speech = await supabaseExporter.queryObjectsByKey("audio", audioFilePath);
+    const speech = await supabaseClient.queryObjectsByKey("audio", audioFilePath);
     if (speech) {
       const buffer = await helperFuncs.blobToBuffer(speech);
       console.log(
@@ -198,7 +206,7 @@ export const requestAndUploadTtsScriptMedia = async (
   const photoFileName = `${index}-v${version}.${photoFiletype}`;
   const photoFilePath = `${submissionId}/${index}-v${version}.${photoFiletype}`;
   const audioFilePath = `${submissionId}/${index}-v${version}.${audioFiletype}`;
-  if (!(await supabaseExporter.fileExists("photo", photoFileName, submissionId))) {
+  if (!(await supabaseClient.fileExists("photo", photoFileName, submissionId))) {
     console.log(
       `file '${photoFileName}' does not exist bucket '${photoBucketName}/${submissionId}' requesting media generation...`
     );
@@ -217,14 +225,14 @@ export const requestAndUploadTtsScriptMedia = async (
       const err = error as Error;
       return Err(err);
     }
-    await supabaseExporter.uploadObject(audioBucketName, audioFilePath, speech.data);
-    await supabaseExporter.uploadObject(photoBucketName, photoFilePath, photo);
+    await supabaseClient.uploadObject(audioBucketName, audioFilePath, speech.data);
+    await supabaseClient.uploadObject(photoBucketName, photoFilePath, photo);
     speechDuration = await files.getAudioDuration(speech.data);
   } else {
     console.log(
       `folder '${submissionId} exists, so checking audio file for duration: '${audioFilePath}'`
     );
-    const speech = await supabaseExporter.queryObjectsByKey("audio", audioFilePath);
+    const speech = await supabaseClient.queryObjectsByKey("audio", audioFilePath);
     if (speech) {
       const buffer = await helperFuncs.blobToBuffer(speech);
       console.log(

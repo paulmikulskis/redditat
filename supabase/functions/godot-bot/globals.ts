@@ -1,0 +1,6 @@
+export const Globals = {
+  GODOT_DISCORD_CLIENT_ID: Deno.env.get("GODOT_DISCORD_CLIENT_ID") || "",
+  SERVER_ID: "1056256695216644177",
+  CHANNEL_ID: "1056256695216644180",
+  SALAI_TOKEN: Deno.env.get("SALAI_TOKEN") || "",
+};

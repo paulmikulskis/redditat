@@ -15,10 +15,10 @@ import { CommentDetails } from "./types";
 import { Ok, Err, Result } from "ts-results";
 
 export const rclient = new snoowrap({
-  userAgent: env.REDDIT_BOT_USER_AGENT,
-  clientId: env.REDDIT_BOT_CLIENT_ID,
-  clientSecret: env.REDDIT_BOT_CLIENT_SECRET,
-  refreshToken: env.REDDIT_BOT_REFRESH_TOKEN,
+  userAgent: env.REDDIT_BOT_USER_AGENT || "",
+  clientId: env.REDDIT_BOT_CLIENT_ID || "",
+  clientSecret: env.REDDIT_BOT_CLIENT_SECRET || "",
+  refreshToken: env.REDDIT_BOT_REFRESH_TOKEN || "",
 });
 
 /**

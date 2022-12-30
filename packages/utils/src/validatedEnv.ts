@@ -53,6 +53,12 @@ export const ValidatedEnv = z.object({
   SUPABASE_PROJECT_URL: z.string().min(1),
   SUPABSE_API_KEY: z.string().min(1),
   SUPABASE_PSQL_URI: z.string().min(1),
+  REDIS_FQDN: z.string().default("--?--"),
+  REDIS_HOST: z.string().default("--?--"),
+  REDIS_PORT: stringToNumber().default("6380"),
+  NEXTCLOUD_URL: z.string().default("https://dyana.yungstentech.com"),
+  NEXTCLOUD_USERNAME: z.string().default("--?--"),
+  NEXTCLOUD_PASSWORD: z.string().default("--?--"),
 });
 export type ValidatedEnv = z.TypeOf<typeof ValidatedEnv>;
 export const validatedEnv = ValidatedEnv.parse(process.env);

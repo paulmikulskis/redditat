@@ -17,6 +17,7 @@
     "@types/minio": "^7.0.15",
     "aws-sdk": "^2.1211.0",
     "axios": "^1.2.1",
+    "bullmq": "^1.50.5",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.1",
     "ffmpeg-static": "^5.1.0",
@@ -28,11 +29,14 @@
     "id3-parser": "^2.0.0",
     "minio": "^7.0.32",
     "mmdb-reader": "^1.2.0",
+    "nextcloud-node-client": "^1.8.1",
     "node-fetch": "^3.3.0",
+    "redis": "^4.3.1",
     "tslog": "^4.6.0",
     "zod": "^3.17.10"
   },
   "devDependencies": {
+    "@types/ioredis": "^4.28.7",
     "tsc": "^2.0.4",
     "typescript": "^4.9.4"
   }

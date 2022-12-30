@@ -1,9 +1,10 @@
 import ffmpeg, { AudioVideoFilter } from "fluent-ffmpeg";
-import { helperFuncs, supabaseExporter, parsing } from "@yungsten/utils";
+import { helperFuncs, supabase, parsing } from "@yungsten/utils";
 import * as fs from "fs";
 import { getFfmpeg } from "./files";
 const { promisify } = require("util");
 
+const supabaseClient = new supabase.YungSupabaseClient();
 // https://gist.github.com/Saccarab/c8e0540e8a9ba26c771c2808c804e066
 export type ScriptItem = {
   text: string;
@@ -93,7 +94,7 @@ export class FfmpegMachine {
       const item = script[i];
       console.log(`processing script item ${i}`);
       console.log(`audio key: ${item.audioUrl}`);
-      const audio = await supabaseExporter.queryObjectsByKey("audio", item.audioUrl);
+      const audio = await supabaseClient.queryObjectsByKey("audio", item.audioUrl);
       if (!audio || audio === null) {
         console.log(
           `audio ${item.audioUrl} is null or undefined!  skipping audio generation`
@@ -159,7 +160,7 @@ export class FfmpegMachine {
       const item = script[i];
       console.log(`processing script item ${i}`);
       console.log(`image key: ${item.imageUrl}`);
-      const image = await supabaseExporter.queryObjectsByKey("photo", item.imageUrl);
+      const image = await supabaseClient.queryObjectsByKey("photo", item.imageUrl);
       if (!image || image === null) {
         console.log(
           `image ${item.imageUrl} is null or undefined!  skipping image generation`

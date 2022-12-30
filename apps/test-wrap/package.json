@@ -10,9 +10,9 @@
     "dev": "NODE_ENV=development ts-node --transpile-only src/index.ts"
   },
   "dependencies": {
-    "@yungsten/prom": "*",
     "@types/node": "^18.11.16",
     "@yungsten/openai": "*",
+    "@yungsten/prom": "*",
     "@yungsten/reddit-wrap": "*",
     "@yungsten/utils": "*",
     "date-fns": "^2.29.3",

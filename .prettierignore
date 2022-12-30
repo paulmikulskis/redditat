@@ -10,4 +10,3 @@ node_modules
 
 /apps/styles/tailwind.css
 /apps/styles/app.css
-supabase/

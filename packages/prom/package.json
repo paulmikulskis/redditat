@@ -22,7 +22,9 @@
     "fluent-ffmpeg-multistream": "^1.0.0",
     "get-audio-duration": "^3.1.1",
     "global": "^4.4.0",
+    "heic2any": "^0.0.3",
     "id3-parser": "^2.0.0",
+    "sharp": "^0.31.3",
     "tslog": "^4.6.0",
     "zod": "^3.17.10"
   },
