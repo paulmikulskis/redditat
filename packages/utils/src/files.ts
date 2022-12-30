@@ -17,11 +17,17 @@ export async function getFilesRecursive(
   dir: string,
   basePath?: string
 ): Promise<string[]> {
+  // Read the contents of the directory
   const files = await promises.readdir(dir);
+  // Initialize an array to store the file paths
   const fileList: string[] = [];
+  // Iterate through the contents of the directory
   for (const file of files) {
+    // Construct the full file path
     const filePath = join(dir, file);
+    // Get the file stats for the current file
     const fileStats = await promises.stat(filePath);
+    // If the current file is a directory, recursively search the directory
     if (fileStats.isDirectory()) {
       fileList.push(...(await getFilesRecursive(filePath, basePath)));
     } else {

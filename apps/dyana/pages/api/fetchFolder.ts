@@ -71,8 +71,8 @@ export default async function fetchFolder(
   res: NextApiResponse
 ): Promise<void> {
   try {
-    // get path and user from request query parameters
-    const { rawPath, user } = req.query;
+    // get path and user from request body parameters
+    const { rawPath, options } = req.body;
     logger.debug(`received request to fetch folder at path '${rawPath}'`);
     // get the folder at the specified path on NextCloud
     const folder = await nclient.getFolder(rawPath as string);

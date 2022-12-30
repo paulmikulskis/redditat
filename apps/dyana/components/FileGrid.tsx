@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Chip, IconButton } from "@material-ui/core";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import { theme as defaultTheme } from "../utils/theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     alignItems: "center",
     "&:hover": {
-      backgroundColor: "#eee",
+      backgroundColor: defaultTheme.palette.primary.dark,
     },
   },
   image: {
@@ -41,15 +45,15 @@ interface Props {
   folder: string;
 }
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+const Item = styled(Box)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
   color: theme.palette.text.secondary,
+  backgroundColor: "transparent",
 }));
 
-const FileGrid: React.FC<Props> = ({ folder }) => {
+export const FileGrid: React.FC<Props> = ({ folder }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [batch, setBatch] = useState(1);
@@ -58,15 +62,15 @@ const FileGrid: React.FC<Props> = ({ folder }) => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.post("/files/list", {
-          folder,
+        const response = await axios.post("/api/fetchFolder", {
+          rawPath: folder,
           options: {
-            thumbNails: true,
+            thumbNails: false,
             limit: 20,
             from: 20 * batch,
           },
         });
-        setFiles(response.data.files);
+        setFiles(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -90,30 +94,40 @@ const FileGrid: React.FC<Props> = ({ folder }) => {
   };
 
   return (
-    <Box>
+    <Box sx={{ width: "100%" }}>
       <Grid container direction="column" onScroll={handleScroll}>
         {files.map((file) => (
           <Grid
             key={file.path}
             item
-            xs={12}
+            xs={6}
             className={classes.root}
             onClick={() => handleSelection(file.path)}
           >
-            <div>
+            <Stack
+              direction="row"
+              divider={<Divider orientation="vertical" flexItem />}
+              spacing={1}
+            >
               {/* <img src={file.previews} alt={file.path} className={classes.image} /> */}
-              <div className={classes.filePath}>{file.path}</div>
-              <div className={classes.tags}>
+              <Item
+                className={classes.filePath}
+                sx={{ height: "100%", justifyContent: "space-around" }}
+              >
+                <p>{file.path}</p>
+              </Item>
+              <Item className={classes.tags}>
                 {file.tags.map((tag) => (
                   <Chip key={tag} label={tag} />
                 ))}
-              </div>
-              <div className={classes.menu}>
+              </Item>
+              <Item className={classes.menu}>
                 <IconButton aria-label="more options">
                   {/* Add a Material-UI icon for the menu here */}
+                  <MoreHorizIcon />
                 </IconButton>
-              </div>
-            </div>
+              </Item>
+            </Stack>
           </Grid>
         ))}
       </Grid>
