@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const fileData: File | null = await nclient.getFile(workflowFile.url);
     if (fileData) {
       // Download the file
-      const fileBuffer = await fileData.getContent();
+      //const fileBuffer = await fileData.getContent();
       // Invoke the handler function to process the file buffer
       //handler(fileBuffer);
     }

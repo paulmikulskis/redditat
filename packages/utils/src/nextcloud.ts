@@ -51,9 +51,13 @@ export class NextClient {
    * console.log(fileList);
    * // Output: [FileObj1, FileObj2, FileObjn"]
    */
-  async getRecursiveFileList(sourceFolder: Folder): Promise<File[]> {
+  async getRecursiveFileList(
+    sourceFolder: Folder,
+    filterFile?: (file: File) => File | null
+  ): Promise<File[]> {
     const recurseCommand = new GetFilesRecursivelyCommand(this.client, {
       sourceFolder: sourceFolder,
+      filterFile: filterFile,
     });
     recurseCommand.execute();
     while (!recurseCommand.isFinished()) {

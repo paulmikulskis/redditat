@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useState, useEffect } from "react";
 import { Grid, Chip, IconButton } from "@material-ui/core";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -9,26 +10,28 @@ import Divider from "@mui/material/Divider";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { theme as defaultTheme } from "../utils/theme";
+import Checkbox from "@mui/material/Checkbox";
+import { MEDIA_FILES_TYPES_SUPPORTED } from "../utils/constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "spa",
     "&:hover": {
-      backgroundColor: defaultTheme.palette.primary.dark,
+      backgroundColor: defaultTheme.palette.divider,
     },
   },
-  image: {
-    width: "50px",
-    height: "50px",
-  },
+  image: {},
   filePath: {
     flexGrow: 1,
   },
   tags: {
+    padding: "1rem",
     display: "flex",
   },
   menu: {
+    width: "100%",
     display: "flex",
     alignItems: "center",
   },
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface File {
   path: string;
-  previews: Buffer;
+  preview: any;
   tags: string[];
   date: number;
 }
@@ -49,6 +52,9 @@ const Item = styled(Box)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
   color: theme.palette.text.secondary,
   backgroundColor: "transparent",
 }));
@@ -56,6 +62,7 @@ const Item = styled(Box)(({ theme }) => ({
 export const FileGrid: React.FC<Props> = ({ folder }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
+  const [hoverRows, setHoverRows] = useState<string>("");
   const [batch, setBatch] = useState(1);
   const classes = useStyles();
 
@@ -68,6 +75,7 @@ export const FileGrid: React.FC<Props> = ({ folder }) => {
             thumbNails: false,
             limit: 20,
             from: 20 * batch,
+            fileTypes: MEDIA_FILES_TYPES_SUPPORTED,
           },
         });
         setFiles(response.data);
@@ -93,44 +101,125 @@ export const FileGrid: React.FC<Props> = ({ folder }) => {
     }
   };
 
+  const generateMediaPreviewGridItem = (file: File) => {
+    return (
+      // media preview grid item
+      <Grid key={file.path} item xs="auto" className={classes.image}>
+        <Stack
+          direction="row"
+          divider={<Divider orientation="vertical" flexItem />}
+          spacing={1}
+        >
+          <Item>
+            <img
+              style={{ width: "128px", height: "128px" }}
+              src={`data:image/*;base64,${
+                file.preview
+                  ? Buffer.from(file.preview, "binary")?.toString("base64")
+                  : undefined
+              }`}
+              alt={file.path.slice(file.path.lastIndexOf("/") + 1)}
+            />
+          </Item>
+        </Stack>
+      </Grid>
+    );
+  };
+
+  const generatefileInfoGridItem = (file: File) => {
+    return (
+      <Grid key={file.path} item xs={3} className={classes.filePath}>
+        <Item>
+          <p>{file.path}</p>
+        </Item>
+      </Grid>
+    );
+  };
+
+  const generateTagsGridItem = (file: File) => {
+    return (
+      <Grid item xs={3} className={classes.tags}>
+        <Item>
+          <Stack direction="row" divider={<p>.</p>} spacing={1}>
+            {file.tags.map((tag) => (
+              <Chip key={tag} label={tag} color="primary" />
+            ))}
+          </Stack>
+        </Item>
+      </Grid>
+    );
+  };
+
+  const generateMoreOptionsGridItem = (file: File) => {
+    return (
+      <Grid item xs={1} className={classes.menu}>
+        <Item>
+          <IconButton aria-label="more options">
+            <MoreHorizIcon color={"action"} />
+          </IconButton>
+        </Item>
+      </Grid>
+    );
+  };
+
+  const generateSelectionGridItem = (file: File) => {
+    return (
+      <Grid item xs={1} className={classes.menu}>
+        <Item>
+          <Checkbox
+            color="secondary"
+            //@ts-ignore
+            size="large"
+            onClick={() => handleSelection(file.path)}
+          />
+        </Item>
+      </Grid>
+    );
+  };
+
+  const mouseOver = (file: File) => {
+    setHoverRows(file.path);
+  };
+
+  const mouseOut = (file: File) => {
+    setHoverRows("");
+  };
+
+  const generateGridRow = (file: File) => {
+    return (
+      <div>
+        <Divider />
+        <Grid
+          onMouseOver={() => mouseOver(file)}
+          onMouseOut={() => mouseOut(file)}
+          className={classes.root}
+          container
+          justifyContent="space-between"
+          direction="row"
+          style={{
+            padding: "0.25rem 1rem 0.25rem 1rem",
+            backgroundColor:
+              selected.includes(file.path) || hoverRows === file.path
+                ? defaultTheme.palette.divider
+                : defaultTheme.palette.background.default,
+          }}
+        >
+          {generateSelectionGridItem(file)}
+          {generateMediaPreviewGridItem(file)}
+          {generatefileInfoGridItem(file)}
+          {generateTagsGridItem(file)}
+          {generateMoreOptionsGridItem(file)}
+        </Grid>
+      </div>
+    );
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <Grid container direction="column" onScroll={handleScroll}>
-        {files.map((file) => (
-          <Grid
-            key={file.path}
-            item
-            xs={6}
-            className={classes.root}
-            onClick={() => handleSelection(file.path)}
-          >
-            <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem />}
-              spacing={1}
-            >
-              {/* <img src={file.previews} alt={file.path} className={classes.image} /> */}
-              <Item
-                className={classes.filePath}
-                sx={{ height: "100%", justifyContent: "space-around" }}
-              >
-                <p>{file.path}</p>
-              </Item>
-              <Item className={classes.tags}>
-                {file.tags.map((tag) => (
-                  <Chip key={tag} label={tag} />
-                ))}
-              </Item>
-              <Item className={classes.menu}>
-                <IconButton aria-label="more options">
-                  {/* Add a Material-UI icon for the menu here */}
-                  <MoreHorizIcon />
-                </IconButton>
-              </Item>
-            </Stack>
-          </Grid>
-        ))}
+        {files.map((file) => generateGridRow(file))}
       </Grid>
+      <Divider />
     </Box>
   );
 };

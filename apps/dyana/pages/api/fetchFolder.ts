@@ -14,6 +14,8 @@ import { createReadStream, createWriteStream, statSync, readdir, promises } from
 import { promisify } from "util";
 import { env, nextcloud, files } from "@yungsten/utils";
 import { Logger } from "tslog";
+import { ThumbnailDB } from "../../utils/sqlLite";
+import { MEDIA_FILES_TYPES_SUPPORTED } from "../../utils/constants";
 
 const CACHE_FOLDER_NAME = "cache";
 
@@ -26,6 +28,7 @@ const config: Server = new Server({
   },
   logRequestResponse: false,
 });
+const thumbnailsDB = new ThumbnailDB();
 
 const ncloud = new nextcloud.NextClient(config);
 const nclient = ncloud.client;
@@ -34,7 +37,7 @@ logger.debug(
 );
 interface FileMini {
   path: string;
-  previews?: Buffer;
+  preview?: Buffer;
   tags: string[];
   date: number;
 }
@@ -73,7 +76,10 @@ export default async function fetchFolder(
   try {
     // get path and user from request body parameters
     const { rawPath, options } = req.body;
-    logger.debug(`received request to fetch folder at path '${rawPath}'`);
+    const allowedParams = req.body.options?.fileTypes ?? MEDIA_FILES_TYPES_SUPPORTED;
+    logger.debug(
+      `received request to fetch folder at path '${rawPath}', looking for files of type ${allowedParams}`
+    );
     // get the folder at the specified path on NextCloud
     const folder = await nclient.getFolder(rawPath as string);
     if (!folder) {
@@ -101,6 +107,12 @@ export default async function fetchFolder(
       // download the folder contents from NextCloud to the `cache` directory
       const downloadCommand = new DownloadFolderCommand(nclient, {
         sourceFolder: folder,
+        filterFile: (file: File) => {
+          return allowedParams === undefined ||
+            allowedParams.includes(files.getExtension(file.name))
+            ? file
+            : null;
+        },
         getTargetFileNameBeforeDownload: (fileNames: SourceTargetFileNames) =>
           `${CACHE_FOLDER_NAME}/${fileNames.sourceFileName}`,
       });
@@ -116,17 +128,19 @@ export default async function fetchFolder(
         return;
       }
       const msg = `successfully cached path ${cachedFolderPath} from NextCloud`;
+      await thumbnailsDB.generateThumbnailsLocally(systemCacheFolder, path);
       res.status(200).send({ msg });
       return;
     } else {
       // if the folder exists in the `cache` directory, get the list of file paths
       logger.info(`cache folder (configured as '${cacheDir}) exists`);
-      const fileList = await ncloud.getRecursiveFileList(folder);
-      console.log(
-        `got ${fileList.length} files from NextCloud: \nfirst 5 filenames:\n  ${fileList
-          .slice(0, 5)
-          .map((f) => " " + f.name)}`
-      );
+      const fileList = await ncloud.getRecursiveFileList(folder, (file) => {
+        return allowedParams === undefined ||
+          allowedParams.includes(files.getExtension(file.name))
+          ? file
+          : null;
+      });
+      logger.debug(`got ${fileList.length} files from NextCloud`);
       const filteredFileList = await recurDirDiff(fileList, systemCacheFolder, path);
       logger.info(
         `syncing ${filteredFileList.length} files from '${folder.name}' on NextCloud to '${cachedFolderPath}'`
@@ -136,7 +150,11 @@ export default async function fetchFolder(
       const downloadFolderCommand = new DownloadFolderCommand(nclient, {
         sourceFolder: folder,
         filterFile: (file: File) => {
-          return filteredFileIds.includes(file.id) ? file : null;
+          return filteredFileIds.includes(file.id) &&
+            (allowedParams === undefined ||
+              allowedParams.includes(files.getExtension(file.name)))
+            ? file
+            : null;
         },
         getTargetFileNameBeforeDownload: (fileNames: SourceTargetFileNames) => {
           return `${CACHE_FOLDER_NAME}/${fileNames.sourceFileName}`;
@@ -150,14 +168,14 @@ export default async function fetchFolder(
         const filePath = join(CACHE_FOLDER_NAME, filex.name);
         const fileStats = statSync(filePath);
         const file: FileMini = {
-          path: filex.name,
-          previews: undefined, // TODO: implement getting preview of media files
-          tags: [], // TODO: implement getting tags of file
+          path: filex.baseName,
+          preview: await thumbnailsDB.getThumbnail(filex.name), // TODO: implement getting preview of media files
+          tags: await filex.getTags(), // TODO: implement getting tags of file
           date: fileStats.mtime.getTime(),
         };
         response.push(file);
       }
-
+      await thumbnailsDB.generateThumbnailsLocally(systemCacheFolder, path);
       // send the response
       res.status(200).send(response);
     }

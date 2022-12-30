@@ -21,6 +21,7 @@
     "@types/react-dom": "18.0.10",
     "@types/sharp": "^0.31.0",
     "@yungsten/utils": "*",
+    "@yungsten/prom": "*",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.1",
     "knex-sqlite": "^2.0.1",

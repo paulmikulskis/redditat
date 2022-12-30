@@ -2,7 +2,7 @@ import { join } from "path";
 import { promises } from "fs";
 
 /**
- * Recursively generates an array of file paths within a given directory
+ * Recursively generates an array of file paths within a given directory (absolute path!)
  *
  * @param {string} dir - The path to the directory to search
  * @param {string} basePath - The path remove from the resulting list of paths
@@ -35,4 +35,8 @@ export async function getFilesRecursive(
     }
   }
   return fileList;
+}
+
+export function getExtension(fileName: string) {
+  return fileName.split(".")[fileName.split(".").length - 1].toLowerCase();
 }
