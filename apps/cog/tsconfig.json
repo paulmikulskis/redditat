@@ -5,18 +5,19 @@
     "outDir": "dist",
     "rootDir": "src",
     "module": "CommonJS",
-    "lib": ["esnext"],
+    "lib": ["esnext", "es2019"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "esnext",
+    "target": "es2019",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["node"],
+    "types": ["node", "jest"],
     "skipLibCheck": true,
     "strict": false,
-    "noEmit": false
+    "noEmit": false,
+    "noUncheckedIndexedAccess": true
   },
-  "include": ["src", "test", "**/*.ts"],
+  "include": ["src", "test"],
   "exclude": ["dist"]
 }
