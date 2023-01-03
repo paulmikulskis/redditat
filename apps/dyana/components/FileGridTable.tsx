@@ -196,7 +196,18 @@ export const FileGridTable: React.FC<Props> = ({
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box
+      border={2}
+      borderLeft={0}
+      borderRight={0}
+      borderColor="black"
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        overflowY: "scroll",
+        maxHeight: "100%",
+      }}
+    >
       <Grid container direction="column" onScroll={handleScroll}>
         {files.map((file) => generateGridRow(file))}
       </Grid>

@@ -33,9 +33,7 @@ export default function Home() {
         justifyContent="flex-start"
       >
         <Typography variant="h5">Recent Files Browser</Typography>
-        <Box>
-          <FileGrid />
-        </Box>
+        <FileGrid />
       </Stack>
     </div>
   );

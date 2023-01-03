@@ -62,3 +62,12 @@ We will use a package within our monorepo to reach out to reddit every day, and 
 Once we have the reddit post downloaded (and all of its comments), we will feed the post text into a text-to-speech generator to create the audio clip and then repeat the process for the top few comments.  We will then combine all audio clip files back to back into a master audio clip file.  Keep in mind, any files we need or generate are stored in object storage and if we include the location of a file in a model, we should ensure we include a URI so that we can fetch it later during processing.
 After the audio is generated, we will feed the post body text into a function that outputs an image related to the text.  The exact process will happen for each comment we selected to generate audio for in the step prior.
 During the last formal step of processing, we will create a video file by using the sound clips we generated from the post text, and the images we generated from the post text. 
+
+
+-------------------------------------------------------
+can you write a detailed, professional, and blockchain-beginner-friendly 
+tsdoc style docstring for the `saveFullContractAbiToDB` function?  
+Please ensure your output is inside of a code block for readability purposes
+
+this function appears to have no edge-case handling, error checking, or any defensive mechanics.  
+Can you add some and output an updated saveFullContractAbiToDB function inside of a code block?

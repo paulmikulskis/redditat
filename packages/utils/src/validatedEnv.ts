@@ -59,6 +59,8 @@ export const ValidatedEnv = z.object({
   NEXTCLOUD_URL: z.string().default("https://dyana.yungstentech.com"),
   NEXTCLOUD_USERNAME: z.string().default("--?--"),
   NEXTCLOUD_PASSWORD: z.string().default("--?--"),
+  COG_WORKER_COUNT: z.number().default(1),
+  COG_WORKER_CONCURRENCY: z.number().default(2),
 });
 export type ValidatedEnv = z.TypeOf<typeof ValidatedEnv>;
 export const validatedEnv = ValidatedEnv.parse(process.env);

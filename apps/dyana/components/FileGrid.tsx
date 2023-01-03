@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     minHeight: "400px",
-    maxHeight: "800px",
+    maxHeight: "300px",
   },
   box: {
     width: "100%",
