@@ -3,7 +3,7 @@
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "lib": ["DOM", "DOM.Iterable", "ES2019"],
+    "lib": ["esnext", "DOM", "DOM.Iterable", "ES2019"],
     "types": ["node"],
     "isolatedModules": true,
     "esModuleInterop": true,
