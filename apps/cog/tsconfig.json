@@ -3,7 +3,6 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "outDir": "dist",
-    "rootDir": "src",
     "module": "CommonJS",
     "lib": ["esnext", "es2019"],
     "moduleResolution": "node",
