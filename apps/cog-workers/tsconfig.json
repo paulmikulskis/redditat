@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "module": "CommonJS",
+    "lib": ["esnext", "es6"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "ES6",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"],
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": false,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["src", "test"],
+  "exclude": ["dist"]
+}
