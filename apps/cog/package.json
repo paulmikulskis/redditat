@@ -1,5 +1,5 @@
 {
-  "name": "@yungsten/cog-api",
+  "name": "@yungsten/cog",
   "version": "0.0.0",
   "main": "src/index.ts",
   "packageManager": "yarn@3.3.0",

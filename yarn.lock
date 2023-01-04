@@ -4102,11 +4102,11 @@ __metadata:
   linkType: hard
 
 "@supabase/gotrue-js@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "@supabase/gotrue-js@npm:2.6.1"
+  version: 2.6.2
+  resolution: "@supabase/gotrue-js@npm:2.6.2"
   dependencies:
     cross-fetch: ^3.1.5
-  checksum: 51a9561b26a125ca0a5f99260e1f911ccbcaecfbebeb35d8e7c00eb6a01263ea0f12e45693c3b995a8e60aaeab4e6d75f6484c4d7a2534a1f73d4b05fff77691
+  checksum: d2570375f9cdc1e671e84991def3b2f1684281612feeb13205e108ceac48be46cdb5226c2c42f5f9642b77a0a47e66a59911ce7937151c7f6b83406664ef212f
   languageName: node
   linkType: hard
 
@@ -4847,9 +4847,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yungsten/cog-api@workspace:apps/cog-api":
+"@yungsten/cog@workspace:apps/cog":
   version: 0.0.0-use.local
-  resolution: "@yungsten/cog-api@workspace:apps/cog-api"
+  resolution: "@yungsten/cog@workspace:apps/cog"
   dependencies:
     "@aws-sdk/client-s3": ^3.16.0
     "@aws-sdk/types": ^3.15.0
