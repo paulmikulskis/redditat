@@ -4,7 +4,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "rootDir": "./src",
-    "noEmit": true,
+    "outDir": "dist",
     "module": "CommonJS",
     "lib": ["DOM", "es6"],
     "moduleResolution": "node",
@@ -13,11 +13,15 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
     "types": ["node"],
     "skipLibCheck": true,
     "strict": false,
     "noUncheckedIndexedAccess": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src"],
   "exclude": ["dist"]
 }

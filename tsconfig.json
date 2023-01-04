@@ -1,5 +1,5 @@
 {
-  "exclude": ["./cypress", "./cypress.config.ts"],
+  "exclude": ["./cypress", "./cypress.config.ts", "dist/**/*"],
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
@@ -7,11 +7,15 @@
     "types": ["node"],
     "isolatedModules": true,
     "esModuleInterop": true,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
     "jsx": "react-jsx",
+    "target": "ES2019",
     "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "ES2019",
     "strict": false,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,

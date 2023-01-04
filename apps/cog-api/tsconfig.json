@@ -7,16 +7,19 @@
     "lib": ["esnext", "es6", "DOM"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "ES6",
+    "target": "es6",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "incremental": true,
     "types": ["node"],
     "skipLibCheck": true,
     "strict": false,
-    "noEmit": false,
-    "noUncheckedIndexedAccess": true
+    "noEmit": false
   },
-  "include": ["src", "test"],
+  "include": ["src", "src/utils/schedule.json"],
   "exclude": ["dist"]
 }

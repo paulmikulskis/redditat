@@ -18,7 +18,7 @@ import { integratedFunctions } from "../server/utils/executeFunction";
 
 export const env = ValidatedEnv.parse(process.env);
 
-(async function () {
+const workers = async function (commandLineArgs: string[]) {
   const mqConnection = await connectToRedisBullmq(env);
   const logger = new Logger();
   logger.info(`starting worker stack...`);
@@ -57,7 +57,7 @@ export const env = ValidatedEnv.parse(process.env);
   );
   const allTheWorkers = workers;
 
-  const args = process.argv.slice(2);
+  const args = commandLineArgs;
   // will be the name of the service to run via command line argument
   const arg = args[0];
   if (!arg || arg === "all") {
@@ -81,4 +81,6 @@ export const env = ValidatedEnv.parse(process.env);
     );
     exit(20);
   }
-})();
+};
+
+export { workers };

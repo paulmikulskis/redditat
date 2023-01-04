@@ -1,13 +1,14 @@
 {
   "name": "@yungsten/cog-api",
   "version": "0.0.0",
-  "main": "src/server/index.ts",
+  "main": "src/index.ts",
   "packageManager": "yarn@3.3.0",
+  "type": "commonjs",
   "scripts": {
-    "build": "tsc",
-    "start:api": "yarn ts-node --transpile-only src/server/index.ts",
-    "start:menuDumper": "yarn ts-node --transpile-only src/workers/index.ts menuDumper",
-    "start:all": "yarn ts-node --transpile-only src/workers/index.ts",
+    "build": "tsc -b",
+    "start:api": "ENVIRONMENT=production node ./dist/index.js api",
+    "start:workers": "ENVIRONMENT=production node ./dist/index.js workers",
+    "dev": "ENVIRONMENT=development node ./dist/index.js",
     "current-version": "node -e \"console.log(require('./package.json').version);\""
   },
   "dependencies": {

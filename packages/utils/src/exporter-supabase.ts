@@ -10,7 +10,7 @@ export class YungSupabaseClient {
       supabaseProjectUrl || env?.SUPABASE_PROJECT_URL || "--?--",
       supabaseApiKey || env?.SUPABSE_API_KEY || "--?--"
     );
-    this.client = this.client;
+    this.client = supabase;
   }
 
   /**

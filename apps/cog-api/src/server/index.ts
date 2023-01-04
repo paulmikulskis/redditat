@@ -19,7 +19,8 @@ import { authToken } from "./middleware/authorize";
 import initializeFirebase from "./utils/firebase";
 import { Queue } from "bullmq";
 import { connectToRedis } from "../utils/redis";
-(async function () {
+
+export const server = async function (commandLineArgs: string[]) {
   const logger = new Logger();
 
   config({ path: "base.env" });
@@ -185,4 +186,4 @@ import { connectToRedis } from "../utils/redis";
   app.listen(context.env.API_PORT, () => {
     logger.info(`cog-core-api listening on port ${context.env.API_PORT}`);
   });
-})();
+};

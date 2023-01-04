@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "ts-node --transpile-only src/index.ts",
     "lint": "eslint .",
-    "dev": "NODE_ENV=development ts-node --transpile-only src/index.ts"
+    "dev": "ENVIRONMENT=development ts-node --transpile-only src/index.ts"
   },
   "dependencies": {
     "@types/node": "^18.11.16",

@@ -11,7 +11,7 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["db:generate"],
+      "dependsOn": ["^build", "db:generate"],
       "outputs": ["dist/**"],
       "cache": false
     },
