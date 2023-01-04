@@ -1,11 +1,10 @@
 {
   "name": "@yungsten/cog-api",
   "version": "0.0.0",
+  "main": "src/server/index.ts",
   "packageManager": "yarn@3.3.0",
   "scripts": {
-    "build": "yarn build:api && yarn build:workers",
-    "build:api": "tsc src/server/index.ts",
-    "build:workers": "tsc src/workers/index.ts",
+    "build": "tsc",
     "start:api": "yarn ts-node --transpile-only src/server/index.ts",
     "start:menuDumper": "yarn ts-node --transpile-only src/workers/index.ts menuDumper",
     "start:all": "yarn ts-node --transpile-only src/workers/index.ts",
