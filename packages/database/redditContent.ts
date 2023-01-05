@@ -52,7 +52,7 @@ export class RedditContent {
    * Err(string) with an error message if there was a problem updating the ContentGenerationTask.
    */
   async updateContentRequestStatus(
-    id: string,
+    id: number,
     status: TaskStatus
   ): Promise<Result<RedditContentGenerationTask, string>> {
     try {
