@@ -1,4 +1,4 @@
-import { createIntegratedWorker } from "../utils/worker";
+import { createIntegratedWorker } from "../../utils/worker";
 import axios from "axios";
 
 export const checkYTAuthToken = () => {

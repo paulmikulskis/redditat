@@ -1,5 +1,5 @@
-import { createIntegratedWorker } from "../utils/worker";
-import ytpurge from "../../server/utils/ytpurgeapi";
+import { createIntegratedWorker } from "../../utils/worker";
+import ytpurge from "../../../server/utils/ytpurgeapi";
 
 export const scanEntireChannel = () => {
   return createIntegratedWorker("scanEntireChannel", async ({ reqBody, _calls }) => {

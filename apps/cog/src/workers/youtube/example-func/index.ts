@@ -1,8 +1,8 @@
 import { gql } from "graphql-request"; // this worker will use gql and..
 import { GraphQLClient } from "graphql-request"; //..graphql-request to query an API
 import fs from "fs";
-import { createIntegratedWorker } from "../utils/worker"; // function to create your worker
-import { StoreInfoDumpBodyType } from "../../server/integrated_functions/exampleFunc"; // importing this schema to simply help with field suggestions and typing
+import { createIntegratedWorker } from "../../utils/worker"; // function to create your worker
+import { StoreInfoDumpBodyType } from "../../../server/integrated_functions/exampleFunc"; // importing this schema to simply help with field suggestions and typing
 
 // just defining a query our Worker will use to grab data when invoked
 const query = gql`

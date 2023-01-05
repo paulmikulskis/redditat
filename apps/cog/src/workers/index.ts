@@ -1,10 +1,10 @@
-import { exampleFunc } from "./example-func";
-import { scanEntireChannel } from "./scanEntireChannel";
-import { scanCommunityPost } from "./scanCommunityPost";
-import { scanChosenVideos } from "./scanChosenVideos";
-import { scanRecentVideos } from "./scanRecentVideos";
-import { scanCommentList } from "./scanCommentList";
-import { checkYTAuthToken } from "./checkYTAuthToken";
+import { exampleFunc } from "./youtube/example-func";
+import { scanEntireChannel } from "./youtube/scanEntireChannel";
+import { scanCommunityPost } from "./youtube/scanCommunityPost";
+import { scanChosenVideos } from "./youtube/scanChosenVideos";
+import { scanRecentVideos } from "./youtube/scanRecentVideos";
+import { scanCommentList } from "./youtube/scanCommentList";
+import { checkYTAuthToken } from "./youtube/checkYTAuthToken";
 import { healthcheck } from "./healthcheck";
 import { Worker } from "bullmq";
 import { range } from "lodash";

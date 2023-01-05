@@ -1,15 +1,15 @@
-import { createIntegratedWorker } from "../utils/worker";
-import ytpurge from "../../server/utils/ytpurgeapi";
+import { createIntegratedWorker } from "../../utils/worker";
+import ytpurge from "../../../server/utils/ytpurgeapi";
 
-export const scanChosenVideos = () => {
-  return createIntegratedWorker("scanChosenVideos", async ({ reqBody, _calls }) => {
+export const scanCommunityPost = () => {
+  return createIntegratedWorker("scanCommunityPost", async ({ reqBody, _calls }) => {
     // We can't get request headers here
     const response = await ytpurge.post(
       `/scan/${reqBody.auth.uuid}`,
       {
         data: {
           settings: {
-            scan_mode: "chosenvideos",
+            scan_mode: "communitypost",
             ...reqBody.config,
           },
         },
