@@ -7,7 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Comment {
+model RedditComment {
   id                            String    @id() @unique()
   approved                      Boolean
   body_html                     String
@@ -99,7 +99,7 @@ model RedditUser {
 }
 
 model Subreddit {
-  url                         String                  @id() @unique()
+  url                         String                        @id() @unique()
   accounts_active_is_fuzzed   Boolean
   accounts_active             Int
   active_user_count           Int
@@ -178,12 +178,12 @@ model Subreddit {
   whitelist_status            String
   wiki_enabled                Boolean
   wls                         Int
-  Comment                     Comment[]
-  ContentGenerationTask       ContentGenerationTask[]
+  Comment                     RedditComment[]
+  ContentGenerationTask       RedditContentGenerationTask[]
 }
 
 model AuditLog {
-  id        String   @id() @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now()) @map("timestamp") @db.Timestamp(6)
   message   String
   uuid      String   @default("defaultUser")
@@ -193,60 +193,60 @@ model AuditLog {
   @@map("audit_logs")
 }
 
-model ContentGenerationTask {
-  id              String      @id() @default(dbgenerated("uuid_generate_v4()"))
-  status          TaskStatus  @default(CREATED)
-  submissionId    String      @unique
+model RedditContentGenerationTask {
+  id              Int               @id @default(autoincrement())
+  status          RedditTaskStatus  @default(CREATED)
+  submissionId    String            @unique
   subredditUrl    String
-  startTime       DateTime    @default(now())
+  startTime       DateTime          @default(now())
   endTime         DateTime?
-  resources       Resources[]
+  resources       RedditResources[]
   errorMessage    String?
   errorStackTrace String?
-  subreddit       Subreddit?  @relation(fields: [subredditUrl], references: [url])
+  subreddit       Subreddit?        @relation(fields: [subredditUrl], references: [url])
   program         String
-  user            String      @default("defaultUser")
+  user            String            @default("defaultUser")
 }
 
-enum TaskStatus {
+enum RedditTaskStatus {
   IN_PROGRESS
   SUCCESS
   ERROR
   CREATED
 }
 
-model Resources {
-  id                    String                  @id() @default(dbgenerated("uuid_generate_v4()"))
+model RedditResources {
+  id                    Int                           @id @default(autoincrement())
   videoUri              String?
   script                String?
-  media                 GenerationMedia[]
-  ContentGenerationTask ContentGenerationTask[]
+  media                 RedditGenerationMedia[]
+  ContentGenerationTask RedditContentGenerationTask[]
 }
 
-model GenerationMedia {
-  uri         String      @id() @unique()
-  type        String      @default("bytes")
-  sizeBytes   Decimal     @default(-1)
-  Resources   Resources[]
+model RedditGenerationMedia {
+  uri         Int               @id @default(autoincrement())
+  type        String            @default("bytes")
+  sizeBytes   Decimal           @default(-1)
+  Resources   RedditResources[]
   resourcesId String?
 }
 
-model Video {
-  id        String          @id() @unique()
-  createdAt DateTime        @default(now())
+model RedditVideo {
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now())
   uri       String
-  metadata  VideoMetadata[] @relation
+  metadata  RedditVideoMetadata[] @relation
   videoId   String
 }
 
-model VideoMetadata {
-  id           String   @id() @unique()
+model RedditVideoMetadata {
+  id           Int          @id @default(autoincrement())
   duration     Int
   title        String
   description  String
   publishedAt  DateTime
   thumbnailUrl String
   metadataId   String
-  Video        Video?   @relation(fields: [videoId], references: [id])
-  videoId      String?
+  Video        RedditVideo? @relation(fields: [videoId], references: [id])
+  videoId      Int?
 }

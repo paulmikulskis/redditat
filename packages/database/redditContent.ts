@@ -1,4 +1,4 @@
-import { ContentGenerationTask, PrismaClient, Resources } from "@prisma/client";
+import { RedditContentGenerationTask, PrismaClient, RedditResources } from "@prisma/client";
 import { Ok, Err, Result } from "ts-results";
 import { Media, TaskStatus } from "./types";
 import { subHours } from "date-fns";
@@ -22,10 +22,10 @@ export class RedditContent {
     subredditUrl: string,
     resources: Media[],
     program: string = "AI_DALL-E_REDDIT_READER"
-  ): Promise<Result<ContentGenerationTask, string>> {
+  ): Promise<Result<RedditContentGenerationTask, string>> {
     try {
       // Create a new ContentGenerationTask in the database
-      const createdContentGenerationTask = await this.db.contentGenerationTask.create({
+      const createdContentGenerationTask = await this.db.redditContentGenerationTask.create({
         data: {
           program,
           submissionId,
@@ -51,10 +51,13 @@ export class RedditContent {
    * @returns Ok(ContentGenerationTask) if the ContentGenerationTask was updated successfully,
    * Err(string) with an error message if there was a problem updating the ContentGenerationTask.
    */
-  async updateContentRequestStatus(id: string, status: TaskStatus): Promise<Result<ContentGenerationTask, string>> {
+  async updateContentRequestStatus(
+    id: string,
+    status: TaskStatus
+  ): Promise<Result<RedditContentGenerationTask, string>> {
     try {
       // Update the status of the ContentGenerationTask in the database
-      const updatedContentGenerationTask = await this.db.contentGenerationTask.update({
+      const updatedContentGenerationTask = await this.db.redditContentGenerationTask.update({
         where: { id },
         data: { status },
       });
@@ -79,14 +82,14 @@ export class RedditContent {
     db: PrismaClient,
     range: number = 24 * 365 * 20,
     userId?: string
-  ): Promise<Result<ContentGenerationTask[], string>> {
+  ): Promise<Result<RedditContentGenerationTask[], string>> {
     try {
       // Query the database for ContentGenerationTask entries
       const now = new Date();
       const rangeInPast = subHours(now, range);
-      let contentGenerationTasks: ContentGenerationTask[];
+      let contentGenerationTasks: RedditContentGenerationTask[];
       if (userId) {
-        contentGenerationTasks = await db.contentGenerationTask.findMany({
+        contentGenerationTasks = await db.redditContentGenerationTask.findMany({
           where: {
             startTime: {
               gte: rangeInPast,
@@ -95,7 +98,7 @@ export class RedditContent {
           },
         });
       } else {
-        contentGenerationTasks = await db.contentGenerationTask.findMany({
+        contentGenerationTasks = await db.redditContentGenerationTask.findMany({
           where: {
             startTime: {
               gte: rangeInPast,
