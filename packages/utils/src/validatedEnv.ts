@@ -61,6 +61,9 @@ export const ValidatedEnv = z.object({
   NEXTCLOUD_PASSWORD: z.string().default("--?--"),
   COG_WORKER_COUNT: z.number().default(1),
   COG_WORKER_CONCURRENCY: z.number().default(2),
+  TWITTER_API_KEY: z.string().default("--?--"),
+  TWITTER_API_KEY_SECRET: z.string().default("--?--"),
+  TWITTER_API_KEY_BEARER_TOKEN: z.string().default("--?--"),
 });
 export type ValidatedEnv = z.TypeOf<typeof ValidatedEnv>;
 export const validatedEnv = ValidatedEnv.parse(process.env);

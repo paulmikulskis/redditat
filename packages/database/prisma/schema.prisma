@@ -7,6 +7,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator pyclient {
+  provider                    = "prisma-client-py"
+  interface                   = "asyncio"
+  recursive_type_depth        = 5
+  enable_experimental_decimal = true
+}
+
 model RedditComment {
   id                            String    @id() @unique()
   approved                      Boolean
@@ -249,4 +256,87 @@ model RedditVideoMetadata {
   metadataId   String
   Video        RedditVideo? @relation(fields: [videoId], references: [id])
   videoId      Int?
+}
+
+model TweetyTweet {
+  id                    String        @id @db.Uuid
+  author                TwitterUser   @relation(fields: [authorId], references: [id])
+  authorId              String
+  card                  String
+  comments              TweetyTweet[] @relation(name: "comments")
+  created_on            String
+  hashtags              String[]
+  is_possibly_sensitive Boolean
+  is_quoted             Boolean
+  is_reply              Boolean
+  is_retweet            Boolean
+  language              String
+  likes                 Int
+  media                 Json[]
+  place                 String
+  quote_counts          Int
+  quoted_tweet          String
+  reply_counts          Int
+  reply_to              String
+  retweet_counts        Int
+  source                String
+  symbols               Json[]
+  text                  String
+  threads               Json[]
+  tweet_body            String
+  urls                  String[]
+  user_mentions         String[]
+  vibe                  String
+  TweetyTweet           TweetyTweet?  @relation(name: "comments", fields: [tweetyTweetId], references: [id])
+  tweetyTweetId         String?       @db.Uuid
+}
+
+model TwitterUser {
+  id                        String        @id @db.Uuid
+  created_at                String
+  default_profile           Boolean
+  default_profile_image     Boolean
+  description               String
+  fast_followers_count      Int
+  favourites_count          Int
+  followers_count           Int
+  friends_count             Int
+  has_custom_timelines      Boolean
+  is_translator             Boolean
+  listed_count              Int
+  location                  String
+  media_count               Int
+  name                      String
+  normal_followers_count    Int
+  possibly_sensitive        Boolean
+  profile_banner_url        String
+  profile_image_url_https   String
+  profile_interstitial_type String
+  profile_url               String
+  protected                 Boolean
+  rest_id                   String
+  screen_name               String
+  statuses_count            Int
+  translator_type           String
+  username                  String
+  verified                  Boolean
+  verified_type             String
+  TweetyTweet               TweetyTweet[]
+}
+
+model TwitterMedia {
+  id              String @id @db.Uuid
+  display_url     String
+  expanded_url    String
+  features        Json
+  file_format     Json
+  indices         Int[]
+  media_stats     Json
+  media_key       String
+  media_url_https String
+  original_info   Json
+  sizes           Json
+  streams         Json
+  type            String
+  url             String
 }

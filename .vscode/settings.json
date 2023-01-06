@@ -1,4 +1,6 @@
 {
   "deno.enable": true,
-  "deno.unstable": true
+  "deno.unstable": true,
+  "django.snippets.exclude": ["cms", "wagtail"],
+  "python.defaultInterpreterPath": "/Users/paulmikulskis/Development/redditat/venv/bin/python3.10"
 }
