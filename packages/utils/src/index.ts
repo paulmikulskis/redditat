@@ -8,6 +8,6 @@ export * as requests from "./requests";
 export * as minio from "./exporter-minio";
 export * as supabase from "./exporter-supabase";
 export * as parsing from "./parsing";
-export * as queues from "./queues";
 export * as nextcloud from "./nextcloud";
 export * as files from "./files";
+export * as redis from "./redis";

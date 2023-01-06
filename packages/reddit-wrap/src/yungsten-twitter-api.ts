@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Ok, Err, Result } from "ts-results";
-import { TweetyTweet, TwitterUser } from "./types";
+import { TweetyTweet, TwitterUser, YTwitterApiHandleScrapeArgs } from "./types";
+import { z } from "zod";
 
 /**
  * YTwitterApi is a class for interacting with the Yungsten Tech Twitter API, a web-based API for accessing Twitter data.
@@ -36,7 +37,12 @@ export class YTwitterApi {
     extended: boolean = true
   ): Promise<Result<TweetyTweet[], string>> {
     try {
-      const params = { handle, ntweets, pages, extended };
+      const params: z.TypeOf<typeof YTwitterApiHandleScrapeArgs> = {
+        handle,
+        ntweets,
+        pages,
+        extended,
+      };
       const options = {
         params,
         headers: {

@@ -1,5 +1,5 @@
 import { Rat, rclient, commentUtils, parsing } from "@yungsten/reddit-wrap";
-import { supabase, helperFuncs, queues } from "@yungsten/utils";
+import { supabase, helperFuncs, redis, env } from "@yungsten/utils";
 import { images } from "@yungsten/openai";
 import { ffmpegHelper, tikTokTts, files } from "@yungsten/prom";
 import { Result, Err, Ok } from "ts-results";
@@ -15,9 +15,7 @@ async function test(): Promise<void> {
   const TOP_POST_NUMBER = 3;
   const COMMENTS_TO_GET = 4;
   const render = new ffmpegHelper.FfmpegMachine();
-  console.log("ABOUT TO GET REDIS QUEUE!!!");
-  queues.getQueue("dany-test");
-  console.log("YES YES YES YES GOT THE QUE YES YES YES YES");
+  redis.getQueue(await redis.connectToRedisBullmq(env), "dany-test");
   const a = new Rat(rclient);
   const value = await a.getLatestFrom(SUBREDDIT_NAME, TOP_POST_NUMBER);
   if (value.ok) {
@@ -56,7 +54,7 @@ async function test(): Promise<void> {
         await a.getCommentTree(textPosting.id),
         COMMENTS_TO_GET
       );
-      comTree.forEach((com) => console.log(`  -> ${com.author}: ${com.text}`));
+      comTree.forEach((com: any) => console.log(`  -> ${com.author}: ${com.text}`));
       for (let i = 0; i < comTree.length; i++) {
         const comment = comTree[i];
         const uploadRes = await requestAndUploadTtsScriptMedia(

@@ -16,7 +16,7 @@
     "composite": false,
     "declaration": true,
     "declarationMap": true,
-    "incremental": true,
+    "incremental": false,
     "types": ["node"],
     "skipLibCheck": true,
     "strict": false,

@@ -4,7 +4,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../../utils/server_utils";
-import { getQueue } from "../../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 import { AuthConfig } from "../../utils/scan_config_template";
 
 const CheckYTAuthToken = z.object({
@@ -19,7 +19,7 @@ export const checkYTAuthToken: IntegratedFunction = createIntegratedFunction(
   `checkYTAuthToken`,
   CheckYTAuthToken,
   async (context, body) => {
-    const dispoDumpQueue = await getQueue<CheckYTAuthToken>(
+    const dispoDumpQueue = await redis.getQueue<CheckYTAuthToken>(
       context.mqConnection,
       "checkYTAuthToken"
     );

@@ -4,7 +4,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../../utils/server_utils";
-import { getQueue } from "../../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 import { ScanConfig, AuthConfig } from "../../utils/scan_config_template";
 
 const ScanCommunityPost = z.object({
@@ -22,7 +22,7 @@ export const scanCommunityPost: IntegratedFunction = createIntegratedFunction(
   `scanCommunityPost`,
   ScanCommunityPost,
   async (context, body) => {
-    const dispoDumpQueue = await getQueue<ScanCommunityPostType>(
+    const dispoDumpQueue = await redis.getQueue<ScanCommunityPostType>(
       context.mqConnection,
       "scanCommunityPost"
     );

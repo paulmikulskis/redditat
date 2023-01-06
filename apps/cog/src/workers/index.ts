@@ -6,20 +6,19 @@ import { scanRecentVideos } from "./youtube/scanRecentVideos";
 import { scanCommentList } from "./youtube/scanCommentList";
 import { checkYTAuthToken } from "./youtube/checkYTAuthToken";
 import { healthcheck } from "./system/healthcheck";
+import { tweetyHandleScrape } from "./datalines/tweetyHandle";
 import { Worker } from "bullmq";
 import { range } from "lodash";
 import { Logger } from "tslog";
 import { exit } from "process";
 import { config } from "dotenv";
-import { ValidatedEnv } from "@yungsten/utils";
+import { env } from "@yungsten/utils";
 import { z } from "zod";
-import { connectToRedisBullmq } from "../utils/redis";
+import { redis } from "@yungsten/utils";
 import { integratedFunctions } from "../server/utils/executeFunction";
 
-export const env = ValidatedEnv.parse(process.env);
-
 const workers = async function (commandLineArgs: string[]) {
-  const mqConnection = await connectToRedisBullmq(env);
+  const mqConnection = await redis.connectToRedisBullmq(env);
   const logger = new Logger();
   logger.info(`starting worker stack...`);
   config({ path: "base.env" });
@@ -33,6 +32,7 @@ const workers = async function (commandLineArgs: string[]) {
     scanCommentList,
     checkYTAuthToken,
     healthcheck,
+    tweetyHandleScrape,
   ];
 
   const workers = integratedWorkers.map((w) => {

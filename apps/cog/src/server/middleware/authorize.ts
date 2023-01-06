@@ -5,6 +5,21 @@ import { getFirestore } from "firebase-admin/firestore";
 import { env } from "@yungsten/utils";
 
 // eslint-disable-next-line unused-imports/no-unused-vars
+/**
+ * Middleware for authenticating requests to the Cog API using Firebase.
+ *
+ * This middleware checks the `Authorization` header of incoming requests for a valid authentication token. If no
+ * token is found, the request is denied with a 403 status code and an error message. If the token is in the form of a
+ * Basic HTTP auth header, the middleware decodes and splits the header into a user ID and password, and checks the
+ * Firebase database for a matching user record. If a match is found and the password is correct, the request is
+ * allowed to proceed. If the token is not a Basic HTTP auth header, it is checked against a list of authorized keys. If
+ * a match is found, the request is allowed to proceed.
+ *
+ * @param {app.App} firebaseAdmin - The Firebase admin app instance.
+ * @returns {(req: Request, res: Response, next: NextFunction)} An Express middleware function.
+ *
+ * @throws {Error} If there is an error while checking the database or decoding the auth header.
+ */
 const authToken = (firebaseAdmin: app.App) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {

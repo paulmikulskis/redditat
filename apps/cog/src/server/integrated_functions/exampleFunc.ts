@@ -4,7 +4,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../utils/server_utils";
-import { getQueue } from "../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 
 // Every IntegratedFunction (POSTs) will look for a specific structure in the HTTP body.
 // We define that structure with Zod.  If this IntegratedFunction is the interface for
@@ -25,7 +25,7 @@ export const exampleFunc: IntegratedFunction = createIntegratedFunction(
   async (context, body) => {
     // Actual functionality to perform if called upon
     // The context and body get auto-exposed, to provide connection and global vars
-    const dispoDumpQueue = await getQueue<StoreInfoDumpBodyType>(
+    const dispoDumpQueue = await redis.getQueue<StoreInfoDumpBodyType>(
       context.mqConnection,
       "exampleFunc"
     );

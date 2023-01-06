@@ -1,5 +1,5 @@
-import { getQueue, initCogCoreQueues } from "../../workers/utils/queues";
-import { Context } from "./context";
+import { QueueScheduler } from "bullmq";
+import { redis } from "@yungsten/utils";
 import schedule from "../../utils/schedule.json";
 import { isValidCron } from "cron-validator";
 import { integratedFunctions } from "./executeFunction";
@@ -10,11 +10,11 @@ import { Logger } from "tslog";
 
 const logger = new Logger();
 
-export const initialize = async (context: Context) => {
+export const initialize = async (context: redis.RedisConnectionContext) => {
   if (context.env.ENVIRONMENT !== "development") {
     console.log(`in development mode`);
   }
-  await initCogCoreQueues(context.env);
+  await initCogCoreQueues(context);
   const sch = Object.entries(schedule);
   for (let i = 0; i < sch.length; i++) {
     const entry = sch[i];
@@ -39,7 +39,10 @@ export const initialize = async (context: Context) => {
       continue;
     }
     type ReqBodyType = z.TypeOf<typeof fn.schema>;
-    const foundQueue = await getQueue<ReqBodyType>(context.mqConnection, fn.queueName);
+    const foundQueue = await redis.getQueue<ReqBodyType>(
+      context.mqConnection,
+      fn.queueName
+    );
     const jobIdPayload = {
       workflowName,
       user,
@@ -54,4 +57,18 @@ export const initialize = async (context: Context) => {
       `successfully scheduled workflow '${workflowName}', function '${functionName}', cron: '${cron}'`
     );
   }
+};
+
+export const initCogCoreQueues = async (
+  context: redis.RedisConnectionContext
+): Promise<QueueScheduler[]> => {
+  const schedulers: QueueScheduler[] = [];
+  for (let i = 0; i < integratedFunctions.length; i++) {
+    schedulers.push(
+      new QueueScheduler(integratedFunctions[i].queueName, {
+        connection: context.mqConnection,
+      })
+    );
+  }
+  return schedulers;
 };

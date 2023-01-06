@@ -1,12 +1,8 @@
-import { config } from "dotenv";
-import { ValidatedEnv } from "@yungsten/utils";
+import { env } from "@yungsten/utils";
 import { Logger } from "tslog";
+
 const logger = new Logger();
-
-config({ path: "base.env" });
-config({ path: ".env", override: true });
-
-export const env = ValidatedEnv.parse(process.env);
+export { env };
 
 if (env.ENVIRONMENT !== "development") {
   logger.debug(`environment is NOT "development", '${env.ENVIRONMENT}'`);

@@ -4,7 +4,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../../utils/server_utils";
-import { getQueue } from "../../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 
 export const HealthCheckBody = z.object({
   endpoint: z.string(),
@@ -17,7 +17,7 @@ export const healthcheck: IntegratedFunction = createIntegratedFunction(
   `pings an endpoint`,
   HealthCheckBody,
   async (context, body) => {
-    const healthcheckQueue = await getQueue<HealthCheckBodyType>(
+    const healthcheckQueue = await redis.getQueue<HealthCheckBodyType>(
       context.mqConnection,
       "healthcheck"
     );

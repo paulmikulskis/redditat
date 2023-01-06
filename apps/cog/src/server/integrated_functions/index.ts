@@ -8,6 +8,8 @@ import { scanCommentList } from "./youtube/scanCommentList";
 import { scanChosenVideos } from "./youtube/scanChosenVideos";
 import { checkYTAuthToken } from "./youtube/checkYTAuthToken";
 
+import { tweetyHandleScrape } from "./datalines/tweetyHandle";
+
 import { exampleFunc } from "./exampleFunc";
 
 export const allIntegratedFunctions = [
@@ -20,4 +22,5 @@ export const allIntegratedFunctions = [
   scanChosenVideos,
   checkYTAuthToken,
   exampleFunc,
+  tweetyHandleScrape,
 ];

@@ -1,11 +1,9 @@
 import express from "express";
 import { executeFunction, integratedFunctions } from "./utils/executeFunction";
-import { config } from "dotenv";
-import { getContext } from "./utils/context";
+import { getOperatingContext } from "./utils/context";
 import { initialize } from "./utils/initialize";
 import { Logger } from "tslog";
 import { getScheduleableFunctions, respondWith } from "./utils/server_utils";
-import { getQueue, QueueType } from "../workers/utils/queues";
 import { z } from "zod";
 import zodToJsonSchema from "zod-to-json-schema";
 import {
@@ -18,26 +16,21 @@ import {
 import { authToken } from "./middleware/authorize";
 import initializeFirebase from "./utils/firebase";
 import { Queue } from "bullmq";
-import { connectToRedis } from "../utils/redis";
+import { redis } from "@yungsten/utils";
 
 export const server = async function (commandLineArgs: string[]) {
   const logger = new Logger();
-
-  config({ path: "base.env" });
-  config({ path: ".env", override: true });
-
   const app = express();
-  //app.use(express.json())
+  // For the status screen at the root path '/'
   app.set("view engine", "ejs");
   app.use(express.json());
-  // app.use(express.static(path.join(__dirname, "public")))
-  // app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist/css")))
 
-  const context = await getContext(process.env);
+  const context = await getOperatingContext();
+  // Sets up all of the IntegratedFunctions and Queues for this Cog service
   await initialize(context);
 
   app.get("/", async (_, res) => {
-    const redisConnection = await connectToRedis(context.env, {});
+    const redisConnection = await redis.connectToRedis(context.env, {});
     const status = {
       host: context.env.API_HOST,
       numberOfIntegratedFunctions: getIntegratedFunctions().length,
@@ -52,11 +45,15 @@ export const server = async function (commandLineArgs: string[]) {
     res.render("pages/index", { status });
   });
 
-  //Initialize firebase and Auth middleware
-  // any routes below here will be secured with the auth middleware
+  // Initialize firebase and Auth middleware if in use.
+  // Any routes below here will be secured if configured, otherwise, they will be unrestricted
   const firebaseAdmin = initializeFirebase();
-  if (!firebaseAdmin) return;
-  app.use(authToken(firebaseAdmin));
+  if (firebaseAdmin) {
+    app.use(authToken(firebaseAdmin));
+    logger.info(`configured Firebase authentication strategy`);
+  } else {
+    logger.warn(`no authentication strategy configured, starting cog without security!`);
+  }
 
   app.post<{ parameter: string }>("/api/:parameter", async (req, res) => {
     const param = req.params.parameter;
@@ -83,7 +80,10 @@ export const server = async function (commandLineArgs: string[]) {
         logger.warn(msg);
         return res.send(msg);
       }
-      const queue = await getQueue(context.mqConnection, job["queueName"] || "default");
+      const queue = await redis.getQueue(
+        context.mqConnection,
+        job["queueName"] || "default"
+      );
       queue.removeRepeatableByKey(job["key"]);
       const workflow = {
         workflowName,
@@ -121,11 +121,11 @@ export const server = async function (commandLineArgs: string[]) {
   const getWorkflowSchedule = async (extendedDetails = false) => {
     const jobs = [];
     const funcs = getScheduleableFunctions();
-    const queues: Queue<QueueType<any>, unknown, string>[] = [];
+    const queues: Queue<redis.QueueType<any>, unknown, string>[] = [];
     for (let i = 0; i < funcs.length; i++) {
       const fn = funcs[i];
       type ReqBody = z.TypeOf<typeof fn.schema>;
-      queues.push(await getQueue<ReqBody>(context.mqConnection, fn.queueName));
+      queues.push(await redis.getQueue<ReqBody>(context.mqConnection, fn.queueName));
     }
     for (let i = 0; i < queues.length; i++) {
       const queue = queues[i];
@@ -183,7 +183,8 @@ export const server = async function (commandLineArgs: string[]) {
       };
     });
   };
+
   app.listen(context.env.API_PORT, () => {
-    logger.info(`cog-core-api listening on port ${context.env.API_PORT}`);
+    logger.info(`cog api listening on port ${context.env.API_PORT}`);
   });
 };

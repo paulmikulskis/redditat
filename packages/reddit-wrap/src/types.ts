@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface CommentDetails {
   author: string;
   authorKarma: number;
@@ -8,6 +10,13 @@ export interface CommentDetails {
 }
 
 // types
+
+export const YTwitterApiHandleScrapeArgs = z.object({
+  handle: z.string().min(1),
+  ntweets: z.number().default(1),
+  pages: z.number().default(1),
+  extended: z.boolean().default(true),
+});
 
 export interface TweetyTweet {
   author: TwitterUser;

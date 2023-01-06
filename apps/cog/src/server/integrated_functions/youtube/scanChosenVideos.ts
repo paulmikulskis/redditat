@@ -4,7 +4,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../../utils/server_utils";
-import { getQueue } from "../../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 import { ScanConfig, AuthConfig } from "../../utils/scan_config_template";
 
 const ScanChosenVideos = z.object({
@@ -21,7 +21,7 @@ export const scanChosenVideos: IntegratedFunction = createIntegratedFunction(
   `scanChosenVideos`,
   ScanChosenVideos,
   async (context, body) => {
-    const dispoDumpQueue = await getQueue<ScanChosenVideosType>(
+    const dispoDumpQueue = await redis.getQueue<ScanChosenVideosType>(
       context.mqConnection,
       "scanChosenVideos"
     );

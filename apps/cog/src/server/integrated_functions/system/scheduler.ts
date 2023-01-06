@@ -3,7 +3,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../../utils/server_utils";
-import { getQueue } from "../../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 import { SchedulerBody } from "../../../utils/bodies.model";
 import { z } from "zod";
 import { integratedFunctions } from "../../utils/executeFunction";
@@ -44,7 +44,10 @@ export const scheduler: IntegratedFunction = createIntegratedFunction(
       );
     }
     type ReqBodyType = z.TypeOf<typeof fn.schema>;
-    const foundQueue = await getQueue<ReqBodyType>(context.mqConnection, fn.queueName);
+    const foundQueue = await redis.getQueue<ReqBodyType>(
+      context.mqConnection,
+      fn.queueName
+    );
 
     await foundQueue.add(
       jobId(reqBody),

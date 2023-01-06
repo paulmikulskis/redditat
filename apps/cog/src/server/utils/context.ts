@@ -1,17 +1,9 @@
 import type IORedis from "ioredis";
-import { connectToRedisBullmq } from "../../utils/redis";
-import { ValidatedEnv } from "@yungsten/utils";
+import { redis as Yredis } from "@yungsten/utils";
+import { env } from "@yungsten/utils";
 
-export type Context = {
-  env: ValidatedEnv;
-  mqConnection: IORedis;
-};
-
-export const getContext = async (
-  rawEnv: Record<string, string | undefined>
-): Promise<Context> => {
-  const env = ValidatedEnv.parse(rawEnv);
-  const mqConnection = await connectToRedisBullmq(env);
+export const getOperatingContext = async (): Promise<Yredis.RedisConnectionContext> => {
+  const mqConnection = await Yredis.connectToRedisBullmq(env);
   return {
     env,
     mqConnection,

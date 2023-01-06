@@ -64,6 +64,8 @@ export const ValidatedEnv = z.object({
   TWITTER_API_KEY: z.string().default("--?--"),
   TWITTER_API_KEY_SECRET: z.string().default("--?--"),
   TWITTER_API_KEY_BEARER_TOKEN: z.string().default("--?--"),
+  FIREBASE_SERVICE_ACCT: z.string().default("--?--"),
+  FIREBASE_DB_URL: z.string().default("--?--"),
 });
 export type ValidatedEnv = z.TypeOf<typeof ValidatedEnv>;
 export const validatedEnv = ValidatedEnv.parse(process.env);

@@ -4,10 +4,9 @@ import { Worker } from "bullmq";
 import { range } from "lodash";
 import { integratedFunctions } from "../../server/utils/executeFunction";
 import { env } from "../utils/configure";
-import { connectToRedisBullmq } from "../../utils/redis";
+import { redis } from "@yungsten/utils";
 import { Logger } from "tslog";
 import { z } from "zod";
-import { getQueue, QueueTypeInput } from "./queues";
 
 export interface ExecutionCall {
   looped: boolean;
@@ -133,15 +132,15 @@ export const createIntegratedWorker = (
               return [e.name, e.value];
             })
         );
-        const enqueueJob = async (bod: QueueTypeInput) => {
+        const enqueueJob = async (bod: redis.QueueTypeInput) => {
           logger.debug(
             `parsed arguments for reqBody: ${JSON.stringify(assembledBodyStatic)}`
           );
           logger.debug(
             `connecting to redis to queue up this child call to ${nextCalledFunc.queueName}`
           );
-          const mqConnection = await connectToRedisBullmq(env);
-          const queue = await getQueue<z.TypeOf<typeof nextCalledFunc.schema>>(
+          const mqConnection = await redis.connectToRedisBullmq(env);
+          const queue = await redis.getQueue<z.TypeOf<typeof nextCalledFunc.schema>>(
             mqConnection,
             nextCalledFunc.queueName
           );

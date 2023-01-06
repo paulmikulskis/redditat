@@ -1,5 +1,5 @@
 import { IntegratedCalls, respondError } from "./server_utils";
-import { Context } from "./context";
+import { redis } from "@yungsten/utils";
 import { IntegratedFunction } from "./server_utils";
 import { Logger } from "tslog";
 import { allIntegratedFunctions } from "../integrated_functions/index";
@@ -11,7 +11,7 @@ export const integratedFunctions: (IntegratedFunction | IntegratedCalls)[] = [
 ];
 
 export const executeFunction = (
-  context: Context,
+  context: redis.RedisConnectionContext,
   functionName: string,
   rawBody: unknown
 ) => {

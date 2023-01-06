@@ -4,7 +4,7 @@ import {
   IntegratedFunction,
   respondWith,
 } from "../../utils/server_utils";
-import { getQueue } from "../../../workers/utils/queues";
+import { redis } from "@yungsten/utils";
 import { ScanConfig, AuthConfig } from "../../utils/scan_config_template";
 
 const ScanEntireChannelBody = z.object({
@@ -21,7 +21,7 @@ export const scanEntireChannel: IntegratedFunction = createIntegratedFunction(
   `scan entire channel`,
   ScanEntireChannelBody,
   async (context, body) => {
-    const dispoDumpQueue = await getQueue<ScanEntireChannelBodyType>(
+    const dispoDumpQueue = await redis.getQueue<ScanEntireChannelBodyType>(
       context.mqConnection,
       "scanEntireChannel"
     );
