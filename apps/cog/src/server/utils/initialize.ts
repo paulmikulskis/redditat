@@ -4,7 +4,7 @@ import schedule from "../../utils/schedule.json";
 import { isValidCron } from "cron-validator";
 import { integratedFunctions } from "./executeFunction";
 import { IntegratedFunction } from "./server_utils";
-import { jobId } from "../integrated_functions/scheduler";
+import { jobId } from "../integrated_functions/system/scheduler";
 import { z } from "zod";
 import { Logger } from "tslog";
 

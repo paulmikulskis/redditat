@@ -1,11 +1,11 @@
-import { exampleFunc } from "./youtube/example-func";
+import { exampleFunc } from "./system/example-func";
 import { scanEntireChannel } from "./youtube/scanEntireChannel";
 import { scanCommunityPost } from "./youtube/scanCommunityPost";
 import { scanChosenVideos } from "./youtube/scanChosenVideos";
 import { scanRecentVideos } from "./youtube/scanRecentVideos";
 import { scanCommentList } from "./youtube/scanCommentList";
 import { checkYTAuthToken } from "./youtube/checkYTAuthToken";
-import { healthcheck } from "./healthcheck";
+import { healthcheck } from "./system/healthcheck";
 import { Worker } from "bullmq";
 import { range } from "lodash";
 import { Logger } from "tslog";

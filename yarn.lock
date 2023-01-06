@@ -4955,11 +4955,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@yungsten/redditat-database@*, @yungsten/redditat-database@workspace:packages/database":
+"@yungsten/redditat-database@*, @yungsten/redditat-database@workspace:packages/redditat-database":
   version: 0.0.0-use.local
-  resolution: "@yungsten/redditat-database@workspace:packages/database"
+  resolution: "@yungsten/redditat-database@workspace:packages/redditat-database"
   dependencies:
     "@prisma/client": ^4.8.0
+    "@yungsten/reddit-wrap": "*"
     "@yungsten/utils": "*"
     date-fns: ^2.29.3
     prisma: ^4.4.0

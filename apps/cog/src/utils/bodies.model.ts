@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { z } from "zod";
-import { HealthCheckBody } from "../server/integrated_functions/healthcheck";
+import { HealthCheckBody } from "../server/integrated_functions/system/healthcheck";
 
 export const exampleFunctionBody = z.object({
   miles: z.number(),

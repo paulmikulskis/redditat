@@ -1,0 +1,318 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("SUPABASE_PSQL_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model RedditComment {
+  id                            String    @id() @unique()
+  approved                      Boolean
+  body_html                     String
+  body                          String
+  collapsed_reason              String
+  collapsed                     Boolean
+  controversiality              Int
+  depth                         Int
+  ignore_reports                Boolean
+  is_submitter                  Boolean
+  link_id                       String
+  parent_id                     String
+  removed                       Boolean
+  score_hidden                  Boolean
+  spam                          Boolean
+  approved_at_utc               Int
+  archived                      Boolean
+  author                        String
+  author_flair_background_color String
+  author_flair_css_class        String
+  author_flair_template_id      String
+  author_flair_text             String
+  author_flair_text_color       String
+  author_flair_type             String
+  author_fullname               String
+  author_patreon_flair          Boolean
+  banned_at_utc                 Int
+  can_gild                      Boolean
+  can_mod_post                  Boolean
+  distinguished                 String
+  downs                         Int
+  edited                        Float
+  gilded                        Int
+  likes                         Boolean
+  mod_note                      String
+  mod_reason_by                 String
+  mod_reason_title              String
+  mod_reports                   String[]
+  no_follow                     Boolean
+  num_reports                   Int
+  permalink                     String
+  replyIds                      String[]
+  report_reasons                String[]
+  subreddit                     Subreddit @relation(fields: [subredditUrl], references: [url])
+  subredditUrl                  String
+  subreddit_id                  String
+  subreddit_name_prefixed       String
+  subreddit_type                String
+  saved                         Boolean
+  score                         Int
+  send_replies                  Boolean
+  stickied                      Boolean
+  ups                           Int
+  user_reports                  String[]
+  commentId                     String?
+}
+
+model RedditUser {
+  id                        String   @id()
+  coins                     Int
+  comment_karma             Int
+  force_password_reset      Boolean
+  gold_creddits             Int
+  gold_expiration           DateTime
+  has_android_subscription  Boolean
+  has_external_account      Boolean
+  has_ios_subscription      Boolean
+  has_mail                  Boolean
+  has_mod_mail              Boolean
+  has_paypal_subscription   Boolean
+  has_stripe_subscription   Boolean
+  has_subscribed            Boolean
+  has_subscribed_to_premium Boolean
+  has_verified_mail         Boolean
+  has_visited_new_profile   Boolean
+  hide_from_robots          Boolean
+  icon_img                  String
+  in_beta                   Boolean
+  in_chat                   Boolean
+  in_redesign_beta          Boolean
+  inbox_count               Int
+  is_employee               Boolean
+  is_friend                 Boolean
+  is_gold                   Boolean
+  is_mod                    Boolean
+  is_sponsor                Boolean
+  is_suspended              Boolean
+  link_karma                Int
+}
+
+model Subreddit {
+  url                         String                        @id() @unique()
+  accounts_active_is_fuzzed   Boolean
+  accounts_active             Int
+  active_user_count           Int
+  advertiser_category         String
+  all_original_content        Boolean
+  allow_discovery             Boolean
+  allow_images                Boolean
+  allow_videogifs             Boolean
+  allow_videos                Boolean
+  banner_background_color     String
+  banner_background_image     String
+  banner_img                  String
+  banner_size                 Int[]
+  can_assign_link_flair       Boolean
+  can_assign_user_flair       Boolean
+  collapse_deleted_comments   Boolean
+  comment_score_hide_mins     Int
+  community_icon              String
+  created                     Int
+  created_utc                 Int
+  description                 String
+  description_html            String
+  display_name                String
+  display_name_prefixed       String
+  emojis_custom_size          Int[]
+  emojis_enabled              Boolean
+  has_menu_widget             Boolean
+  header_img                  String
+  header_size                 Int[]
+  header_title                String
+  hide_ads                    Boolean
+  id                          String
+  icon_img                    String
+  icon_size                   Int[]
+  is_enrolled_in_new_modmail  Boolean
+  key_color                   String
+  lang                        String
+  link_flair_enabled          Boolean
+  link_flair_position         String
+  name                        String
+  notification_level          String
+  over18                      Boolean
+  primary_color               String
+  public_description          String
+  public_description_html     String
+  public_traffic              Boolean
+  quarantine                  Boolean
+  show_media                  Boolean
+  show_media_preview          Boolean
+  spoilers_enabled            Boolean
+  submission_type             String
+  submit_link_label           String
+  submit_text                 String
+  submit_text_html            String
+  submit_text_label           String
+  subreddit_type              String
+  subscribers                 Int
+  suggested_comment_sort      String
+  title                       String
+  user_can_flair_in_sr        Boolean
+  user_flair_background_color String
+  user_flair_css_class        String
+  user_flair_enabled_in_sr    Boolean
+  user_flair_position         String
+  user_flair_template_id      String
+  user_flair_text             String
+  user_flair_text_color       String
+  user_has_favorited          Boolean
+  user_is_banned              Boolean
+  user_is_contributor         Boolean
+  user_is_moderator           Boolean
+  user_is_muted               Boolean
+  user_is_subscriber          Boolean
+  user_sr_flair_enabled       Boolean
+  user_sr_theme_enabled       Boolean
+  whitelist_status            String
+  wiki_enabled                Boolean
+  wls                         Int
+  Comment                     RedditComment[]
+  ContentGenerationTask       RedditContentGenerationTask[]
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  timestamp DateTime @default(now()) @map("timestamp") @db.Timestamp(6)
+  message   String
+  uuid      String   @default("defaultUser")
+  status    String
+
+  @@index([uuid])
+  @@map("audit_logs")
+}
+
+model RedditContentGenerationTask {
+  id              Int               @id @default(autoincrement())
+  status          RedditTaskStatus  @default(CREATED)
+  submissionId    String            @unique
+  subredditUrl    String
+  startTime       DateTime          @default(now())
+  endTime         DateTime?
+  resources       RedditResources[]
+  errorMessage    String?
+  errorStackTrace String?
+  subreddit       Subreddit?        @relation(fields: [subredditUrl], references: [url])
+  program         String
+  user            String            @default("defaultUser")
+}
+
+enum RedditTaskStatus {
+  IN_PROGRESS
+  SUCCESS
+  ERROR
+  CREATED
+}
+
+model RedditResources {
+  id                    Int                           @id @default(autoincrement())
+  videoUri              String?
+  script                String?
+  media                 RedditGenerationMedia[]
+  ContentGenerationTask RedditContentGenerationTask[]
+}
+
+model RedditGenerationMedia {
+  uri         Int               @id @default(autoincrement())
+  type        String            @default("bytes")
+  sizeBytes   Decimal           @default(-1)
+  Resources   RedditResources[]
+  resourcesId String?
+}
+
+model RedditVideo {
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now())
+  uri       String
+  metadata  RedditVideoMetadata[] @relation
+  videoId   String
+}
+
+model RedditVideoMetadata {
+  id           Int          @id @default(autoincrement())
+  duration     Int
+  title        String
+  description  String
+  publishedAt  DateTime
+  thumbnailUrl String
+  metadataId   String
+  Video        RedditVideo? @relation(fields: [videoId], references: [id])
+  videoId      Int?
+}
+
+model TweetyTweet {
+  id                    String        @id
+  author                TwitterUser   @relation(fields: [authorId], references: [id])
+  authorId              String
+  card                  Json?
+  comments              TweetyTweet[] @relation(name: "comments")
+  created_on            String
+  hashtags              String[]
+  quoted_tweet          Json?
+  is_possibly_sensitive Boolean
+  is_quoted             Boolean
+  is_reply              Boolean
+  is_retweet            Boolean
+  language              String
+  likes                 Int
+  media                 Json[]
+  place                 Json
+  quote_counts          Int
+  reply_counts          Int
+  reply_to              String?
+  retweet_counts        Int
+  source                String?
+  symbols               Json[]
+  text                  String
+  threads               Json[]
+  tweet_body            String?
+  urls                  Json[]
+  user_mentions         String[]
+  vibe                  String?
+  TweetyTweet           TweetyTweet?  @relation(name: "comments", fields: [tweetyTweetId], references: [id])
+  tweetyTweetId         String?
+}
+
+model TwitterUser {
+  id                        String        @id
+  created_on                String?
+  default_profile           Boolean?
+  default_profile_image     Boolean?
+  description               String
+  fast_followers_count      Int
+  favourites_count          Int?
+  followers_count           Int
+  friends_count             Int?
+  has_custom_timelines      Boolean?
+  is_translator             Boolean?
+  listed_count              Int?
+  location                  String?
+  media_count               Int?
+  name                      String
+  normal_followers_count    Int
+  possibly_sensitive        Boolean?
+  profile_banner_url        String?
+  profile_image_url_https   String?
+  profile_interstitial_type String?
+  profile_url               String?
+  protected                 Boolean?
+  rest_id                   String?
+  screen_name               String
+  statuses_count            Int?
+  translator_type           String?
+  username                  String
+  verified                  Boolean
+  verified_type             String?
+  TweetyTweet               TweetyTweet[]
+}
