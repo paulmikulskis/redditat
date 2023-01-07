@@ -110,45 +110,69 @@ export const server = async function (commandLineArgs: string[]) {
     // Retrieve the schedule of all Workflow in the system
     const workflowSchedule = await getWorkflowSchedule(serverContext, true);
     if (workflowSchedule.ok) {
-      // Retrieve the job associated with the specified workflow
-      const job = workflowSchedule.val[workflowName];
+      // Retrieve the Workflow definition associated with the specified Workflow name
+      const workflowDef = workflowSchedule.val[workflowName];
       logger.info(`received request to remove Workflow '${workflowName}'`);
       // Check if the specified workflow name was not found in the active Cog schedule
-      if (!job) {
+      if (!workflowDef) {
         const msg = `Workflow '${workflowName}' not found!`;
         logger.warn(msg);
         return res.send(respondWith(500, msg));
       }
-      // Check if the job does not have a queue name
-      if (!job["queueName"]) {
+      // Check if the workflowDef does not have a queue name
+      if (!workflowDef["queueName"]) {
         const msg = `no queueName found for Workflow ${workflowName}!`;
         logger.warn(msg);
         return res.send(respondWith(500, msg));
       }
-      // Retrieve the queue associated with the job
+      // Retrieve the queue associated with the workflowDef
       const queue = await redis.getQueue(
         serverContext.mqConnection,
-        job["queueName"] || "default"
+        workflowDef["queueName"] || "default"
       );
       try {
-        // Remove the job from the queue
-        await queue.removeRepeatableByKey(job["key"]);
+        // Remove the workflowDef from the queue
+        await queue.removeRepeatableByKey(workflowDef["key"]);
+      } catch (e) {
+        // error specifically on being unable to remove the workflow
+        const error = e as Error;
+        const msg = `unable to remove Workflow '${workflowName}', removeRepeatableByKey failed: ${error.message}`;
+        logger.error(msg);
+        return res.send(respondWith(500, msg));
+      }
+      // Username of the person who scheduled this Workflow is found positionally within the BullJS Job ID:
+      const userWhoScheduled = jobIdToUserName(workflowDef["key"]);
+      try {
+        let reqBody: unknown;
+        try {
+          reqBody = JSON.stringify(workflowDef["reqBody"]);
+        } catch (e) {
+          const msg =
+            `successfully removed workflow '${workflowName}' from the system with key ` +
+            `'${workflowDef["key"]}', but was not able to JSON serialize the reqBody`;
+          logger.error(msg);
+          reqBody = `[could not serialize reqBody for Workflow '${workflowName}'!]`;
+        }
         const workflow = {
           workflowName,
-          cron: job["cron"],
-          user: jobIdToUserName(job["key"]),
-          key: job["key"],
-          reqBody: job["reqBody"],
+          cron: workflowDef["cron"],
+          user: userWhoScheduled,
+          key: workflowDef["key"],
+          reqBody: reqBody,
         };
         return res.send(
           res.send(
-            respondWith(200, `successfully removed Workflow '${workflowName}'`, workflow)
+            respondWith(
+              200,
+              `successfully removed Workflow '${workflowName}' for user '${userWhoScheduled}'`,
+              workflow
+            )
           )
         );
       } catch (e) {
         // error specifically on being unable to remove the workflow
         const error = e as Error;
-        const msg = `unable to remove Workflow '${workflowName}', removeRepeatableByKey failed: ${error.message}`;
+        const msg = `was able to remove workflow '${workflowName}' for user '${userWhoScheduled}', but had trouble assembling the response: ${error.message}`;
         logger.error(msg);
         return res.send(respondWith(500, msg));
       }
