@@ -9,7 +9,9 @@ class AuditLogService {
   constructor(private db: PrismaClient) {}
 
   /* Create AuditLog from app interaction and insert into DB */
-  async logInteraction(logRecord: Omit<AuditLog, "id" | "timestamp">): Promise<Result<AuditLog, AuditLogDbError>> {
+  async logInteraction(
+    logRecord: Omit<AuditLog, "id" | "timestamp">
+  ): Promise<Result<AuditLog, AuditLogDbError>> {
     try {
       const record = await this.db.auditLog.create({
         data: logRecord,
