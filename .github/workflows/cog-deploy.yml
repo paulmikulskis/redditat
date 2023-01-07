@@ -1,4 +1,4 @@
-name: production deploy of cog
+name: 🚀 Cog production deploy
 on:
   workflow_dispatch:
   pull_request:
