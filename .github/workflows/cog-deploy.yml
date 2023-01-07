@@ -2,20 +2,17 @@ name: production deploy of cog
 on:
   workflow_dispatch:
   pull_request:
-    types: [labeled, unlabeled]
     branches:
       - main
+
 jobs:
   Deploy:
     name: Production Deploy of Cog
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && contains(github.event.label.name, 'deploy-cog')
     steps:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
-
-      - name: Ensure "deploy-cog" label is present
-        if: contains(github.event.pull_request.labels.*.name, 'deploy-cog')
-        run: echo "deploy-cog label is present, proceeding with deployment"
 
       - name: Run Prisma migrate
         run: yarn --cwd packages/redditat-database db:pushprod

@@ -1,8 +1,6 @@
 version: "3.4"
 
 volumes:
-  postgres_data:
-    driver: local
   redis_data:
     driver: local
   minio_data:

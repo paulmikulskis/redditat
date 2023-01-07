@@ -17,7 +17,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "release": "tsc --p packages/sdk/tsconfig.json && changeset publish",
-    "turboclean": "make turboclean && touch yarn.lock"
+    "turboclean": "make turboclean && touch yarn.lock",
+    "test": "echo 'testing not implemented yet'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
