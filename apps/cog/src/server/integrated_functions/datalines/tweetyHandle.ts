@@ -12,7 +12,7 @@ import { TweetyTweet } from "@yungsten/redditat-database";
 import { Logger } from "tslog";
 
 const logger = new Logger();
-export const functionName = "scrapeTweetyHandle";
+export const functionName = "tweetyHandleScrape";
 
 // exported because also use this type value in the Worker, just to KISS
 export type TweetyHandleScrapeType = z.TypeOf<typeof types.YTwitterApiHandleScrapeArgs>;

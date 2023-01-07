@@ -60,33 +60,77 @@ const workers = async function (commandLineArgs: string[]) {
   const startWorkers = (
     INTEGRATED_WORKERS: (() => ({ data }: any) => Promise<boolean>)[]
   ) => {
-    const workers = INTEGRATED_WORKERS.map((w) => {
-      // Find the corresponding integrated function for the worker
-      const calledFunc = integratedFunctions.find((f) => f.name === w.name);
-      logger.debug(`starting worker: '${w.name}'`);
-      // Create and return the Worker instances
-      return range(0, env.COG_WORKER_COUNT).map(() => {
-        return new Worker<z.TypeOf<typeof calledFunc.schema>>(calledFunc.queueName, w(), {
-          connection: mqConnection,
-          // The "concurrency" option specifies the maximum number of jobs that can be processed
-          // concurrently by each worker instance.
-          concurrency: env.COG_WORKER_CONCURRENCY,
-          // The "limiter" option specifies a rate limit for the worker instances.
-          // In this case, the worker instances are limited to a maximum of 10 jobs per second.
-          limiter: {
-            max: 10,
-            duration: 1000,
-          },
-        });
-      });
-    });
-    // Extract the names of the activated workers
-    const activatedWorkerNames = workers.map((w) => w[0] && w[0].name);
-    logger.debug(`registered ${workers.length} workers`);
-    logger.debug(
-      `worker names: ${activatedWorkerNames.toString().replace("[", "").replace("]", "")}`
-    );
-    return workers;
+    try {
+      // Array to store all the Workers we create and start
+      let workers: Worker<any, any, string>[][] = [];
+      // If there are any failure to start Workers, we should keep track of that:
+      const failedWorkerNames: string[] = [];
+      for (const wrkr of INTEGRATED_WORKERS) {
+        // Find the corresponding integrated function for the worker
+        const calledFunc = integratedFunctions.find((f) => f.name === wrkr.name);
+        if (!calledFunc) {
+          const msg =
+            `tried to start worker '${wrkr.name}', but could not find` +
+            `a corresponding IntegratedFunction with that name within Cog, skipping...`;
+          logger.warn(msg);
+          continue;
+        }
+        try {
+          // Create and return the Worker instances
+          const newIntegratedWorkers = range(0, env.COG_WORKER_COUNT).map(() => {
+            return new Worker<z.TypeOf<typeof calledFunc.schema>>(
+              calledFunc.queueName,
+              wrkr(),
+              {
+                connection: mqConnection,
+                // The "concurrency" option specifies the maximum number of jobs that can be processed
+                // concurrently by each worker instance.
+                concurrency: env.COG_WORKER_CONCURRENCY,
+                // The "limiter" option specifies a rate limit for the worker instances.
+                // In this case, the worker instances are limited to a maximum of 10 jobs per second.
+                limiter: {
+                  max: 10,
+                  duration: 1000,
+                },
+              }
+            );
+          });
+          workers.push(newIntegratedWorkers);
+        } catch (e) {
+          // Problem starting worker because of some Redis or BullJS problem likely
+          const error = e as Error;
+          const msg =
+            `unable to start worker '${wrkr.name}' on queue '${calledFunc.queueName}'` +
+            `from IntegratedFunction '${calledFunc.name}': ${error.message}`;
+          logger.error(msg);
+          failedWorkerNames.push(wrkr.name);
+        }
+      }
+      // Workers were specified to be run, but nothing succeeded starting up, at all
+      if (workers.length === 0 && INTEGRATED_WORKERS.length > 0) {
+        const msg = `there were ${INTEGRATED_WORKERS.length} workers specified, but unable to start any!  Exiting...`;
+        logger.error(msg);
+        exit(21);
+      }
+      // Extract the names of the activated workers
+      const activatedWorkerNames = workers.map((w) => w[0] && w[0].name);
+      logger.debug(`registered ${workers.length} workers`);
+      logger.debug(`worker names: ${activatedWorkerNames}`);
+      if (failedWorkerNames.length > 0) {
+        logger.warn(
+          `failed to start ${failedWorkerNames.length} workers: ${failedWorkerNames}`
+        );
+      }
+      return workers;
+    } catch (e) {
+      // Some unknown, wildin error
+      const error = e as Error;
+      const msg =
+        `unable to start workers, this error was thrown when trying to iterate over all workers.` +
+        `If you are seeing this, a successful connection to Redis has already been made.  Error: ${error.message}`;
+      logger.error(msg);
+      return msg;
+    }
   };
 
   // Check the first command-line argument (if present).
