@@ -4,12 +4,14 @@ on:
   pull_request:
     branches:
       - main
+    types:
+      - closed
 
 jobs:
   Deploy:
     name: Production Deploy of Cog
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && contains(github.event.label.name, 'deploy-cog')
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'deploy-cog')
     steps:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
