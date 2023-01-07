@@ -1,3 +1,30 @@
+/********************************************
+ *  /|      /|
+ * / |     / |
+ *  / |    /  |
+ * /  |   /   |
+ *  /  |  /    |
+ * /   | /     |
+ *  /   /     /
+ * /  /       /
+ *  / /      /
+ * / /     /
+ *  /     /
+ * /    /
+ *  /   /
+ * /  /
+ *  /
+ *
+ * COG - The Robust Workflow Management System
+ *
+ * This framework is a central platform for managing and scheduling
+ * asynchronous processes in your application.  It is built on top of BullJS,
+ * and allows for integration of custom functions and workflows that can be
+ * scheduled using cron syntax.  COG makes it easy to deploy reliable and
+ * scalable background jobs.
+ *
+ ********************************************/
+
 import { server } from "./server/index";
 import { workers } from "./workers/index";
 import { testing } from "./testing";
