@@ -12,6 +12,9 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
 
+      - name: Run Prisma migrate
+        run: yarn --cwd apps/redditat-database db:pushprod
+
       - name: Build and push to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
@@ -27,9 +30,6 @@ jobs:
           file: apps/cog/workers.Dockerfile
           push: true
           tags: registry.yungstentech.com/cog-workers:latest
-
-      - name: Run Prisma migrate
-        run: yarn db:pushprod
 
       - name: SSH into dedicated host docker run
         uses: appleboy/ssh-action@master
