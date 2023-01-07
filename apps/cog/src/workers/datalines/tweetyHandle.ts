@@ -6,9 +6,9 @@ import {
 import { Logger } from "tslog";
 import { ytwitter } from "@yungsten/reddit-wrap";
 import { TwitterContentDBDriver } from "@yungsten/redditat-database/dist/twitterContent";
-import { PrismaClient } from "@prisma/client";
 import { Ok, Err, Result } from "ts-results";
-import { TweetyTweet } from "@yungsten/redditat-database";
+import { types } from "@yungsten/reddit-wrap";
+import { TweetyTweet, PrismaClient } from "@prisma/client";
 
 const logger = new Logger();
 

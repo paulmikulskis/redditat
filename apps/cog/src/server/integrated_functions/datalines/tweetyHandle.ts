@@ -8,7 +8,6 @@ import { redis } from "@yungsten/utils";
 import { types } from "@yungsten/reddit-wrap";
 import { QueueEvents } from "bullmq";
 import { Ok, Err, Result } from "ts-results";
-import { TweetyTweet } from "@yungsten/redditat-database";
 import { Logger } from "tslog";
 
 const logger = new Logger();
@@ -59,7 +58,7 @@ export const tweetyHandleScrape: IntegratedFunction =
           connection: context.mqConnection,
         });
         const resp = (await job.waitUntilFinished(queueEvents)) as Result<
-          TweetyTweet[],
+          types.TweetyTweet[],
           string
         >;
         if (resp.ok) {
