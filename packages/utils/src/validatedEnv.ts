@@ -16,8 +16,8 @@ if (env["ENVIRONMENT"] !== "production") {
   // Overwrite environment variables from base.env with those from .env, except for the ones in skipOverride
   for (const key in process.env) {
     if (skipOverride.includes(key)) {
-      // Replace the current key in process.env with the value from baseEnv
-      process.env[key] = baseEnv[key];
+      // Replace the current key in process.env with the value from baseEnv (if present)
+      process.env[key] = baseEnv[key] ?? process.env[key];
     }
   }
 }

@@ -7,7 +7,7 @@
     "lint": "eslint --cache --cache-location node_modules/.cache/eslint .",
     "db:make": "yarn db:generate && yarn db:push",
     "db:generate": "prisma generate",
-    "db:push": "cp ../../base.env .env && prisma migrate deploy",
+    "db:push": "cp ../../local.env .env && prisma migrate deploy",
     "db:pushprod": "cp ../../.env .env && prisma migrate deploy",
     "build": "tsc --build",
     "typecheck": "tsc -b"
