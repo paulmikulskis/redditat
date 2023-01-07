@@ -14,6 +14,11 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "yarn"
+
       - name: Run Prisma migrate
         run: yarn --cwd packages/redditat-database db:pushprod
         env:
@@ -26,6 +31,8 @@ jobs:
           file: apps/cog/api.Dockerfile
           push: true
           tags: registry.yungstentech.com/cog-api:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push to registry.yungstentech.com
         uses: docker/build-push-action@v3
@@ -34,6 +41,8 @@ jobs:
           file: apps/cog/workers.Dockerfile
           push: true
           tags: registry.yungstentech.com/cog-workers:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: SSH into dedicated host docker run
         uses: appleboy/ssh-action@master
