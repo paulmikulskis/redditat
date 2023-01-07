@@ -33,7 +33,7 @@ jobs:
         uses: docker/setup-qemu-action@v2
 
       - name: 🐋 set up Docker buildx to allow layer caching
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: 🔁 restore GitHub runner cache at /tmp/.buildx-cache
 
@@ -45,7 +45,7 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: 🏗️ build and push cog-api to registry.yungstentech.com
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
