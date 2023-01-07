@@ -33,6 +33,7 @@ export const tweetyHandleScrape: IntegratedFunction =
         context.mqConnection,
         functionName
       );
+      console.log(`BODY: ${JSON.stringify(body, null, 2)}`);
       const { handle, ntweets, pages, extended, response } = body;
       const cleanedHandle = handle[0] === "@" ? handle.slice(1) : handle;
       const job = await tweetyHandleScrapeQueue.add(
@@ -42,7 +43,11 @@ export const tweetyHandleScrape: IntegratedFunction =
           calls: null,
         }
       );
-      const jobMsg = `job ${job.id} to scrape ${ntweets} tweets from ${pages} pages  for twitter user '@${cleanedHandle}'`;
+      const jobMsg = `job ${
+        job.id
+      } to scrape ${ntweets} tweets from ${pages} pages for twitter user '@${cleanedHandle}'${
+        response ? ", waited for response " : ""
+      }`;
       const successMsg = `successfully ran ${jobMsg}`;
       const errorMsg = `failed to run ${jobMsg}`;
       if (!response) {
