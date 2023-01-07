@@ -13,10 +13,10 @@ const initializeFirebase = () => {
       credential: firebaseAdmin.credential.cert(JSON.parse(env.FIREBASE_SERVICE_ACCT)),
       databaseURL: env.FIREBASE_DB_URL,
     });
-    logger.info("Successfully initialized firebase");
+    logger.info("successfully initialized firebase");
     return f;
   } catch (e) {
-    logger.error("Unable to initialize firebase admin " + e);
+    logger.error("unable to initialize firebase admin: " + e);
     return undefined;
   }
 };
