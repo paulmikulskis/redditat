@@ -15,29 +15,36 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
+
       - name: set up node 16 with yarn
         uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: "yarn"
+
       - name: Run Prisma migrate
         run: yarn --cwd packages/redditat-database db:pushprod
         env:
           SUPABASE_PSQL_URI: ${{ secrets.SUPABASE_PSQL_URI }}
+
       - # Add support for more platforms with QEMU (optional)
         # https://github.com/docker/setup-qemu-action
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-      - name: set up Docker buildx to allow layer caching
+
+      - name: 🐋 set up Docker buildx to allow layer caching
         uses: docker/setup-buildx-action@v2
-      - name: restore GitHub runner cache at /tmp/.buildx-cache
+
+      - name: 🔁 restore GitHub runner cache at /tmp/.buildx-cache
+
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      - name: build and push cog-api to registry.yungstentech.com
+
+      - name: 🏗️ build and push cog-api to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -46,7 +53,8 @@ jobs:
           tags: registry.yungstentech.com/cog-api:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      - name: build and push cog-workers to registry.yungstentech.com
+
+      - name: 🏗️ build and push cog-workers to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -59,7 +67,7 @@ jobs:
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
-      - name: move the newly cached image layers to the /tmp/buildx-cache directory
+      - name: 🧹 move the newly cached image layers to the /tmp/buildx-cache directory
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
