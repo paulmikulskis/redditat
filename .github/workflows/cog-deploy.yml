@@ -34,6 +34,8 @@ jobs:
 
       - name: 🐋 set up Docker buildx to allow layer caching
         uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker
 
       - name: 🏗️ build and push cog-api to registry.yungstentech.com
         uses: docker/build-push-action@v3
