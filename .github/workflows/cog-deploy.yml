@@ -28,6 +28,9 @@ jobs:
           push: true
           tags: registry.yungstentech.com/cog-workers:latest
 
+      - name: Run Prisma migrate
+        run: yarn db:pushprod
+
       - name: SSH into dedicated host docker run
         uses: appleboy/ssh-action@master
         env:

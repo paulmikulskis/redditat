@@ -2,5 +2,8 @@
   "deno.enable": true,
   "deno.unstable": true,
   "django.snippets.exclude": ["cms", "wagtail"],
-  "python.defaultInterpreterPath": "/Users/paulmikulskis/Development/redditat/venv/bin/python3.10"
+  "python.defaultInterpreterPath": "/Users/paulmikulskis/Development/redditat/venv/bin/python3.10",
+  "yaml.schemas": {
+    "https://json.schemastore.org/yamllint.json": "file:///Users/paulmikulskis/Development/redditat/.github/workflows/deploy.yml"
+  }
 }
