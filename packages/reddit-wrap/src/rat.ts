@@ -23,9 +23,7 @@ export const rclient = new snoowrap({
 
 /**
  * The `Rat` class is a utility class for interacting with the Reddit API using the snoowrap library.
- *
- * @remarks
- * This class provides methods for fetching Reddit submissions and storing them as media files.
+ * The class provides methods for fetching Reddit submissions and storing them as media files.
  *
  * @example
  * ```
@@ -73,13 +71,13 @@ export class Rat {
   }
 
   /**
-   * Fetches the latest "top" submission from the given subreddit for the day and returns the submission details.
+   * Fetches the latest "top" submission summary from the given subreddit for the day and returns the submission details.
    * If the submission is a text post, returns the body and title. If the submission is an image,
    * returns the body, title, and a link to the image.
    *
    * @param {string} subreddit - The subreddit to fetch the latest submission from.
    * @param {string} topAmount - The amount of top daily posts to download from the given subreddit, defaults to 1
-   * @returns {Promise<Result<{ body: string, title: string, link?: string } | undefined, Error>>} A promise that resolves to a `Result` object containing the submission details or an error if the request fails.
+   * @returns {Promise<Result<{ id: string, body: string, title: string, submission: Submission, link?: string } | undefined, Error>>} A promise that resolves to a `Result` object containing the submission details or an error if the request fails.
    */
   async getLatestFrom(
     subreddit: string,
