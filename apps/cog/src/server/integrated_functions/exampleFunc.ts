@@ -1,9 +1,6 @@
 import { z } from "zod";
-import {
-  createIntegratedFunction,
-  IntegratedFunction,
-  respondWith,
-} from "../utils/server_utils";
+import { createIntegratedFunction, respondWith } from "../utils/server_utils";
+import { IntegratedFunction } from "../utils/types";
 import { redis } from "@yungsten/utils";
 
 // Every IntegratedFunction (POSTs) will look for a specific structure in the HTTP body.

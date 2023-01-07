@@ -1,10 +1,7 @@
 import { z } from "zod";
-import {
-  createIntegratedFunction,
-  IntegratedFunction,
-  respondWith,
-} from "../../utils/server_utils";
+import { createIntegratedFunction, respondWith } from "../../utils/server_utils";
 import { redis } from "@yungsten/utils";
+import { IntegratedFunction } from "../../utils/types";
 import { ScanConfig, AuthConfig } from "../../utils/scan_config_template";
 
 const ScanCommentList = z.object({

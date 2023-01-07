@@ -1,7 +1,7 @@
 import express from "express";
 import { executeFunction, integratedFunctions } from "./utils/executeFunction";
 import { getOperatingContext } from "./utils/context";
-import { initialize } from "./utils/initialize";
+import { initializeCogApiBootstrap } from "./utils/initialize";
 import { Logger } from "tslog";
 import { respondWith } from "./utils/server_utils";
 import zodToJsonSchema from "zod-to-json-schema";
@@ -35,7 +35,7 @@ export const server = async function (commandLineArgs: string[]) {
 
   const serverContext = await getOperatingContext();
   // Sets up all of the IntegratedFunctions and Queues for this Cog service
-  await initialize(serverContext);
+  await initializeCogApiBootstrap(serverContext);
 
   /**
    * Homepage.  Shows basic information about Cog and its operating status using EJS to render elementary HTML
@@ -88,76 +88,81 @@ export const server = async function (commandLineArgs: string[]) {
    * Removes a scheduled workflow from the system.
    *
    * This route accepts a request with a `workflowName` parameter in the URL path. It retrieves the
-   * schedule for all workflows, searches for the workflow with the specified name, and removes it
+   * schedule for all Workflow, searches for the workflow with the specified name, and removes it
    * from the schedule if found. The removed workflow is returned in the response.
    *
    * @returns a response with the removed workflow and a status message
    */
-  app.get<{ workflowName: string }>(
-    "/api/remove-workflow/:workflowName",
-    async (req, res) => {
-      const workflowName = req.params.workflowName;
-      // Retrieve the schedule of all workflows in the system
-      const workflowSchedule = await getWorkflowSchedule(serverContext, true);
-      if (workflowSchedule.ok) {
-        // Retrieve the job associated with the specified workflow
-        const job = workflowSchedule[workflowName];
-        logger.info(`received request to remove workflow '${workflowName}'`);
-        // Check if the specified workflow name was not found in the active Cog schedule
-        if (!job) {
-          const msg = `workflow '${workflowName}' not found!`;
-          logger.warn(msg);
-          res.send(respondWith(500, msg));
-        }
-        // Check if the job does not have a queue name
-        if (!job["queueName"]) {
-          const msg = `no queueName found for workflow ${workflowName}!`;
-          logger.warn(msg);
-          res.send(respondWith(500, msg));
-        }
-        // Retrieve the queue associated with the job
-        const queue = await redis.getQueue(
-          serverContext.mqConnection,
-          job["queueName"] || "default"
-        );
-        try {
-          // Remove the job from the queue
-          queue.removeRepeatableByKey(job["key"]);
-          const workflow = {
-            workflowName,
-            cron: job["cron"],
-            user: jobIdToUserName(job["key"]),
-            key: job["key"],
-            reqBody: job["reqBody"],
-          };
-          return res.send(
-            res.send(
-              respondWith(
-                200,
-                `successfully removed workflow '${workflowName}'`,
-                workflow
-              )
-            )
-          );
-        } catch (e) {
-          // error specifically on being unable to remove the workflow
-          const error = e as Error;
-          const msg = `unable to remove workflow '${workflowName}', removeRepeatableByKey failed: ${error.message}`;
-          logger.error(msg);
-          res.send(respondWith(500, msg));
-        }
-      } else {
-        // general error catch statement
-        const msg = `unable to get system workflow schedule: ${workflowSchedule.val}`;
-        logger.error(msg);
-        res.send(respondWith(500, msg));
+  app.all<{ workflowName: string }>("/api/remove-workflow", async (req, res) => {
+    const workflowName = req.query.workflowName ?? req.body.workflowName;
+    if (typeof workflowName !== "string") {
+      if (workflowName === undefined || workflowName === null) {
+        const msg =
+          `received '${workflowName}' as the argument to 'workflowName', please specify the 'workflowName'` +
+          `argument either as a URL parameter or within a JSON body to this request`;
+        logger.warn(msg);
+        return res.send(respondWith(400, msg));
       }
+      const msg = `received a bad request to remove a workflow where the workflow was not of type string`;
+      logger.warn(msg);
+      return res.send(respondWith(400, msg));
     }
-  );
+    // Retrieve the schedule of all Workflow in the system
+    const workflowSchedule = await getWorkflowSchedule(serverContext, true);
+    if (workflowSchedule.ok) {
+      // Retrieve the job associated with the specified workflow
+      const job = workflowSchedule.val[workflowName];
+      logger.info(`received request to remove Workflow '${workflowName}'`);
+      // Check if the specified workflow name was not found in the active Cog schedule
+      if (!job) {
+        const msg = `Workflow '${workflowName}' not found!`;
+        logger.warn(msg);
+        return res.send(respondWith(500, msg));
+      }
+      // Check if the job does not have a queue name
+      if (!job["queueName"]) {
+        const msg = `no queueName found for Workflow ${workflowName}!`;
+        logger.warn(msg);
+        return res.send(respondWith(500, msg));
+      }
+      // Retrieve the queue associated with the job
+      const queue = await redis.getQueue(
+        serverContext.mqConnection,
+        job["queueName"] || "default"
+      );
+      try {
+        // Remove the job from the queue
+        await queue.removeRepeatableByKey(job["key"]);
+        const workflow = {
+          workflowName,
+          cron: job["cron"],
+          user: jobIdToUserName(job["key"]),
+          key: job["key"],
+          reqBody: job["reqBody"],
+        };
+        return res.send(
+          res.send(
+            respondWith(200, `successfully removed Workflow '${workflowName}'`, workflow)
+          )
+        );
+      } catch (e) {
+        // error specifically on being unable to remove the workflow
+        const error = e as Error;
+        const msg = `unable to remove Workflow '${workflowName}', removeRepeatableByKey failed: ${error.message}`;
+        logger.error(msg);
+        return res.send(respondWith(500, msg));
+      }
+    } else {
+      // general error catch statement
+      const msg = `unable to get system Workflow schedule: ${workflowSchedule.val}`;
+      logger.error(msg);
+      return res.send(respondWith(500, msg));
+    }
+  });
 
   /**
    * GET request handler for the `/api/scheduled-workflows` route.
-   * This route retrieves all of the scheduled workflows in the Cog system.
+   * This route retrieves all of the scheduled Workflow in the Cog system.
    * If the `extendedDetails` query parameter is provided, this route will also return
    * detailed information about each workflow (e.g. function name, cron schedule, request body, etc.).
    */
@@ -219,7 +224,7 @@ export const server = async function (commandLineArgs: string[]) {
     });
   };
 
-  app.listen(serverContext.env.API_PORT, () => {
+  app.listen(serverContext.env.API_PORT, "0.0.0.0", () => {
     logger.info(`cog api listening on port ${serverContext.env.API_PORT}`);
   });
 };

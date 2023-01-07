@@ -1,6 +1,6 @@
-import { IntegratedCalls, respondError } from "./server_utils";
+import { respondError } from "./server_utils";
 import { redis } from "@yungsten/utils";
-import { IntegratedFunction } from "./server_utils";
+import { IntegratedFunction, IntegratedCalls } from "./types";
 import { Logger } from "tslog";
 import { allIntegratedFunctions } from "../integrated_functions/index";
 

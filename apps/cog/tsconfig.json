@@ -20,6 +20,6 @@
     "strict": false,
     "noEmit": false
   },
-  "include": ["src", "src/utils/schedule.json"],
+  "include": ["src", "views", "src/utils/schedule.json"],
   "exclude": ["dist"]
 }

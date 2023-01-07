@@ -16,7 +16,7 @@ const initializeFirebase = () => {
     logger.info("successfully initialized firebase");
     return f;
   } catch (e) {
-    logger.error("unable to initialize firebase admin: " + e);
+    logger.warn("unable to initialize firebase admin: " + e);
     return undefined;
   }
 };

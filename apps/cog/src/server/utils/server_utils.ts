@@ -1,6 +1,6 @@
 import { boolean, z } from "zod";
 import { redis } from "@yungsten/utils";
-import { ApiError, ApiResponse } from "./models";
+import { ApiError, ApiResponse, IntegratedFunction, IntegratedCalls } from "./types";
 import { Logger } from "tslog";
 import { integratedFunctions } from "./executeFunction";
 
@@ -106,25 +106,4 @@ export const respondError = (code: number, message: string): ApiResponse => {
 
 export const respondWithError = (error: ApiError) => {
   return respondWith(error.code, error.message ?? "", error.data);
-};
-
-export type IntegratedCalls = {
-  name: string;
-  description: string;
-  schema: z.Schema;
-  fn: (context: redis.RedisConnectionContext, body: unknown) => Promise<ApiResponse>;
-  queueName: string;
-  scheduleable?: boolean;
-  calls?: Record<string, IntegratedCalls>;
-  callArgs?: boolean;
-};
-
-export type IntegratedFunction = {
-  name: string;
-  description: string;
-  schema: z.Schema;
-  fn: (context: redis.RedisConnectionContext, body: unknown) => Promise<ApiResponse>;
-  queueName: string;
-  scheduleable?: boolean;
-  calls?: Record<string, IntegratedCalls>;
 };

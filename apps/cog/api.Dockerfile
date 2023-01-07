@@ -30,6 +30,7 @@ RUN turbo db:generate
 RUN turbo run build --filter=@yungsten/cog
 
 FROM builder as runner
+EXPOSE 3000
 EXPOSE 15000
 COPY *.env .
 CMD ["yarn", "--cwd", "apps/cog", "start:api"]
