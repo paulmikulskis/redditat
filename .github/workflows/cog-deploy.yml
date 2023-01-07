@@ -15,20 +15,24 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
-
-      - uses: actions/setup-node@v3
+      - name: set up node 16 with yarn
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: "yarn"
-
       - name: Run Prisma migrate
         run: yarn --cwd packages/redditat-database db:pushprod
         env:
           SUPABASE_PSQL_URI: ${{ secrets.SUPABASE_PSQL_URI }}
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
       - name: Build and push to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
@@ -38,7 +42,6 @@ jobs:
           tags: registry.yungstentech.com/cog-api:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
       - name: Build and push to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
