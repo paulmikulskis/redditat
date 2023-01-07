@@ -4,7 +4,6 @@ import { Media, TaskStatus } from "./types";
 import { subHours } from "date-fns";
 import { types } from "@yungsten/reddit-wrap";
 import { ytwitter } from "@yungsten/reddit-wrap";
-import { TweetyTweet as TweetyTweetApiType } from "@yungsten/reddit-wrap/src/types";
 
 export class TwitterContentDBDriver {
   private twitterApi;
@@ -14,7 +13,7 @@ export class TwitterContentDBDriver {
   }
 
   async insertTweetTree(
-    tweets: TweetyTweetApiType[]
+    tweets: types.TweetyTweet[]
   ): Promise<Result<TweetyTweet[], string>> {
     let insertedTweets: TweetyTweet[] = [];
     for (const tweet of tweets) {
