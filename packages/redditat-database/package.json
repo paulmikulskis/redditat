@@ -8,7 +8,7 @@
     "db:make": "yarn db:generate && yarn db:push",
     "db:generate": "prisma generate",
     "db:push": "cp ../../local.env .env && npx prisma migrate deploy",
-    "db:pushprod": "cp ../../.env .env && npx prisma migrate deploy",
+    "db:pushprod": "npx prisma migrate deploy",
     "build": "tsc --build",
     "typecheck": "tsc -b"
   },
