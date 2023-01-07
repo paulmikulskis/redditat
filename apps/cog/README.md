@@ -38,6 +38,7 @@ The pieces of this service consist of:
 | `make cog-up`    | starts the API, Redis, and all workers locally, tails logs     |
 | `make cog-down`  | stops all locally-running services                             |
 | `make cog-clean` | cleans up docker-compose volumes, do this to clear BullMQ jobs |
+| `make cog-help`  | show more commands to work with the Cog stack locally          |
 
 > ❗ ensure to run `cog-down` once finished, if you `Ctrl`+`c` out, everything will _still be running!_
 
