@@ -1,4 +1,5 @@
 .PHONY: all
+.SILENT: cog-help cog-clean
 
 all:  cog
 
@@ -20,6 +21,7 @@ cog-help:
 	echo "  • \033[0;33m make cog-workers-prod \033[0m - builds and starts the transpiled Workers app with ENVIRONMENT=production" && \
 	echo "  • \033[0;33m make cog-down \033[0m - if there is a docker compose stack for Cog running, bring it down" && \
 	echo "  • \033[0;33m make cog-clean \033[0m - bring down docker compose stack for Cog, and delete all its volumes"
+
 cog:
 	docker compose -f apps/cog/docker-compose-dev.yml --env-file .env up -d --force-recreate
 
