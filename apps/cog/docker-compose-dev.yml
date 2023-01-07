@@ -1,0 +1,80 @@
+version: "3.4"
+# development stack for the Cog framework
+
+# these volumes will help the redis and minio data persist on your local system, meaning
+# that Cog will still have all its queued "stuff" still in memory.
+# if you want to delete that "stuff", you need to delete the docker volume under the names you see below:
+volumes:
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+services:
+  api:
+    # expect to have the local cog-api docker image on your machine for development
+    # if you are getting an error trying to find the container, try running from monorepo root:
+    #   docker build -f apps/cog/api.Dockerfile -t cog-workers:latest .
+    image: cog-api:latest
+    # start:api for the api, start:workers for the workers
+    command: ["yarn", "--cwd", "apps/cog", "start:api"]
+    # TODO change this to something sensible
+    user: root
+    # lots of ExpressJS things use port 3000, so we map to 15000
+    ports:
+      - "15000:3000"
+    expose:
+      - 15000
+    # the api and workers both depend on redis to be up and running or they will error
+    depends_on:
+      - redis
+    links:
+      - redis
+    # assuming running in the context of the redditat monorepo, the .env file is two dirs up at the root
+    env_file:
+      - ../../.env
+    environment:
+      - ENVIRONMENT=development
+  workers:
+    # like with api, expect to have the local cog-api docker image on your machine for development
+    image: cog-workers:latest
+    command: ["yarn", "--cwd", "apps/cog", "start:workers"]
+    user: root
+    depends_on:
+      - redis
+    links:
+      - redis
+    env_file:
+      - ../../.env
+    environment:
+      - ENVIRONMENT=development
+  redis:
+    image: redis:6.2.3-alpine
+    hostname: redis
+    command: ["redis-server", "--appendonly", "yes", "--port", "6380"]
+    env_file:
+      - ../../.env
+    expose:
+      - 6380
+    ports:
+      - "6380:6380"
+    volumes:
+      - redis_data:/data
+  # minio is virtually weightless to boot up and is here to act as an S3 driver in case we need it
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server --console-address ":9001" /minio_data
+    env_file:
+      - ../../.env
+    hostname: minio
+    # common healthcheck settings found online
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:12000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    # lots of MinIO use out there, similar to the Express app we are using different common ports
+    ports:
+      - 12000:9000
+      - 12001:9001
+    volumes:
+      - minio_data:/minio_data
