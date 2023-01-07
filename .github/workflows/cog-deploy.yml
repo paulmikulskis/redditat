@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2.3.4
 
       - name: Run Prisma migrate
-        run: yarn --cwd apps/redditat-database db:pushprod
+        run: yarn --cwd packages/redditat-database db:pushprod
 
       - name: Build and push to registry.yungstentech.com
         uses: docker/build-push-action@v3
