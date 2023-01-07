@@ -46,3 +46,5 @@ cog-down:
 cog-clean:
 	echo "\033[0;31m warning \033[0m, cleaning out \033[0;31m all Cog working memory \033[0m including jobs and Redis!" && \
 	docker compose -f apps/cog/docker-compose-dev.yml down -v && docker compose -f apps/cog/docker-compose.yml down -v 
+
+# colors in bash: https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
