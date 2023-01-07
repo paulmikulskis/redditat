@@ -24,16 +24,20 @@ jobs:
         run: yarn --cwd packages/redditat-database db:pushprod
         env:
           SUPABASE_PSQL_URI: ${{ secrets.SUPABASE_PSQL_URI }}
-      - name: Set up Docker Buildx
+      - # Add support for more platforms with QEMU (optional)
+        # https://github.com/docker/setup-qemu-action
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: set up Docker buildx to allow layer caching
         uses: docker/setup-buildx-action@v2
-      - name: Cache Docker layers
+      - name: restore GitHub runner cache at /tmp/.buildx-cache
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      - name: Build and push to registry.yungstentech.com
+      - name: build and push cog-api to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -42,7 +46,7 @@ jobs:
           tags: registry.yungstentech.com/cog-api:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-      - name: Build and push to registry.yungstentech.com
+      - name: build and push cog-workers to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -55,12 +59,12 @@ jobs:
       # Temp fix
       # https://github.com/docker/build-push-action/issues/252
       # https://github.com/moby/buildkit/issues/1896
-      - name: Move cache
+      - name: move the newly cached image layers to the /tmp/buildx-cache directory
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-      - name: SSH into dedicated host docker run
+      - name: 🚀 SSH into the dedicated host and bring up the docker compose stack
         uses: appleboy/ssh-action@master
         env:
           DOT_ENV_FILE: ${{ secrets.DOT_ENV_FILE }}
