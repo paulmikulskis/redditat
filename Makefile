@@ -14,6 +14,7 @@ turboclean:
 cog-help:
 	echo "commands for working with the Cog application:" && \
 	echo "  • \033[0;33m make cog \033[0m - brings up the local docker compose stack for Cog Workers, API, and Redis" && \
+	echo "  • \033[0;33m make cog \033[0m - brings up the production docker compose stack for Cog Workers, API, and Redis" && \
 	echo "  • \033[0;33m make cog-logs \033[0m - streams logs from the local Cog docker compose stack" && \
 	echo "  • \033[0;33m make cog-api \033[0m - just-in-time compiles the local typescript code to run the API process using ts-node" && \
 	echo "  • \033[0;33m make cog-workers \033[0m - just-in-time compiles the local typescript code to run the Workers process using ts-node" && \
@@ -24,6 +25,9 @@ cog-help:
 
 cog:
 	docker compose -f apps/cog/docker-compose-dev.yml --env-file .env up -d --force-recreate
+
+cog-prod:
+	docker compose -f apps/cog/docker-compose.yml --env-file .env up -d --force-recreate
 
 cog-logs:
 	docker compose -f apps/cog/docker-compose-dev.yml logs -f

@@ -6,7 +6,7 @@ on:
       - master
 jobs:
   Deploy:
-    name: Production Deploy
+    name: Production Deploy of Cog
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
