@@ -15,7 +15,6 @@ async function test(): Promise<void> {
   const TOP_POST_NUMBER = 3;
   const COMMENTS_TO_GET = 4;
   const render = new ffmpegHelper.FfmpegMachine();
-  redis.getQueue(await redis.connectToRedisBullmq(env), "dany-test");
   const a = new Rat(rclient);
   const value = await a.getLatestFrom(SUBREDDIT_NAME, TOP_POST_NUMBER);
   if (value.ok) {
