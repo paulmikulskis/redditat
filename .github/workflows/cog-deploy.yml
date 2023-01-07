@@ -33,21 +33,29 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: apps/cog/api.Dockerfile
           push: true
+          file: apps/cog/api.Dockerfile
           tags: registry.yungstentech.com/cog-api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
       - name: Build and push to registry.yungstentech.com
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: apps/cog/workers.Dockerfile
           push: true
+          file: apps/cog/workers.Dockerfile
           tags: registry.yungstentech.com/cog-workers:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+      # Temp fix
+      # https://github.com/docker/build-push-action/issues/252
+      # https://github.com/moby/buildkit/issues/1896
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
       - name: SSH into dedicated host docker run
         uses: appleboy/ssh-action@master
