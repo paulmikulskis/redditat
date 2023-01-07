@@ -6,6 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc -b",
+    "dev:api": "ENVIRONMENT=development ts-node src/index.ts api",
+    "dev:workers": "ENVIRONMENT=development ts-node src/index.ts workers",
     "start:api": "ENVIRONMENT=production node ./dist/index.js api",
     "start:workers": "ENVIRONMENT=production node ./dist/index.js workers",
     "dev": "ENVIRONMENT=development node ./dist/index.js",
