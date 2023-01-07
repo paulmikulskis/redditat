@@ -16,6 +16,7 @@ export const YTwitterApiHandleScrapeArgs = z.object({
   ntweets: z.number().default(1),
   pages: z.number().default(1),
   extended: z.boolean().default(true),
+  response: z.boolean().default(false),
 });
 
 export interface TweetyTweet {

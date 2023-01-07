@@ -188,6 +188,7 @@ export const createIntegratedWorker = (
         }
       }
     }
+    return result;
   };
   return func;
 };

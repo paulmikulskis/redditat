@@ -9,6 +9,7 @@ import { Logger } from "tslog";
 
 const logger = new Logger();
 export const functionName = "tweetyHandleScrape";
+const AWAIT_RETURN_TTL_MS = 15000;
 
 // exported because also use this type value in the Worker, just to KISS
 export type TweetyHandleScrapeType = z.TypeOf<typeof types.YTwitterApiHandleScrapeArgs>;
@@ -46,7 +47,7 @@ export const tweetyHandleScrape: IntegratedFunction =
       const jobMsg = `job ${
         job.id
       } to scrape ${ntweets} tweets from ${pages} pages for twitter user '@${cleanedHandle}'${
-        response ? ", waited for response " : ""
+        response ? ", awaited response" : ""
       }`;
       const successMsg = `successfully ran ${jobMsg}`;
       const errorMsg = `failed to run ${jobMsg}`;
@@ -59,10 +60,10 @@ export const tweetyHandleScrape: IntegratedFunction =
         const queueEvents = new QueueEvents(functionName, {
           connection: context.mqConnection,
         });
-        const resp = (await job.waitUntilFinished(queueEvents)) as Result<
-          types.TweetyTweet[],
-          string
-        >;
+        const resp = (await job.waitUntilFinished(
+          queueEvents,
+          AWAIT_RETURN_TTL_MS
+        )) as Result<types.TweetyTweet[], string>;
         if (resp.ok) {
           logger.info(successMsg);
           return respondWith(200, successMsg, { data: resp.val });

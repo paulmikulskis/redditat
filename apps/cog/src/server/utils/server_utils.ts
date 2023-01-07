@@ -16,7 +16,7 @@ export const getScheduleableFunctions = (): IntegratedFunction[] => {
  * that we or other devs create, and graft on some default arguments.  One of those arguments is
  * called "return", which will cause the IntegratedFunction to block until the Worker finished processing.
  */
-export type ExtendedIntegratedFunctionArgs<A> = A & { response?: boolean };
+export type ExtendedIntegratedFunctionArgs<A> = A & { response? };
 
 export const createIntegratedFunction = <A>(
   /**
