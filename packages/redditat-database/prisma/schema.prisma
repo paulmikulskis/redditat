@@ -8,50 +8,57 @@ generator client {
 }
 
 model RedditComment {
-  id                   String           @id() @unique()
-  scrapeTime           DateTime         @default(now())
-  approved             Boolean          @default(false)
+  id                   String            @id() @unique()
+  scrapeTime           DateTime          @default(now())
+  approved             Boolean           @default(false)
   body_html            String
   body                 String
   collapsed_reason     String?
-  collapsed            Boolean          @default(false)
+  collapsed            Boolean           @default(false)
   controversiality     Int?
   depth                Int?
-  ignore_reports       Boolean          @default(false)
-  is_submitter         Boolean          @default(false)
+  ignore_reports       Boolean           @default(false)
+  is_submitter         Boolean           @default(false)
   link_id              String?
   parent_id            String?
-  removed              Boolean          @default(false)
-  score_hidden         Boolean          @default(false)
-  spam                 Boolean          @default(false)
-  archived             Boolean          @default(false)
-  author               RedditUser       @relation(fields: [redditUserId], references: [id])
-  can_gild             Boolean          @default(false)
-  can_mod_post         Boolean          @default(true)
+  removed              Boolean           @default(false)
+  score_hidden         Boolean           @default(false)
+  spam                 Boolean           @default(false)
+  archived             Boolean           @default(false)
+  author               RedditUser        @relation(fields: [redditUserId], references: [id])
+  can_gild             Boolean           @default(false)
+  can_mod_post         Boolean           @default(true)
   distinguished        String?
   downs                Int
   gilded               Int
   mod_note             String?
   mod_reason_by        String?
   mod_reason_title     String?
-  mod_reports          String[]         @default([])
-  no_follow            Boolean          @default(false)
-  num_reports          Int              @default(0)
+  mod_reports          String[]          @default([])
+  no_follow            Boolean           @default(false)
+  num_reports          Int               @default(0)
   permalink            String
   replyIds             String[]
   report_reasons       String[]
-  subreddit            Subreddit        @relation(fields: [subredditUrl], references: [url])
-  subredditUrl         String
-  saved                Boolean          @default(false)
-  score                Int              @default(0)
-  send_replies         Boolean          @default(false)
-  stickied             Boolean          @default(false)
+  subreddit            Subreddit         @relation(fields: [subredditId], references: [id])
+  subredditId          String
+  saved                Boolean           @default(false)
+  score                Int               @default(0)
+  send_replies         Boolean           @default(false)
+  stickied             Boolean           @default(false)
   ups                  Int
   user_reports         String[]
   commentId            String?
   reddit_submission_id String
-  RedditSubmission     RedditSubmission @relation(fields: [reddit_submission_id], references: [id])
+  parent               RedditComment?    @relation("parent", fields: [redditCommentId], references: [id])
   redditUserId         String
+  RedditComment        RedditComment[]   @relation("parent")
+  children             RedditComment[]   @relation("children")
+  redditCommentId      String?
+  RedditSubmission     RedditSubmission? @relation("submission", fields: [redditSubmissionId], references: [id])
+  redditSubmissionId   String?
+  redditCommentId2     String?
+  RedditComment2       RedditComment?    @relation("children", fields: [redditCommentId2], references: [id])
 }
 
 model RedditUser {
@@ -91,88 +98,88 @@ model RedditUser {
 }
 
 model Subreddit {
-  url                         String                        @id() @unique()
-  scrapeTime                  DateTime                      @default(now())
+  id                          String             @id() @unique()
+  url                         String
+  scrapeTime                  DateTime           @default(now())
   accounts_active_is_fuzzed   Boolean
   accounts_active             Int
   active_user_count           Int
-  advertiser_category         String
-  all_original_content        Boolean
-  allow_discovery             Boolean
-  allow_images                Boolean
-  allow_videogifs             Boolean
-  allow_videos                Boolean
-  banner_background_color     String
-  banner_background_image     String
-  banner_img                  String
+  advertiser_category         String?
+  all_original_content        Boolean?
+  allow_discovery             Boolean?
+  allow_images                Boolean?
+  allow_videogifs             Boolean?
+  allow_videos                Boolean?
+  banner_background_color     String?
+  banner_background_image     String?
+  banner_img                  String?
   banner_size                 Int[]
-  can_assign_link_flair       Boolean
-  can_assign_user_flair       Boolean
-  collapse_deleted_comments   Boolean
-  comment_score_hide_mins     Int
-  community_icon              String
-  created                     Int
-  created_utc                 Int
-  description                 String
-  description_html            String
-  display_name                String
-  display_name_prefixed       String
+  can_assign_link_flair       Boolean?
+  can_assign_user_flair       Boolean?
+  collapse_deleted_comments   Boolean?
+  comment_score_hide_mins     Int?
+  community_icon              String?
+  created                     Int?
+  created_utc                 Int?
+  description                 String?
+  description_html            String?
+  display_name                String?
+  display_name_prefixed       String?
   emojis_custom_size          Int[]
-  emojis_enabled              Boolean
-  has_menu_widget             Boolean
-  header_img                  String
+  emojis_enabled              Boolean?
+  has_menu_widget             Boolean?
+  header_img                  String?
   header_size                 Int[]
-  header_title                String
-  hide_ads                    Boolean
-  id                          String
-  icon_img                    String
+  header_title                String?
+  hide_ads                    Boolean?
+  icon_img                    String?
   icon_size                   Int[]
-  is_enrolled_in_new_modmail  Boolean
-  key_color                   String
-  lang                        String
+  is_enrolled_in_new_modmail  Boolean?
+  key_color                   String?
+  lang                        String?
   link_flair_enabled          Boolean
-  link_flair_position         String
+  link_flair_position         String?
   name                        String
-  notification_level          String
+  notification_level          String?
   over18                      Boolean
-  primary_color               String
-  public_description          String
-  public_description_html     String
-  public_traffic              Boolean
-  quarantine                  Boolean
-  show_media                  Boolean
-  show_media_preview          Boolean
-  spoilers_enabled            Boolean
-  submission_type             String
-  submit_link_label           String
-  submit_text                 String
-  submit_text_html            String
-  submit_text_label           String
+  primary_color               String?
+  public_description          String?
+  public_description_html     String?
+  public_traffic              Boolean?
+  quarantine                  Boolean?
+  show_media                  Boolean?
+  show_media_preview          Boolean?
+  spoilers_enabled            Boolean?
+  submission_type             String?
+  submit_link_label           String?
+  submit_text                 String?
+  submit_text_html            String?
+  submit_text_label           String?
   subreddit_type              String
   subscribers                 Int
-  suggested_comment_sort      String
+  suggested_comment_sort      String?
   title                       String
-  user_can_flair_in_sr        Boolean
-  user_flair_background_color String
-  user_flair_css_class        String
-  user_flair_enabled_in_sr    Boolean
-  user_flair_position         String
-  user_flair_template_id      String
-  user_flair_text             String
-  user_flair_text_color       String
-  user_has_favorited          Boolean
-  user_is_banned              Boolean
-  user_is_contributor         Boolean
-  user_is_moderator           Boolean
-  user_is_muted               Boolean
-  user_is_subscriber          Boolean
-  user_sr_flair_enabled       Boolean
-  user_sr_theme_enabled       Boolean
-  whitelist_status            String
-  wiki_enabled                Boolean
-  wls                         Int
+  user_can_flair_in_sr        Boolean?
+  user_flair_background_color String?
+  user_flair_css_class        String?
+  user_flair_enabled_in_sr    Boolean?
+  user_flair_position         String?
+  user_flair_template_id      String?
+  user_flair_text             String?
+  user_flair_text_color       String?
+  user_has_favorited          Boolean?
+  user_is_banned              Boolean?
+  user_is_contributor         Boolean?
+  user_is_moderator           Boolean?
+  user_is_muted               Boolean?
+  user_is_subscriber          Boolean?
+  user_sr_flair_enabled       Boolean?
+  user_sr_theme_enabled       Boolean?
+  whitelist_status            String?
+  wiki_enabled                Boolean?
+  wls                         Int?
   Comment                     RedditComment[]
-  ContentGenerationTask       RedditContentGenerationTask[]
+  RedditSubmission            RedditSubmission[]
 }
 
 model RedditSubmission {
@@ -180,7 +187,7 @@ model RedditSubmission {
   author                      RedditUser      @relation(fields: [redditUserId], references: [id])
   id                          String          @id @unique
   scrapeTime                  DateTime        @default(now())
-  comments                    RedditComment[]
+  comments                    RedditComment[] @relation("submission")
   clicked                     Boolean         @default(false)
   content_categories          String[]
   contest_mode                Boolean         @default(false)
@@ -194,6 +201,8 @@ model RedditSubmission {
   is_robot_indexable          Boolean         @default(false)
   is_self                     Boolean         @default(false)
   is_video                    Boolean         @default(false)
+  subreddit                   Subreddit       @relation(fields: [subredditId], references: [id])
+  subredditId                 String
   link_flair_background_color String?
   link_flair_css_class        String?
   link_flair_richtext         Json?
@@ -250,13 +259,12 @@ model RedditContentGenerationTask {
   id              Int               @id @default(autoincrement())
   status          RedditTaskStatus  @default(CREATED)
   submissionId    String            @unique
-  subredditUrl    String
   startTime       DateTime          @default(now())
   endTime         DateTime?
   resources       RedditResources[]
   errorMessage    String?
   errorStackTrace String?
-  subreddit       Subreddit?        @relation(fields: [subredditUrl], references: [url])
+  subredditId     String
   program         String
   user            String            @default("defaultUser")
 }
