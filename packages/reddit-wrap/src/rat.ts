@@ -164,7 +164,7 @@ export class Rat {
   }
 
   /**
-   * Downloads and stores an image from the provided url.
+   * Downloads and stores an image from the provided url to local disk
    *
    * @param url - The url of the page that contains the image.
    * @returns The path to the stored image on the filesystem, or an empty string if the image could not be stored.

@@ -32,7 +32,6 @@ export class TwitterContentDBDriver {
               `error while querying user '${tweet.author.username}' from the twitter API: ${err.message}`
             );
           }
-          fetedAuthor = { ...fetedAuthor2, created_on: fetedAuthor2.created_at };
         } else {
           const msg = `error! unable to find twitter user ${tweet.author.username}`;
           console.log(msg);

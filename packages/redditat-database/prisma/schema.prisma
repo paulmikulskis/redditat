@@ -9,6 +9,7 @@ generator client {
 
 model RedditComment {
   id                            String           @id() @unique()
+  scrapeTime                    DateTime         @default(now())
   approved                      Boolean          @default(false)
   body_html                     String
   body                          String
@@ -56,18 +57,19 @@ model RedditComment {
   ups                           Int
   user_reports                  String[]
   commentId                     String?
-  reddit_submission_id          Int
+  reddit_submission_id          String
   RedditSubmission              RedditSubmission @relation(fields: [reddit_submission_id], references: [id])
   redditUserId                  String
 }
 
 model RedditUser {
   id                        String             @id()
+  scrapeTime                DateTime           @default(now())
   coins                     Int                @default(0)
   comment_karma             Int                @default(0)
   force_password_reset      Boolean            @default(false)
   gold_creddits             Int
-  gold_expiration           DateTime
+  gold_expiration           DateTime?
   has_android_subscription  Boolean            @default(false)
   has_external_account      Boolean            @default(false)
   has_ios_subscription      Boolean            @default(false)
@@ -98,6 +100,7 @@ model RedditUser {
 
 model Subreddit {
   url                         String                        @id() @unique()
+  scrapeTime                  DateTime                      @default(now())
   accounts_active_is_fuzzed   Boolean
   accounts_active             Int
   active_user_count           Int
@@ -183,10 +186,11 @@ model Subreddit {
 model RedditSubmission {
   archived                    Boolean?
   author                      RedditUser      @relation(fields: [redditUserId], references: [id])
-  id                          Int             @id @default(autoincrement())
+  id                          String          @id @unique
+  scrapeTime                  DateTime        @default(now())
   comments                    RedditComment[]
   clicked                     Boolean         @default(false)
-  content_categories          String?
+  content_categories          String[]
   contest_mode                Boolean         @default(false)
   domain                      String?
   hidden                      Boolean         @default(false)
@@ -310,6 +314,7 @@ model RedditVideoMetadata {
 
 model TweetyTweet {
   id                    String        @id
+  scrapeTime            DateTime      @default(now())
   author                TwitterUser   @relation(fields: [authorId], references: [id])
   authorId              String
   card                  Json?
@@ -343,6 +348,7 @@ model TweetyTweet {
 
 model TwitterUser {
   id                        String        @id
+  scrapeTime                DateTime      @default(now())
   created_on                String?
   default_profile           Boolean?
   default_profile_image     Boolean?
