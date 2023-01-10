@@ -1,4 +1,9 @@
-import type { AuditLog as DbAuditLog } from "@prisma/client";
+import type {
+  AuditLog as DbAuditLog,
+  RedditSubmission,
+  RedditUser,
+  RedditComment,
+} from "@prisma/client";
 
 export { DbAuditLog };
 
@@ -35,3 +40,14 @@ export interface Media {
 }
 
 export type TaskStatus = "IN_PROGRESS" | "SUCCESS" | "ERROR" | "CREATED";
+
+export interface RedditDriverSubmission {
+  submission: RedditSubmission;
+  author: RedditUser;
+  comments: (RedditComment & { children: any[] })[];
+}
+
+export interface RedditDriverComment {
+  comment: RedditComment | null;
+  children: RedditDriverComment[];
+}

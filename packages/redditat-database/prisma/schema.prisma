@@ -8,61 +8,60 @@ generator client {
 }
 
 model RedditComment {
-  id                   String            @id() @unique()
-  scrapeTime           DateTime          @default(now())
-  approved             Boolean           @default(false)
-  body_html            String
-  body                 String
-  collapsed_reason     String?
-  collapsed            Boolean           @default(false)
-  controversiality     Int?
-  depth                Int?
-  ignore_reports       Boolean           @default(false)
-  is_submitter         Boolean           @default(false)
-  link_id              String?
-  parent_id            String?
-  removed              Boolean           @default(false)
-  score_hidden         Boolean           @default(false)
-  spam                 Boolean           @default(false)
-  archived             Boolean           @default(false)
-  author               RedditUser        @relation(fields: [redditUserId], references: [id])
-  can_gild             Boolean           @default(false)
-  can_mod_post         Boolean           @default(true)
-  distinguished        String?
-  downs                Int
-  gilded               Int
-  mod_note             String?
-  mod_reason_by        String?
-  mod_reason_title     String?
-  mod_reports          String[]          @default([])
-  no_follow            Boolean           @default(false)
-  num_reports          Int               @default(0)
-  permalink            String
-  replyIds             String[]
-  report_reasons       String[]
-  subreddit            Subreddit         @relation(fields: [subredditId], references: [id])
-  subredditId          String
-  saved                Boolean           @default(false)
-  score                Int               @default(0)
-  send_replies         Boolean           @default(false)
-  stickied             Boolean           @default(false)
-  ups                  Int
-  user_reports         String[]
-  commentId            String?
-  reddit_submission_id String
-  parent               RedditComment?    @relation("parent", fields: [redditCommentId], references: [id])
-  redditUserId         String
-  RedditComment        RedditComment[]   @relation("parent")
-  children             RedditComment[]   @relation("children")
-  redditCommentId      String?
-  RedditSubmission     RedditSubmission? @relation("submission", fields: [redditSubmissionId], references: [id])
-  redditSubmissionId   String?
-  redditCommentId2     String?
-  RedditComment2       RedditComment?    @relation("children", fields: [redditCommentId2], references: [id])
+  id                 String            @id() @unique()
+  body               String
+  ups                Int
+  downs              Int
+  subreddit          Subreddit         @relation(fields: [subredditId], references: [name])
+  scrapeTime         DateTime          @default(now())
+  depth              Int?
+  approved           Boolean           @default(false)
+  collapsed_reason   String?
+  collapsed          Boolean           @default(false)
+  controversiality   Int?
+  ignore_reports     Boolean           @default(false)
+  link_id            String?
+  parent_id          String?
+  removed            Boolean           @default(false)
+  score_hidden       Boolean           @default(false)
+  spam               Boolean           @default(false)
+  archived           Boolean           @default(false)
+  author             RedditUser        @relation(fields: [redditUserId], references: [id])
+  is_submitter       Boolean           @default(false)
+  can_gild           Boolean           @default(false)
+  can_mod_post       Boolean           @default(true)
+  distinguished      String?
+  gilded             Int
+  mod_note           String?
+  mod_reason_by      String?
+  mod_reason_title   String?
+  mod_reports        String[]          @default([])
+  no_follow          Boolean           @default(false)
+  num_reports        Int               @default(0)
+  permalink          String
+  replyIds           String[]
+  report_reasons     String[]
+  subredditId        String
+  saved              Boolean           @default(false)
+  score              Int               @default(0)
+  send_replies       Boolean           @default(false)
+  stickied           Boolean           @default(false)
+  user_reports       String[]
+  commentId          String?
+  parent             RedditComment?    @relation("parent", fields: [parentId], references: [id])
+  redditUserId       String
+  RedditComment      RedditComment[]   @relation("parent")
+  children           RedditComment[]   @relation("children")
+  parentId           String?
+  RedditSubmission   RedditSubmission? @relation("submission", fields: [redditSubmissionId], references: [id])
+  redditSubmissionId String?
+  childrenIds        String?
+  RedditComment2     RedditComment?    @relation("children", fields: [childrenIds], references: [id])
 }
 
 model RedditUser {
   id                        String             @id()
+  name                      String
   scrapeTime                DateTime           @default(now())
   coins                     Int                @default(0)
   comment_karma             Int                @default(0)
@@ -98,12 +97,19 @@ model RedditUser {
 }
 
 model Subreddit {
-  id                          String             @id() @unique()
-  url                         String
+  title                       String
+  name                        String             @id() @unique()
+  over18                      Boolean
+  subscribers                 Int
   scrapeTime                  DateTime           @default(now())
-  accounts_active_is_fuzzed   Boolean
   accounts_active             Int
+  created                     Int?
+  primary_color               String?
   active_user_count           Int
+  description                 String?
+  url                         String
+  Comment                     RedditComment[]
+  RedditSubmission            RedditSubmission[]
   advertiser_category         String?
   all_original_content        Boolean?
   allow_discovery             Boolean?
@@ -119,9 +125,8 @@ model Subreddit {
   collapse_deleted_comments   Boolean?
   comment_score_hide_mins     Int?
   community_icon              String?
-  created                     Int?
+  accounts_active_is_fuzzed   Boolean
   created_utc                 Int?
-  description                 String?
   description_html            String?
   display_name                String?
   display_name_prefixed       String?
@@ -139,10 +144,7 @@ model Subreddit {
   lang                        String?
   link_flair_enabled          Boolean
   link_flair_position         String?
-  name                        String
   notification_level          String?
-  over18                      Boolean
-  primary_color               String?
   public_description          String?
   public_description_html     String?
   public_traffic              Boolean?
@@ -156,9 +158,7 @@ model Subreddit {
   submit_text_html            String?
   submit_text_label           String?
   subreddit_type              String
-  subscribers                 Int
   suggested_comment_sort      String?
-  title                       String
   user_can_flair_in_sr        Boolean?
   user_flair_background_color String?
   user_flair_css_class        String?
@@ -178,15 +178,19 @@ model Subreddit {
   whitelist_status            String?
   wiki_enabled                Boolean?
   wls                         Int?
-  Comment                     RedditComment[]
-  RedditSubmission            RedditSubmission[]
+  id                          String
 }
 
 model RedditSubmission {
-  archived                    Boolean?
-  author                      RedditUser      @relation(fields: [redditUserId], references: [id])
   id                          String          @id @unique
+  title                       String
+  author                      RedditUser      @relation(fields: [redditUserId], references: [id])
+  ups                         Int             @default(0)
+  downs                       Int             @default(0)
+  score                       Int             @default(0)
   scrapeTime                  DateTime        @default(now())
+  over_18                     Boolean         @default(false)
+  upvote_ratio                Float           @default(0.0)
   comments                    RedditComment[] @relation("submission")
   clicked                     Boolean         @default(false)
   content_categories          String[]
@@ -201,8 +205,9 @@ model RedditSubmission {
   is_robot_indexable          Boolean         @default(false)
   is_self                     Boolean         @default(false)
   is_video                    Boolean         @default(false)
-  subreddit                   Subreddit       @relation(fields: [subredditId], references: [id])
+  subreddit                   Subreddit       @relation(fields: [subredditId], references: [name])
   subredditId                 String
+  archived                    Boolean?
   link_flair_background_color String?
   link_flair_css_class        String?
   link_flair_richtext         Json?
@@ -216,7 +221,6 @@ model RedditSubmission {
   media_only                  Boolean         @default(false)
   num_comments                Int             @default(0)
   num_crossposts              Int             @default(0)
-  over_18                     Boolean         @default(false)
   parent_whitelist_status     String?
   pinned                      Boolean         @default(false)
   previous_visits             Int[]
@@ -225,23 +229,17 @@ model RedditSubmission {
   removal_reason              String?
   removed_by_category         String?
   selftext                    String?
-  selftext_html               String?
   spam                        Boolean         @default(false)
   spoiler                     Boolean         @default(false)
   subreddit_subscribers       Int             @default(0)
   thumbnail                   String?
   thumbnail_height            Int?
   thumbnail_width             Int?
-  title                       String
-  upvote_ratio                Int             @default(0)
   url                         String
   view_count                  Int?            @default(0)
   visited                     Boolean         @default(false)
   whitelist_status            String?
   redditUserId                String
-  ups                         Int             @default(0)
-  downs                       Int             @default(0)
-  score                       Int             @default(0)
 }
 
 model AuditLog {

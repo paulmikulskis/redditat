@@ -70,6 +70,14 @@ export class Rat {
     }
   }
 
+  async getSubredditObject(subreddit: string) {
+    const sub = this.client.getSubreddit(subreddit).then((s) => {
+      return s;
+    });
+    //@ts-ignore
+    return await sub;
+  }
+
   /**
    * Fetches the latest "top" submission summary from the given subreddit for the day and returns the submission details.
    * If the submission is a text post, returns the body and title. If the submission is an image,

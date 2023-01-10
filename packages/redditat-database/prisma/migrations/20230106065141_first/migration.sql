@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "TweetyTweet" ALTER COLUMN "reply_to" DROP NOT NULL,
-ALTER COLUMN "source" DROP NOT NULL,
-ALTER COLUMN "tweet_body" DROP NOT NULL,
-ALTER COLUMN "vibe" DROP NOT NULL;
