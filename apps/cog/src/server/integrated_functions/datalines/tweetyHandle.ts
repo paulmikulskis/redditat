@@ -34,7 +34,6 @@ export const tweetyHandleScrape: IntegratedFunction =
         context.mqConnection,
         functionName
       );
-      console.log(`BODY: ${JSON.stringify(body, null, 2)}`);
       const { handle, ntweets, pages, extended, response } = body;
       const cleanedHandle = handle[0] === "@" ? handle.slice(1) : handle;
       const job = await tweetyHandleScrapeQueue.add(

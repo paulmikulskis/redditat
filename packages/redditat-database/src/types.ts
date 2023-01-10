@@ -44,7 +44,7 @@ export type TaskStatus = "IN_PROGRESS" | "SUCCESS" | "ERROR" | "CREATED";
 export interface RedditDriverSubmission {
   submission: RedditSubmission;
   author: RedditUser;
-  comments: (RedditComment & { children: any[] })[];
+  comments: (RedditComment & { children?: any[] })[];
 }
 
 export interface RedditDriverComment {
