@@ -1,3 +1,3 @@
 # openai
 
-The way that Yungsten interacts with OpenAI
+The way that Yungsten Tech interacts with OpenAI
