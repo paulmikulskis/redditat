@@ -1,0 +1,100 @@
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-ExtraLight.ttf');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-ExtraLightItalic.ttf');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-Light.ttf');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-LightItalic.ttf');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-Italic.ttf');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-Medium.ttf');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-MediumItalic.ttf');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-SemiBold.ttf');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-SemiBoldItalic.ttf');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-BoldItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-ExtraBold.ttf');
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: PlusJakartaSans;
+  src: url('../static/assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf');
+  font-weight: 800;
+  font-style: italic;
+}
+
+html {
+  font-family: PlusJakartaSans, system-ui, sans-serif;
+  font-size: initial;
+}
+
+body {
+  font-family: PlusJakartaSans;
+  font-size: initial;
+}

@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/fonts';
+@import '../styles/reset';
+@import '../styles/variables';
+
+html,
+body {
+  height: auto;
+}
+
+#popup-root {
+  width: $width;
+  height: $height;
+}
+
+.c-header {
+  min-height: $headerHeight;
+}
+
+.c-login {
+  height: $loginHeight;
+  overflow-y: auto;
+  // overflow-y: overlay;
+}
+
+.c-authenticated {
+  height: $authenticatedHeight;
+  overflow-y: auto;
+  // overflow-y: overlay;
+}
+
+// scrollbar
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+.c-authenticated::-webkit-scrollbar-track {
+  margin-block: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background: #c7cddc;
+}
+
+.c-authenticated::-webkit-scrollbar-thumb {
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  background-clip: padding-box;
+  border-radius: 5px;
+  background: #c7cddc;
+}
+
+.c-databox::-webkit-scrollbar-thumb {
+  background: #e1e6f2;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+.c-app {
+  width: $width;
+  height: $height;
+  background-color: $backgroundColor;
+}
+
+.c-content {
+  height: $contentHeight;
+}
+
+.c-header-title {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.c-paymentplan-icon {
+  min-height: 28px;
+}
+
+.c-navbar-container {
+  max-width: 230px;
+  overflow-x: hidden;
+}
+
+.c-footer {
+  height: $footerHeight;
+}
+
+.c-navbar {
+  height: $navbarHeight;
+}
+
+.c-purge-ovw-total {
+  width: 100px;
+  height: 64px;
+}
+
+.c-purge-ovw-graph {
+  padding: 10px 12px;
+  // width: 319px;
+  height: 186px;
+}
+
+.c-video-box {
+  max-width: 100px;
+  overflow-x: none;
+  width: 100px;
+  // height: 124px;
+}
+
+.c-playlist-box {
+  max-width: 100px;
+  overflow-x: none;
+  width: 100px;
+  // height: 101px;
+}
+
+.c-video-box > img,
+.c-playlist-box > img {
+  width: 100px;
+  height: 60px;
+}
