@@ -1,0 +1,44 @@
+name: production deploy of landing page
+on:
+  push:
+    branches:
+      - master
+jobs:
+  Deploy:
+    name: Production Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2.3.4
+
+      - name: Build and push to registry.yungstentech.com
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: registry.yungstentech.com/spamcntrl-landingpage:latest
+          build-args: |
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_API_KEY }}"
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_AUTH_DOMAIN }}"
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_PROJECT_ID }}"
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_STORAGE_BUCKET }}"
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_MESSAGING_SENDER_ID }}"
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID }}"
+            "NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID }}"
+            "MYSTATS_AUTHKEY=${{ secrets.MYSTATS_AUTHKEY }}"
+
+      - name: SSH into dedicated host docker run
+        uses: appleboy/ssh-action@master
+        env:
+          DOT_ENV_FILE: ${{ secrets.DOT_ENV_FILE }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEDI_DEPLOY_USERNAME }}
+          key: ${{ secrets.DEPLOY_HOST_SSH_KEY }}
+          envs: DOT_ENV_FILE
+          script: |
+            docker stop spamcntrl-landingpage
+            docker rm spamcntrl-landingpage
+            echo "$DOT_ENV_FILE" > landingpage.env
+            docker pull registry.yungstentech.com/spamcntrl-landingpage:latest
+            docker run --env-file ./landingpage.env --name spamcntrl-landingpage -d -p 3000:3000 registry.yungstentech.com/spamcntrl-landingpage:latest

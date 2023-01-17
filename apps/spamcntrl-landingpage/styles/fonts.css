@@ -1,0 +1,301 @@
+/*Gelion Font - Start*/
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-Thin.ttf');
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-ThinItalic.ttf');
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-Light.ttf');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-LightItalic.ttf');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-RegularItalic.ttf');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-Medium.ttf');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-MediumItalic.ttf');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-SemiBold.ttf');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-SemiBoldItalic.ttf');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-BoldItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-Black.ttf');
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: Gelion;
+  src: url('../public/fonts/Gelion-BlackItalic.ttf');
+  font-weight: 900;
+  font-style: italic;
+}
+/*Gelion Font - End */
+
+/*Poppins Font - Start*/
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Thin.ttf');
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-ThinItalic.ttf');
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-ExtraLight.ttf');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-ExtraLightItalic.ttf');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Light.ttf');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-LightItalic.ttf');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Italic.ttf');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Medium.ttf');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-MediumItalic.ttf');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-SemiBold.ttf');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-SemiBoldItalic.ttf');
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-BoldItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-ExtraBold.ttf');
+  font-weight: 800;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-ExtraBoldItalic.ttf');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-Black.ttf');
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: Poppins;
+  src: url('../public/fonts/Poppins-BlackItalic.ttf');
+  font-weight: 900;
+  font-style: italic;
+}
+/*Poppins Font - End */
+
+/*Roboto Font - Start*/
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Thin.ttf');
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-ThinItalic.ttf');
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Light.ttf');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-LightItalic.ttf');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Regular.ttf');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Italic.ttf');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Medium.ttf');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-MediumItalic.ttf');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Bold.ttf');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-BoldItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-Black.ttf');
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url('../public/fonts/Roboto-BlackItalic.ttf');
+  font-weight: 900;
+  font-style: italic;
+}
+/*Roboto Font - End */
+
+html {
+  font-family: Gelion, system-ui, sans-serif;
+  font-size: initial;
+}
+
+body {
+  font-family: Gelion;
+  font-size: initial;
+}

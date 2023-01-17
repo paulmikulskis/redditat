@@ -21,25 +21,15 @@ TO_REMOVE=(
 
 # Go through each element in the list
 for element in "${TO_REMOVE[@]}"; do
-  # Check if the element is a file or directory
-  if [ -f "$element" ]; then
-    # If it's a file, remove it
-    rm -f "$element"
-  elif [ -d "$element" ]; then
-    # If it's a directory, remove it recursively
-    rm -rf "$element"
-  fi
+    rm -rf $element
 done
 
-# Repeat the process for the "apps" and "packages" directories
 for dir in "apps" "packages"; do
-  cd "$dir"
-  for element in "${TO_REMOVE[@]}"; do
-    if [ -f "$element" ]; then
-      rm -f "$element"
-    elif [ -d "$element" ]; then
-      rm -rf "$element"
-    fi
-  done
-  cd ..
+    cd $dir
+    for element in "${TO_REMOVE[@]}"; do
+        rm -rf **/$element
+    done
+    cd ..
 done
+
+echo " 🧽 🚿 scrub-a-dub-dub, 'node_modules' is done!"
