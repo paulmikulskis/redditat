@@ -51,6 +51,8 @@ jobs:
           push: true
           file: apps/cog/api.Dockerfile
           tags: registry.yungstentech.com/cog-api:latest
+          build-args: |
+            "RUN_WITH_VECTOR=true"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -61,6 +63,8 @@ jobs:
           push: true
           file: apps/cog/workers.Dockerfile
           tags: registry.yungstentech.com/cog-workers:latest
+          build-args: |
+            "RUN_WITH_VECTOR=true"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 

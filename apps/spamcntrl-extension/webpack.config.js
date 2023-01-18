@@ -61,7 +61,7 @@ module.exports = {
     manifest: path.join(sourcePath, "manifest.json"),
     contentScript: path.join(sourcePath, "content-script", "index.ts"),
     popup: path.join(sourcePath, "popup", "index.tsx"),
-    options: path.join(sourcePath, "Options", "index.tsx"),
+    options: path.join(sourcePath, "options", "index.tsx"),
     serviceworker: path.join(sourcePath, "service-worker", "index.ts"),
   },
 

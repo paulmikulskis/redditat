@@ -1,5 +1,5 @@
 .PHONY: all help
-.SILENT: cog-help cog-clean spam-help help _spam-extension-info spam-chrome spam-firefox spam-opera spam-build admin-help setup
+.SILENT: cog cog-help cog-clean spam-help help _spam-extension-info spam-chrome spam-firefox spam-opera spam-build admin-help setup
 
 all: cog help
 
@@ -49,7 +49,8 @@ install:
 cog-help:
 
 	echo "\033[0;100mcommands for working with the \033[0;106mCog Workflow System\033[0;100m\033[0m" && \
-	echo "  • \033[0;33m make cog \033[0m - brings up the local docker compose stack for Cog Workers, API, and Redis" && \
+	echo "  • \033[0;33m make cog \033[0m - brings up the local docker compose stack for Cog Workers, API, and Redis, builds if needed" && \
+	echo "  • \033[0;33m make cog-build \033[0m - builds the cog-api and cog-workers Docker images locally for use with 'make cog'" && \
 	echo "  • \033[0;33m make cog-prod \033[0m - brings up the production docker compose stack for Cog Workers, API, and Redis" && \
 	echo "  • \033[0;33m make cog-logs \033[0m - streams logs from the local Cog docker compose stack" && \
 	echo "  • \033[0;33m make cog-api \033[0m - just-in-time compiles the local typescript code to run the API process using ts-node" && \
@@ -60,7 +61,17 @@ cog-help:
 	echo "  • \033[0;33m make cog-clean \033[0m - bring down docker compose stack for Cog, and delete all its volumes"
 
 cog:
+	if [ -z "$$(docker images -q cog-api:latest)" ]; then \
+		echo "cog-api:latest container not found, building"; \
+		make cog-build; \
+	else \
+		echo "cog-api:latest container found, skipping build"; \
+	fi
 	docker compose -f apps/cog/docker-compose-dev.yml --env-file .env up -d --force-recreate
+
+cog-build:
+		docker build -f apps/cog/workers.Dockerfile -t cog-workers:latest . && \
+		docker build -f apps/cog/api.Dockerfile -t cog-api:latest .
 
 cog-prod:
 	docker compose -f apps/cog/docker-compose.yml --env-file .env up -d --force-recreate

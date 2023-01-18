@@ -1,0 +1,54 @@
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs
+# Chat: https://chat.vector.dev
+# ------------------------------------------------------------------------------
+
+# Change this to use a non-default directory for Vector data storage:
+# data_dir = "/var/lib/vector"
+
+[sources.main_stdin]
+type = "stdin"
+
+[transforms.extract_logs]
+  type = "remap"
+  inputs = ["main_stdin"]
+  source = """
+    . = parse_regex!(.message, r'^\\s*(?P<time>\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s+(?P<level>\\S+)\\s+\\[(?P<file>.+):(?P<line>\\d+)\\s+(?P<func>.+)\\]\\s+(?P<message>.*)$');
+    .time = parse_timestamp(.time, "2006-01-02 15:04:05.999") ?? now();
+    message_parts = split(.message, ", ", limit: 2);
+    structured = parse_key_value(message_parts[1], key_value_delimiter: ":", field_delimiter: ",") ?? {};
+    .message = message_parts[0];
+    . = merge(., structured);
+  """
+
+[transforms.add_fields]
+  type = "remap"
+  inputs = ["extract_logs"]
+  source = '''
+  ., err = . + {
+    "application": "cog",
+    "service": "${COG_SERVICE_BUILD_NAME:-unknown}",
+    "hostname": "${HOSTNAME:-unknown}"
+  }
+  '''
+
+[sinks.vector_home]
+type = "vector"
+inputs = [ "add_fields" ]
+address = "http://vector.yungstentech.com:9999"
+
+# Vector's GraphQL API (disabled by default)
+# Uncomment to try it out with the `vector top` command or
+# in your browser at http://localhost:8686
+#[api]
+#enabled = true
+#address = "127.0.0.1:8686"

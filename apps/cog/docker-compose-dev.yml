@@ -16,7 +16,7 @@ services:
     #   docker build -f apps/cog/api.Dockerfile -t cog-workers:latest .
     image: cog-api:latest
     # start:api for the api, start:workers for the workers
-    command: ["yarn", "--cwd", "apps/cog", "start:api"]
+    command: ["apps/cog/startup.sh", "api"]
     # TODO change this to something sensible
     user: root
     # lots of ExpressJS things use port 3000, so we map to 15000
@@ -37,8 +37,7 @@ services:
   workers:
     # like with api, expect to have the local cog-api docker image on your machine for development
     image: cog-workers:latest
-    command: ["yarn", "--cwd", "apps/cog", "start:workers"]
-    user: root
+    command: ["apps/cog/startup.sh", "workers"]
     depends_on:
       - redis
     links:
