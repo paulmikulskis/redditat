@@ -10,3 +10,4 @@ dist
 media/
 venv
 local.env
+.next

@@ -30,6 +30,7 @@
     "turbo": "latest"
   },
   "dependencies": {
+    "core-js-pure": "^3.27.1",
     "ffmpeg-static": "^5.1.0",
     "global": "^4.4.0",
     "tiktok-scraper": "^1.4.36"
