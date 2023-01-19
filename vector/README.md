@@ -134,7 +134,7 @@ Let's try and run a VRL "program" to practice VRL:
 
 2.) create the VRL program in a file named `program.vrl`:
 
-```toml
+```vrl
 .fileLine = to_int!(.fileLine)
 ```
 
@@ -150,7 +150,7 @@ Above we simple ran a VRL program to cast the `fileLine` object in the Vector Lo
 
 The following VRL program will also parse the ISO date, cast, the line number, and include some information about the environment for the application's resulting build:
 
-```toml
+```vrl
 .fileLine = to_int!(.fileLine)
 .date = parse_timestamp(.date, "%Y-%m-%dT%H:%M:%S%.3f%z") ?? now()
 service, err = get_env_var("COG_SERVICE_BUILD_NAME")
