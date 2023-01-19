@@ -5,6 +5,8 @@ inspect, run, stop, and schedule functions as well.
 
 Cog also provides a boilerplate for quickly building out an API with type-checking functionality.
 
+For example, let's say you want to schedule a health check where you reach out to 3-4 services, make a judgement call on the status, then ping a webhook with that OK or ERR status. This can easily be orchestrated with Cog.
+
 The pieces of this service consist of:
 
 - a Redis instance running [BullMQ](<(https://github.com/OptimalBits/bull)>) (implemented with `docker compose`)
