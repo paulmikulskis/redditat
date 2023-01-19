@@ -2,8 +2,8 @@
 
 ### Observability basics + VRL programs for Yungsten Tech
 
-This folder containers `.vrl` or _Vector Remap Language_ files, which can be run against _events_ that pass through the Vector pipelines we use.
-This folder also contains basics about how observability is practiced in this stack.
+This folder contains basics about how observability is practiced in this stack using Vector.
+This folder also containers `.vrl` or _Vector Remap Language_ files, which can be run against _Events_ that pass through the Vector pipelines.
 
 **What is [Vector](https://vector.dev/docs/about/what-is-vector/)** ? It's a simple program that you can connect to itself/dabases to route messages!
 
