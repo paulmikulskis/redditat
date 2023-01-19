@@ -8,7 +8,6 @@ volumes:
 services:
   api:
     image: registry.yungstentech.com/cog-api:latest
-    command: ["apps/cog/startup.sh", "api"]
     user: root
     ports:
       - "15000:3000"
@@ -24,7 +23,6 @@ services:
       - ENVIRONMENT=development
   workers:
     image: registry.yungstentech.com/cog-workers:latest
-    command: ["apps/cog/startup.sh", "workers"]
     user: root
     depends_on:
       - redis
