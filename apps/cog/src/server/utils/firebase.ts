@@ -1,6 +1,7 @@
 import * as firebaseAdmin from "firebase-admin";
 import { config } from "dotenv";
 import { env, logging } from "@yungsten/utils";
+import { sentryException } from "../../utils/sentry";
 
 const logger = logging.createLogger();
 config({ path: "base.env" });
@@ -15,6 +16,7 @@ const initializeFirebase = () => {
     logger.info("successfully initialized firebase");
     return f;
   } catch (e) {
+    sentryException(e as Error);
     logger.warn("unable to initialize firebase admin: " + e);
     return undefined;
   }

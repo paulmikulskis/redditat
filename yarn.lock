@@ -5656,7 +5656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node@npm:^7.9.0":
+"@sentry/node@npm:^7.31.1":
   version: 7.31.1
   resolution: "@sentry/node@npm:7.31.1"
   dependencies:
@@ -5668,6 +5668,18 @@ __metadata:
     lru_map: ^0.3.3
     tslib: ^1.9.3
   checksum: 515646e2133d51d983eedb155e069e3226dcbc0f324ae74a4eaa8018e6731bb51e52cc0a42d85a0743e4cff633b7357af748d40a1c134cfa291a4ef072c01cae
+  languageName: node
+  linkType: hard
+
+"@sentry/tracing@npm:^7.31.1":
+  version: 7.31.1
+  resolution: "@sentry/tracing@npm:7.31.1"
+  dependencies:
+    "@sentry/core": 7.31.1
+    "@sentry/types": 7.31.1
+    "@sentry/utils": 7.31.1
+    tslib: ^1.9.3
+  checksum: 748d9e8b2a7891ac0fecaa47bb6af792c37d3a6a261e15bd00f8f04bc4769127088435e0fd011e5f82be2602c8a52663ffcee26615ab7bfc580d5dc8e8d1d0bf
   languageName: node
   linkType: hard
 
@@ -6977,7 +6989,8 @@ __metadata:
     "@aws-sdk/types": ^3.15.0
     "@bull-board/express": ^4.2.2
     "@graphql-codegen/typescript-graphql-request": ^4.5.3
-    "@sentry/node": ^7.9.0
+    "@sentry/node": ^7.31.1
+    "@sentry/tracing": ^7.31.1
     "@types/express": ^4.17.13
     "@types/ioredis": ^4.28.7
     "@types/jest": ^26.0.23

@@ -10,6 +10,7 @@ import { redis, logging } from "@yungsten/utils";
 import { Ok, Err, Result } from "ts-results";
 import { getWorkflowSchedule } from "./utils/workflows";
 import { jobIdToUserName } from "./utils/job_utils";
+import { sentryException } from "../utils/sentry";
 
 /**
  * Starts an ExpressJS server that exposes an HTTP POST endpoint for executing
@@ -135,6 +136,7 @@ export const server = async function (commandLineArgs: string[]) {
       } catch (e) {
         // error specifically on being unable to remove the workflow
         const error = e as Error;
+        sentryException(error);
         const msg = `unable to remove Workflow '${workflowName}', removeRepeatableByKey failed: ${error.message}`;
         logger.error(msg);
         return res.send(respondWith(500, msg));
@@ -144,12 +146,14 @@ export const server = async function (commandLineArgs: string[]) {
       try {
         let reqBody: unknown;
         try {
-          reqBody = JSON.stringify(workflowDef["reqBody"]);
+          const bod = workflowDef["reqBody"] as Record<string, any>;
+          reqBody = bod.reqBody;
         } catch (e) {
           const msg =
             `successfully removed workflow '${workflowName}' from the system with key ` +
             `'${workflowDef["key"]}', but was not able to JSON serialize the reqBody`;
           logger.error(msg);
+          sentryException(e as Error);
           reqBody = `[could not serialize reqBody for Workflow '${workflowName}'!]`;
         }
         const workflow = {
@@ -157,7 +161,7 @@ export const server = async function (commandLineArgs: string[]) {
           cron: workflowDef["cron"],
           user: userWhoScheduled,
           key: workflowDef["key"],
-          reqBody: reqBody,
+          reqBody,
         };
         return res.send(
           res.send(
@@ -171,6 +175,7 @@ export const server = async function (commandLineArgs: string[]) {
       } catch (e) {
         // error specifically on being unable to remove the workflow
         const error = e as Error;
+        sentryException(error);
         const msg = `was able to remove workflow '${workflowName}' for user '${userWhoScheduled}', but had trouble assembling the response: ${error.message}`;
         logger.error(msg);
         return;

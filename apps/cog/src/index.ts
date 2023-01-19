@@ -15,7 +15,7 @@
  * /  /
  *  /
  *
- * COG - The Robust Workflow Management System
+ * COG - A Robust Workflow Management System
  *
  * This framework is a central platform for managing and scheduling
  * asynchronous processes in your application.  It is built on top of BullJS,
@@ -28,6 +28,7 @@
 import { server } from "./server/index";
 import { workers } from "./workers/index";
 import { testing } from "./testing";
+import { conditionallyConfigureSentry, sentryException } from "./utils/sentry";
 
 /**
  * The entry point for the Cog application.
@@ -59,15 +60,28 @@ const args = process.argv.slice(3);
  * If the `entryPoint` argument is not recognized, an error message is printed to the console.
  */
 async function main() {
+  conditionallyConfigureSentry();
   if (entryPoint.toLocaleLowerCase() === "api") {
     console.log(`starting cog ${entryPoint.toLocaleLowerCase()}`);
-    await server(args);
+    try {
+      await server(args);
+    } catch (e) {
+      sentryException(e as Error);
+    }
   } else if (entryPoint.toLocaleLowerCase() === "workers") {
     console.log(`starting cog ${entryPoint.toLocaleLowerCase()}`);
-    await workers(args);
+    try {
+      await workers(args);
+    } catch (e) {
+      sentryException(e as Error);
+    }
   } else if (entryPoint.toLocaleLowerCase() === "testing") {
     console.log(`starting cog test playground: "${entryPoint.toLocaleLowerCase()}"`);
-    await testing(args);
+    try {
+      await testing(args);
+    } catch (e) {
+      sentryException(e as Error);
+    }
   } else {
     console.error(`Invalid entry point: ${entryPoint.toLocaleLowerCase()}`);
   }

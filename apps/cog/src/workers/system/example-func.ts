@@ -3,6 +3,7 @@ import { GraphQLClient } from "graphql-request"; //..graphql-request to query an
 import fs from "fs";
 import { createIntegratedWorker } from "../utils/worker"; // function to create your worker
 import { StoreInfoDumpBodyType } from "../../server/integrated_functions/exampleFunc"; // importing this schema to simply help with field suggestions and typing
+import { sentryException } from "../../utils/sentry";
 
 // just defining a query our Worker will use to grab data when invoked
 const query = gql`
@@ -31,6 +32,7 @@ export const exampleFunc = () => {
           console.log(`succesfully wrote to exampleFunc.json!`);
         });
       } catch (e) {
+        sentryException(e as Error);
         console.log(`ERROR while trying to request (miles=${miles})`);
       }
     }

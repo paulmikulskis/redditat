@@ -1,5 +1,6 @@
 import { createIntegratedWorker } from "../utils/worker";
 import axios from "axios";
+import { sentryException } from "../../utils/sentry";
 
 export const checkYTAuthToken = () => {
   return createIntegratedWorker("checkYTAuthToken", async ({ reqBody, _calls }) => {
@@ -13,6 +14,7 @@ export const checkYTAuthToken = () => {
     console.log(response.data);
     try {
     } catch (e) {
+      sentryException(e as Error);
       console.log(`ERROR while trying to request for the api`);
     }
   });
