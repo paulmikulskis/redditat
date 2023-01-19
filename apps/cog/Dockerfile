@@ -40,9 +40,6 @@ RUN turbo run build --filter=@yungsten/cog
 
 FROM builder as runner
 EXPOSE 3000
-# copy any environment into the container.  For Yungsten Tech, this is NOT where we include
-# secrets.  Secrets are included at runtime with --env-file flag provided by Docker and Docker Compose
-COPY *.env .
 # copy the Vector directory, in case there are VSL modules we want to reference for observability
 COPY vector vector
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.vector.dev | bash -s -- -y
