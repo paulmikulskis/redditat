@@ -92,8 +92,6 @@ cog-api-1     | ...  INFO   successfully scheduled workflow 'MyFirstWorkflow', f
 
 # Development Example
 
-> ⚠️ this example is old, and needs to be updated. General concepts are okay but this specific example needs an update
-
 ## Dutchie API Information
 
 Let's say we want to reach out to a public API endpoint to grab some information **every hour of the day**, and dump it to a file.  
@@ -114,59 +112,60 @@ These functions are pieces of code that are run later at some point by some mach
     server/
     utils/
     workers/
-     * exampleFunc/              <-- new folder
-       * index.ts              <-- define worker func inside a new index.ts
+     * system/              # <-- let's throw this in the system folder, why not
+       * exampleFunc.ts           #  <-- define worker func inside a new exampleFunc.ts
 ```
 
 The skeleton of a worker
 
 ```Typescript
-import { gql } from "graphql-request" // this worker will use gql and..
-import { GraphQLClient } from "graphql-request" //..graphql-request to query an API
-import fs from "fs"
-import { createIntegratedWorker } from "../utils/worker" // function to create your worker
+import { gql } from "graphql-request"; // this worker will use gql and..
+import { GraphQLClient } from "graphql-request"; //..graphql-request to query an API
+import fs from "fs";
+import { createIntegratedWorker } from "../utils/worker"; // function to create your worker
+import { StoreInfoDumpBodyType } from "../../server/integrated_functions/exampleFunc"; // importing this schema to simply help with field suggestions and typing
 
 // just defining a query our Worker will use to grab data when invoked
 const query = gql`
-  query exampleFunc($miles: Number!) {
+  query exampleFunc($miles: Float!) {
     filteredDispensaries(filter: { nearLat: 42.3, nearLng: -71.2, distance: $miles }) {
       name
       distance
       address
     }
   }
-`
+`;
 
-export const exampleFunc = async () => {
-  await createIntegratedWorker(
+export const exampleFunc = () => {
+  return createIntegratedWorker(
     "exampleFunc", // name of integratedWorker (used for info like `queueName`)
 
     // core function that defines this worker:
     // all integratedWorkers get called with { reqBody, calls }
     async ({ reqBody, _calls }) => {
-      const miles = reqBody?.milesAway
+      const body: StoreInfoDumpBodyType = reqBody;
+      const miles = body.miles;
       try {
-        const client = new GraphQLClient("https://dutchie.com/graphql")
-        client.request(query, { miles: `${miles}` }).then((data: any) => {
-          fs.writeFileSync("exampleFunc.json", JSON.stringify(data))
-          console.log(`succesfully wrote to exampleFunc.json!`)
-        })
+        const client = new GraphQLClient("https://dutchie.com/graphql");
+        client.request(query, { miles: miles }).then((data: any) => {
+          fs.writeFileSync("exampleFunc.json", JSON.stringify(data));
+          console.log(`succesfully wrote to exampleFunc.json!`);
+        });
       } catch (e) {
-        console.log(`ERROR while trying to request (miles=${miles})`)
+        console.log(`ERROR while trying to request (miles=${miles})`);
       }
     }
-  )
-}
+  );
+};
 
 ```
 
 To register this worker with the Queue system, import and add it to `src/workers/index.ts`:
 
 ```Typescript
-import { exampleFunc } from "./exampleFunc"
-;(async function () {
+import { exampleFunc } from "./system/exampleFunc"
   // ...
-  const integratedWorkers = [exampleFunc] // <- add your exported func to this array
+  const INTEGRATED_WORKERS = [exampleFunc] // <- add your exported func to this array
 ```
 
 Now that a worker has been created to perform our business logic, let's define the expected reqBody Type this Worker will expect to receive by tying it to an **IntegratedFunction**.
@@ -191,21 +190,21 @@ You can integrate a route by maing a file for your new route in the `src/server/
 All we really ned to do is have our API route add a job to the queue if called upon:
 
 ```Typescript
-import { z } from "zod"
-import { createIntegratedFunction, IntegratedFunction, respondWith } from "../utils/server_utils"
-import { getQueue } from "../../workers/utils/queues"
+import { z } from "zod";
+import { createIntegratedFunction, respondWith } from "../utils/server_utils";
+import { IntegratedFunction } from "../utils/types";
+import { redis, logging } from "@yungsten/utils";
 
 // Every IntegratedFunction (POSTs) will look for a specific structure in the HTTP body.
 // We define that structure with Zod.  If this IntegratedFunction is the interface for
 // a callable Worker (as we just wrote above), this also defines the reqBody form
 // for routing/type-checking/control-flow within the Worker stack:
-const StoreInfoDumpBody = z.object({
+export const StoreInfoDumpBody = z.object({
   miles: z.number(),
-  response: z.boolean().default(false) // optionally include to allow users to await return value
-})
+});
 
 // we need to convert that 👆 model into a Type so we can grab the Queue functionality
-type StoreInfoDumpBodyType = z.TypeOf<typeof StoreInfoDumpBody>
+export type StoreInfoDumpBodyType = z.TypeOf<typeof StoreInfoDumpBody>;
 
 // call the createIntegratedFunction() method to bootstrap your API route:
 export const exampleFunc: IntegratedFunction = createIntegratedFunction(
@@ -215,14 +214,17 @@ export const exampleFunc: IntegratedFunction = createIntegratedFunction(
   async (context, body) => {
     // Actual functionality to perform if called upon
     // The context and body get auto-exposed, to provide connection and global vars
-    const dispoDumpQueue = await getQueue<StoreInfoDumpBodyType>(context.mqConnection, "exampleFunc")
-    const { miles } = body // we can expect a field 'miles'
+    const dispoDumpQueue = await redis.getQueue<StoreInfoDumpBodyType>(
+      context.mqConnection,
+      "exampleFunc"
+    );
+    const { miles } = body; // we can expect a field 'miles'
     // queue a job in this queue for our new Worker to pick up:
-    await dispoDumpQueue.add(`customId.${miles}`, { reqBody: { miles }, calls: null })
+    const job = await dispoDumpQueue.add(`customId.${miles}`, { reqBody: { miles }, calls: null });
     // since an IntegratedFunction is ultimately a route, make sure to respond HTTP:
-    return respondWith(200, `added job to queue 'exampleFunc' for shops within '${miles}' miles`)
+    return respondWith(200, `added job to queue 'exampleFunc' for shops within '${miles}' miles`, { job });
   }
-)
+);
 
 ```
 
