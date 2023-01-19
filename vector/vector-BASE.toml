@@ -1,0 +1,50 @@
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs
+# Useful links:
+#   sources: https://assume-role-docs--vector-project.netlify.app/docs/reference/sources/
+#   transforms: https://assume-role-docs--vector-project.netlify.app/docs/reference/transforms/
+#   sinks: https://assume-role-docs--vector-project.netlify.app/docs/reference/sinks/
+# ------------------------------------------------------------------------------
+
+# Change this to use a non-default directory for Vector data storage:
+# data_dir = "/var/lib/vector"
+
+[sources.DEFAULT_APP_LOG]
+  type = "file" # must be: "file"
+  # the @yungsten/utils package exports the logging mododule, whose logger
+  # produces "app.log" in your application's directory inside apps/[YOUR-APP]
+  include = ["apps/**/app.log"] 
+
+# This transform will cast values produced by the logger from @yungsten/utils/logging
+# to values that Vector can work with via its VSL language (i.e. actual timestamps, integers, etc)
+# If you use the standard yungsten logger, then you can copy-paste this transform to get enriched data.
+# Check out @yungsten/utils/logging.ts to see how the standard JSON structure that our application logger is composed
+[transforms.COERCE_LOGS]
+  type = "remap"
+  inputs = ["DEFAULT_APP_LOG"]
+  source = """
+    .fileLine = to_int!(.fileLine)
+    .date = parse_timestamp(.date, "%Y-%m-%dT%H:%M:%S%.3f%z") ?? now()
+    .level = to_int!(.levelId)
+  """
+
+[sinks.vector_home]
+  type = "vector"
+  inputs = [ "COERCE_LOGS" ]
+  address = "http://vector.yungstentech.com:9999"
+
+# Vector's GraphQL API (disabled by default)
+# Uncomment to try it out with the `vector top` command or
+# in your browser at http://localhost:8686
+#[api]
+#enabled = true
+#address = "127.0.0.1:8686"

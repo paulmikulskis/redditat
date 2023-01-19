@@ -12,8 +12,8 @@ volumes:
 services:
   api:
     # expect to have the local cog-api docker image on your machine for development
-    # if you are getting an error trying to find the container, try running from monorepo root:
-    #   docker build -f apps/cog/api.Dockerfile -t cog-workers:latest .
+    # if you are getting an error trying to find the container, try running from monorepo ROOT (<- important!):
+    #   docker build --build-arg COG_SERVICE_BUILD_NAME=api -f apps/cog/Dockerfile -t cog-api:latest .
     image: cog-api:latest
     # start:api for the api, start:workers for the workers
     command: ["apps/cog/startup.sh", "api"]

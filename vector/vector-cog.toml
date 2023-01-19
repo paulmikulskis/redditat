@@ -1,0 +1,37 @@
+[sources.DEFAULT_APP_LOG]
+  type = "file"
+  include = ["apps/**/app.log"] 
+
+[transforms.COERCE_LOGS]
+  type = "remap"
+  inputs = ["DEFAULT_APP_LOG"]
+  source = """
+    .fileLine = to_int!(.fileLine)
+    .date = parse_timestamp(.date, "%Y-%m-%dT%H:%M:%S%.3f%z") ?? now()
+    .level = to_int!(.levelId)
+  """
+
+# adding in some specific information to this log that lets us know 
+# which application and service it is running
+[transforms.ADD_COG_SPECIFIC_INFO]
+  type = "remap"
+  inputs = ["COERCE_LOGS"]
+  source = """
+    service, err = get_env_var("COG_SERVICE_BUILD_NAME")
+    if err != null {
+      . = merge(., {
+        "application": "cog",
+        "service": "unknown"
+      })
+    } else {
+        . |= {
+        "application": "cog",
+        "service": service
+      }
+    }
+  """
+
+[sinks.vector_home]
+  type = "vector"
+  inputs = [ "ADD_COG_SPECIFIC_INFO" ]
+  address = "http://vector.yungstentech.com:9999"

@@ -33,12 +33,14 @@ The pieces of this service consist of:
 
 # Makefile commands
 
-| Command          | Description                                                    |
-| ---------------- | -------------------------------------------------------------- |
-| `make cog-up`    | starts the API, Redis, and all workers locally, tails logs     |
-| `make cog-down`  | stops all locally-running services                             |
-| `make cog-clean` | cleans up docker-compose volumes, do this to clear BullMQ jobs |
-| `make cog-help`  | show more commands to work with the Cog stack locally          |
+> run these from the monorepo root!
+
+| Command          | Description                                                |
+| ---------------- | ---------------------------------------------------------- |
+| `make cog`       | starts the API, Redis, and all workers locally, tails logs |
+| `make cog-build` | builds the cog containers locally                          |
+| `make cog-down`  | brings down the local cog containers                       |
+| `make cog-help`  | show more commands to work with the Cog stack locally      |
 
 > ❗ ensure to run `cog-down` once finished, if you `Ctrl`+`c` out, everything will _still be running!_
 
@@ -75,7 +77,7 @@ Create a file (if it does not already exist) called `schedule.json` in `/src/uti
 }
 ```
 
-when `make up` is run, you will notice your Workflow gets scheduled:
+when `make cog` and then `make cog-logs` is run, you will notice your Workflow gets scheduled:
 
 ```
 cog-workers-1 | ...  DEBUG  environment: 'development'
@@ -89,6 +91,8 @@ cog-api-1     | ...  INFO   successfully scheduled workflow 'MyFirstWorkflow', f
 `schedule.json` gets read upon boot and whatever gets defined here gets scheduled! One of the more powerful features of Cog is the ability to chain Workflows, which you can find mode detail for later on.
 
 # Development Example
+
+> ⚠️ this example is old, and needs to be updated. General concepts are okay but this specific example needs an update
 
 ## Dutchie API Information
 
@@ -237,7 +241,7 @@ export const integratedFunctions: (IntegratedFunction | IntegratedCalls)[] = [
 
 ### 👉 -- Run it:
 
-run `make cog-up` (ensure Docker is running) and issue this `curl` to queue up some work to be done:
+run `make cog` (ensure Docker is running) and issue this `curl` to queue up some work to be done:
 
 ```
 curl --location --request POST '127.0.0.1:15000/api/exampleFunc' \
@@ -246,3 +250,27 @@ curl --location --request POST '127.0.0.1:15000/api/exampleFunc' \
 ```
 
 You should see a file pop up called `exampleFunc.json` pop up in the root directory (docker-compose maps its working directory here so we can see outputs)
+
+### Build
+
+When Cog gets built into a Docker container, the Dockerfile you will notice has a build argument: `COG_SERVICE_BUILD_NAME`
+The one **very important** build argument to pay attention to, as it will set the _service_ type (`api` or `workers`). Example building manually without using the Makefile:
+
+```bash
+docker build -f apps/cog/Dockerfile --build-arg COG_SERVICE_BUILD_NAME=api -t cog-api:latest .
+```
+
+When the Dockerfile produced the finished container, that container is told to run a script at startup called `startup.sh`. This script will configure Vector if set, and kick off the stack as needed.
+
+The `startup.sh` script has a few environment variables that it will look for on the runtime host when deciding how to boot the application at hand:
+
+| Environment Variable      | Default Value            | Description                                                                                     |
+| ------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------- | ----------- |
+| `APPLICATION_NAME`        | "cog"                    | The name of the application that this script is booting inside of apps/.                        |
+| `VECTOR_SYSTEM_PATH`      | "~/.vector/bin/vector"   | The path to the Vector binary, which serves as the logging agent.                               |
+| `VECTOR_CONFIG_FILE_PATH` | "vector/vector-cog.toml" | The location of the Vector configuration file.                                                  |
+| `VECTOR_BACKUP_DATA_DIR`  | "vector/data"            | In case the script cannot create /var/lib/vector, where should Vector                           | store data? |
+| `DEFAULT_COMMANDS`        | ["api", "workers"]       | The default commands that the script will use if it cannot find package. json. _(not required)_ |             |
+| `RUN_WITH_VECTOR`         | "false"                  | Whether or not to run the Vector logging agent.                                                 |
+
+> NOTE: though this startup script was developed for Cog, it is totally malleable in the sense that you can set `APPLICATION_NAME` to be whatever app you want in a typical monorepo setup, and this startup script will play nice with a Docker build using turborepo.

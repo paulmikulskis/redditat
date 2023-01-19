@@ -49,10 +49,11 @@ jobs:
         with:
           context: .
           push: true
-          file: apps/cog/api.Dockerfile
+          file: apps/cog/Dockerfile
           tags: registry.yungstentech.com/cog-api:latest
           build-args: |
             "RUN_WITH_VECTOR=true"
+            "COG_SERVICE_BUILD_NAME=api"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
@@ -61,10 +62,11 @@ jobs:
         with:
           context: .
           push: true
-          file: apps/cog/workers.Dockerfile
+          file: apps/cog/Dockerfile
           tags: registry.yungstentech.com/cog-workers:latest
           build-args: |
             "RUN_WITH_VECTOR=true"
+            "COG_SERVICE_BUILD_NAME=workers"
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 

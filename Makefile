@@ -1,5 +1,5 @@
 .PHONY: all help
-.SILENT: cog cog-help cog-clean spam-help help _spam-extension-info spam-chrome spam-firefox spam-opera spam-build admin-help setup
+.SILENT: spampage-help cog cog-help cog-clean spam-help help _spam-extension-info spam-chrome spam-firefox spam-opera spam-build admin-help setup
 
 all: cog help
 
@@ -10,7 +10,7 @@ all: cog help
 # # # # # # # # # # # # # # # # # #
 
 help: 
-	make admin-help && make spam-help && make cog-help
+	make admin-help && make spam-help && make cog-help && make spampage-help
 
 setup:
 	echo " * \033[0;34mtouch-ing .yarnrc.yml\033[0m" && \
@@ -69,9 +69,12 @@ cog:
 	fi
 	docker compose -f apps/cog/docker-compose-dev.yml --env-file .env up -d --force-recreate
 
+cogo: # stupid little helper command to just build then run, didn't want to clutter the help msg above
+	make cog-build && make cog
+
 cog-build:
-		docker build -f apps/cog/workers.Dockerfile -t cog-workers:latest . && \
-		docker build -f apps/cog/api.Dockerfile -t cog-api:latest .
+		docker build -f apps/cog/Dockerfile --build-arg COG_SERVICE_BUILD_NAME=workers -t cog-workers:latest . && \
+		docker build -f apps/cog/Dockerfile --build-arg COG_SERVICE_BUILD_NAME=api -t cog-api:latest .
 
 cog-prod:
 	docker compose -f apps/cog/docker-compose.yml --env-file .env up -d --force-recreate
@@ -136,5 +139,34 @@ spam-lint:
 
 spam-lint-fix:
 	yarn --cwd=apps/spamcntrl-extension lint:fix
+
+# # # # # # # # # # # # # # # # # #
+# \_______________________________
+#       Commands for Spamcntrl Landing Page
+# /‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+# # # # # # # # # # # # # # # # # #
+spampage-help:
+	echo "\033[0;100mcommands for working with the \033[0;106mSpamcntrl NextJS Landing Page\033[0m" && \
+	echo "  • \033[0;33m make spampage \033[0m - runs 'yarn dev' inside the project app directory" && \
+	echo "  • \033[0;33m make spampage-prod \033[0m - runs 'yarn start' inside the project app directory" && \
+	echo "  • \033[0;33m make spampage-build \033[0m - builds the Spamcntrl NextJS app landing page" && \
+	echo "  • \033[0;33m make spampage-lint \033[0m - lints the source code for NextJS app"
+_spampage-info:
+	echo "🏗️  building the Spamcntrl Browser sExtension -- load it from \033[0;34mapps/spamcntrl-extension/extension/\033[0m"
+
+spampage:
+	yarn --cwd apps/spamcntrl-landingpage dev
+
+spampage-prod:
+	yarn --cwd apps/spamcntrl-landingpage start
+
+spampage-build:
+	yarn build --filter=@yungsten/spamcntrl-landingpage
+
+spampage-lint:
+	yarn lint --filter=@yungsten/spamcntrl-landingpage
+
+spampage-lint-fix:
+	echo "not implemented yet"
 
 # colors in bash: https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
