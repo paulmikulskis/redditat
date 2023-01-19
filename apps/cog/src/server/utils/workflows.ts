@@ -11,6 +11,7 @@ import {
   repeatJobId,
 } from "./job_utils";
 import { RedisConnectionContext } from "@yungsten/utils/dist/redis";
+import { sentryException } from "../../utils/sentry";
 
 const logger = logging.createLogger();
 
@@ -46,6 +47,7 @@ export async function getWorkflowSchedule(
       queues.push(await redis.getQueue<ReqBody>(context.mqConnection, fn.queueName));
     } catch (e) {
       const error = e as Error;
+      sentryException(error);
       const msg = `tried getting queue '${fn.queueName}' for IntegratedFunction '${fn.name}', but redis.getQueue returned an error: ${error.message}`;
       logger.error(msg);
     }
@@ -74,6 +76,7 @@ export async function getWorkflowSchedule(
         } catch (e) {
           // If there was an error getting the repeat job ID, log a warning and skip this iteration
           const error = e as Error;
+          sentryException(error);
           const msg = `unable to get repeatJobId for job '${
             job.name || "[UNKNOWN]"
           }' (job key = '${job?.key || "[UNKNOWN]"}'): ${error.message}`;
@@ -118,6 +121,7 @@ export async function getWorkflowSchedule(
       extendedInfoList.push(extendedInfoJobList);
     } catch (e) {
       const error = e as Error;
+      sentryException(error);
       const msg = `tried getting repeatable jobs for queue '${
         queue.name || "[UNKNOWN]"
       }', for IntegratedFunction '${
@@ -148,6 +152,7 @@ export async function getWorkflowSchedule(
       );
     }
   } catch (error) {
+    sentryException(error);
     const msg = `Error while processing workflow schedule: ${error.message}`;
     logger.error(msg);
     Err(msg);

@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "@bull-board/express": "^4.2.2",
-    "@sentry/node": "^7.9.0",
+    "@sentry/node": "^7.31.1",
+    "@sentry/tracing": "^7.31.1",
     "@types/lodash": "^4.14.182",
     "@yungsten/openai": "*",
     "@yungsten/prom": "*",

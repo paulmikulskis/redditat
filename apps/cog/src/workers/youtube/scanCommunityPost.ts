@@ -1,5 +1,6 @@
 import { createIntegratedWorker } from "../utils/worker";
 import ytpurge from "../../server/utils/ytpurgeapi";
+import { sentryException } from "../../utils/sentry";
 
 export const scanCommunityPost = () => {
   return createIntegratedWorker("scanCommunityPost", async ({ reqBody, _calls }) => {
@@ -26,6 +27,7 @@ export const scanCommunityPost = () => {
     console.log(response.data);
     try {
     } catch (e) {
+      sentryException(e as Error);
       console.log(`ERROR while trying to request for the api`);
     }
   });

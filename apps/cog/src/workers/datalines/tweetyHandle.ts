@@ -9,6 +9,7 @@ import { Ok, Err, Result } from "ts-results";
 import { types } from "@yungsten/reddit-wrap";
 import { logging } from "@yungsten/utils";
 import { TweetyTweet, PrismaClient } from "@prisma/client";
+import { sentryException } from "../../utils/sentry";
 
 const logger = logging.createLogger();
 
@@ -77,6 +78,7 @@ export const tweetyHandleScrape = () => {
               const origErrorString = insertedTweetsResult.val;
               const msg = `error inserting ${tweets.length} tweets for twitter user '@${handle}'!! ${origErrorString}`;
               logger.error(msg);
+              sentryException(new Error(msg));
               return Err(msg);
             }
             // database insert failed
@@ -84,6 +86,7 @@ export const tweetyHandleScrape = () => {
             const err = error as Error;
             const msg = `unhandled error while having the databaseClient call 'insertTweetTree' for twitter user '@${handle}', ${err.message}`;
             logger.error(msg);
+            sentryException(new Error(msg));
             return Err(msg);
           }
           // if the tweets we just scraped give us an Err result:

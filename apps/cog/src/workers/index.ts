@@ -15,6 +15,7 @@ import { env, logging } from "@yungsten/utils";
 import { z } from "zod";
 import { redis } from "@yungsten/utils";
 import { integratedFunctions } from "../server/utils/executeFunction";
+import { sentryException } from "../utils/sentry";
 
 /** * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -98,6 +99,7 @@ const workers = async function (commandLineArgs: string[]) {
         } catch (e) {
           // Problem starting worker because of some Redis or BullJS problem likely
           const error = e as Error;
+          sentryException(error);
           const msg =
             `unable to start worker '${wrkr.name}' on queue '${calledFunc.queueName}'` +
             `from IntegratedFunction '${calledFunc.name}': ${error.message}`;
@@ -124,6 +126,7 @@ const workers = async function (commandLineArgs: string[]) {
     } catch (e) {
       // Some unknown, wildin error
       const error = e as Error;
+      sentryException(error);
       const msg =
         `unable to start workers, this error was thrown when trying to iterate over all workers.` +
         `If you are seeing this, a successful connection to Redis has already been made.  Error: ${error.message}`;
