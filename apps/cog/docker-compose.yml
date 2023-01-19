@@ -9,6 +9,7 @@ services:
   api:
     image: registry.yungstentech.com/cog-api:latest
     command: ["apps/cog/startup.sh", "api"]
+    restart: on-failure
     user: root
     ports:
       - "15000:3000"
@@ -25,6 +26,7 @@ services:
   workers:
     image: registry.yungstentech.com/cog-workers:latest
     command: ["apps/cog/startup.sh", "workers"]
+    restart: on-failure
     user: root
     depends_on:
       - redis
