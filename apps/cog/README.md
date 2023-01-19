@@ -49,13 +49,13 @@ The pieces of this service consist of:
 ```
 curl --location --request POST '127.0.0.1:15000/api/scheduler' \
 --header 'Content-Type: application/json' \
---data-raw '{   "workflowName": "myWorkflow",
-    "functionName": "exampleFunc",
+--data-raw '{   "workflowName": "myHealthcheckingWorkflow",
+    "functionName": "healthcheck",
     "user": "doesntMatter",
     "cron": "* * * * *",
-    "body": {
-      "miles": 5
-    }
+    "reqBody": {
+      "endpoint": "https://healthchecks.yungstentech.com/ping/c0ca6da6-c0e4-48c4-a711-4386213ac0f9"
+    },
 }'
 ```
 
@@ -69,10 +69,10 @@ Create a file (if it does not already exist) called `schedule.json` in `/src/uti
 {
   "MyFirstWorkflow": {
     "cron": "* * * * *",
-    "functionName": "exampleFunc",
+    "functionName": "healthcheck",
     "reqBody": {
-      "miles": 5,
-    }
+      "endpoint": "https://healthchecks.yungstentech.com/ping/c0ca6da6-c0e4-48c4-a711-4386213ac0f9"
+    },
   }
 }
 ```
