@@ -173,7 +173,7 @@ export const server = async function (commandLineArgs: string[]) {
         const error = e as Error;
         const msg = `was able to remove workflow '${workflowName}' for user '${userWhoScheduled}', but had trouble assembling the response: ${error.message}`;
         logger.error(msg);
-        return res.send(respondWith(500, msg));
+        return;
       }
     } else {
       // general error catch statement
@@ -198,17 +198,13 @@ export const server = async function (commandLineArgs: string[]) {
       return res.send(
         respondWith(
           200,
-          `found ${Object.keys(workflowSchedule).length} workflows`,
+          `found ${Object.keys(workflowSchedule.val).length} workflows`,
           workflowSchedule.val
         )
       );
     } else {
       return res.send(
-        respondWith(
-          500,
-          `error retrieving ${Object.keys(workflowSchedule).length} workflows`,
-          { error: workflowSchedule.val }
-        )
+        respondWith(500, `error retrieving workflows`, { error: workflowSchedule.val })
       );
     }
   });
