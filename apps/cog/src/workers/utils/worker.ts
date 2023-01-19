@@ -4,8 +4,7 @@ import { Worker } from "bullmq";
 import { range } from "lodash";
 import { integratedFunctions } from "../../server/utils/executeFunction";
 import { env } from "../utils/configure";
-import { redis } from "@yungsten/utils";
-import { Logger } from "tslog";
+import { redis, logging } from "@yungsten/utils";
 import { z } from "zod";
 
 export interface ExecutionCall {
@@ -21,7 +20,7 @@ export interface ExecutionCallLifecycle {
   entries: ExecutionCall[];
 }
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 export const createIntegratedWorker = (
   functionName: string,

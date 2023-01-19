@@ -1,10 +1,9 @@
 import { respondError } from "./server_utils";
-import { redis } from "@yungsten/utils";
+import { redis, logging } from "@yungsten/utils";
 import { IntegratedFunction, IntegratedCalls } from "./types";
-import { Logger } from "tslog";
 import { allIntegratedFunctions } from "../integrated_functions/index";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 export const integratedFunctions: (IntegratedFunction | IntegratedCalls)[] = [
   ...allIntegratedFunctions,

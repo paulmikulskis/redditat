@@ -1,8 +1,7 @@
-import { Logger } from "tslog";
 import { getScheduleableFunctions } from "./server_utils";
 import { z } from "zod";
 import { Queue } from "bullmq";
-import { redis } from "@yungsten/utils";
+import { redis, logging } from "@yungsten/utils";
 import { Ok, Err, Result } from "ts-results";
 import { WorkflowSchedules, ExtendedWorkflowSchedules } from "./types";
 import {
@@ -13,7 +12,7 @@ import {
 } from "./job_utils";
 import { RedisConnectionContext } from "@yungsten/utils/dist/redis";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 /**
  * retrieves the schedule of all workflows in the Cog system.

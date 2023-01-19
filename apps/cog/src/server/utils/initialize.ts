@@ -1,16 +1,15 @@
 import { QueueScheduler } from "bullmq";
-import { env, redis } from "@yungsten/utils";
+import { env, redis, logging } from "@yungsten/utils";
 import schedule from "../../utils/schedule.json";
 import { isValidCron } from "cron-validator";
 import { integratedFunctions } from "./executeFunction";
 import { jobId } from "../integrated_functions/system/scheduler";
 import { z } from "zod";
-import { Logger } from "tslog";
 import { getWorkflowSchedule } from "./workflows";
 import { exit } from "process";
 import { IntegratedFunction } from "./types";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 /**
  * Initialize the Cog server and schedule all Workflows.

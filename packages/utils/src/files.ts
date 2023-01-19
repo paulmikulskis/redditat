@@ -1,5 +1,6 @@
 import { join } from "path";
 import { promises } from "fs";
+import { createLogger } from "./logging";
 
 /**
  * Recursively generates an array of file paths within a given directory (absolute path!)

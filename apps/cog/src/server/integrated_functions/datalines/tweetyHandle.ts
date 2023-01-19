@@ -1,13 +1,12 @@
 import { z } from "zod";
 import { createIntegratedFunction, respondWith } from "../../utils/server_utils";
 import { IntegratedFunction } from "../../utils/types";
-import { redis } from "@yungsten/utils";
+import { redis, logging } from "@yungsten/utils";
 import { types } from "@yungsten/reddit-wrap";
 import { QueueEvents } from "bullmq";
 import { Ok, Err, Result } from "ts-results";
-import { Logger } from "tslog";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 export const functionName = "tweetyHandleScrape";
 const AWAIT_RETURN_TTL_MS = 15000;
 

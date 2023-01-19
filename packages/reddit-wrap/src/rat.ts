@@ -13,6 +13,9 @@ import {
 import { getCommentDetails } from "./utils/commentUtils";
 import { CommentDetails } from "./types";
 import { Ok, Err, Result } from "ts-results";
+import { logging } from "@yungsten/utils";
+
+const logger = logging.createLogger();
 
 export const rclient = new snoowrap({
   userAgent: env.REDDIT_BOT_USER_AGENT || "",
@@ -30,7 +33,7 @@ export const rclient = new snoowrap({
  * const rat = new Rat(snoowrapClient);
  * const submissionSummary = await rat.getSubmissionSummary("abc123");
  * if (submissionSummary.isOk()) {
- *   console.log(submissionSummary.value.title);
+ *   logger.debug(submissionSummary.value.title);
  * } else {
  *   console.error(submissionSummary.error);
  * }
@@ -112,11 +115,11 @@ export class Rat {
       });
       for (const submission of submissions) {
         if (submission.over_18 !== over18) continue;
-        console.log(
+        logger.debug(
           `found submission ${submission.id} with ${submission.comments.length} comments`
         );
         if (submission.is_self) {
-          console.log("got text post");
+          logger.debug("got reddit text-only post");
           filteredSubmissions.push({
             id: submission.id,
             body: submission.selftext,
@@ -137,7 +140,7 @@ export class Rat {
             submission: Object.create(submission),
           });
         } else {
-          console.log(`error writing or fetching file ${submission.url}`);
+          logger.error(`error writing or fetching file ${submission.url}`);
           filteredSubmissions.push({
             id: submission.id,
             body: submission.selftext,
@@ -149,7 +152,7 @@ export class Rat {
       }
       return Ok(filteredSubmissions.slice(0, topAmount));
     } catch (error) {
-      console.log(JSON.stringify(error));
+      logger.error(JSON.stringify(error));
       return Err(new Error("unknown error in getLatestFrom"));
     }
   }
@@ -202,7 +205,7 @@ export class Rat {
       return mediaPath;
     } catch (error) {
       // An error occurred while trying to download and store the image
-      console.error(error);
+      logger.error(error);
       return undefined;
     }
   }

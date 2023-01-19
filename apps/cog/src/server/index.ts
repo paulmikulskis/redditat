@@ -2,12 +2,11 @@ import express from "express";
 import { executeFunction, integratedFunctions } from "./utils/executeFunction";
 import { getOperatingContext } from "./utils/context";
 import { initializeCogApiBootstrap } from "./utils/initialize";
-import { Logger } from "tslog";
 import { respondWith } from "./utils/server_utils";
 import zodToJsonSchema from "zod-to-json-schema";
 import { authToken } from "./middleware/authorize";
 import initializeFirebase from "./utils/firebase";
-import { redis } from "@yungsten/utils";
+import { redis, logging } from "@yungsten/utils";
 import { Ok, Err, Result } from "ts-results";
 import { getWorkflowSchedule } from "./utils/workflows";
 import { jobIdToUserName } from "./utils/job_utils";
@@ -27,7 +26,7 @@ import { jobIdToUserName } from "./utils/job_utils";
  * server and listens for incoming requests until the process is terminated.
  */
 export const server = async function (commandLineArgs: string[]) {
-  const logger = new Logger();
+  const logger = logging.createLogger();
   const app = express();
   // Set the view engine to EJS so we can render views for the status screen at the root path '/'
   app.set("view engine", "ejs");

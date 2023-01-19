@@ -1,6 +1,7 @@
 import { TextEncoder } from "util";
 import { format } from "date-fns";
 import { Readable } from "stream";
+import { createLogger } from "./logging";
 
 export const getSizeInBytes = (obj: any) => {
   let str = null;

@@ -9,10 +9,9 @@ import { healthcheck } from "./system/healthcheck";
 import { tweetyHandleScrape } from "./datalines/tweetyHandle";
 import { Worker } from "bullmq";
 import { range } from "lodash";
-import { Logger } from "tslog";
 import { exit } from "process";
 import { config } from "dotenv";
-import { env } from "@yungsten/utils";
+import { env, logging } from "@yungsten/utils";
 import { z } from "zod";
 import { redis } from "@yungsten/utils";
 import { integratedFunctions } from "../server/utils/executeFunction";
@@ -48,7 +47,7 @@ const workers = async function (commandLineArgs: string[]) {
   // Connect to the message queue using the Redis BullJS library.
   const mqConnection = await redis.connectToRedisBullmq(env);
   // Create a logger for logging messages.
-  const logger = new Logger();
+  const logger = logging.createLogger();
   logger.info(`starting worker stack...`);
   const allWorkerNames = INTEGRATED_WORKERS.map((w) => w[0] && w[0].name);
   /**

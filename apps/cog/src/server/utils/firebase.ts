@@ -1,9 +1,8 @@
 import * as firebaseAdmin from "firebase-admin";
-import { Logger } from "tslog";
 import { config } from "dotenv";
-import { env } from "@yungsten/utils";
+import { env, logging } from "@yungsten/utils";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 config({ path: "base.env" });
 config({ path: ".env", override: true });
 // Initialize Firebase Admin

@@ -17,10 +17,10 @@ import {
 import { Ok, Err, Result } from "ts-results";
 import { Media, TaskStatus, RedditDriverSubmission, RedditDriverComment } from "./types";
 import { subHours, formatDistanceToNow, sub } from "date-fns";
-import { Logger } from "tslog";
 import { Rat, rclient } from "@yungsten/reddit-wrap";
+import { logging } from "@yungsten/utils";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 /**
  * Create a new ContentGenerationTask in the database.

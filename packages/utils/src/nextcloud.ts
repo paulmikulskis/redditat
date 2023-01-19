@@ -11,7 +11,7 @@ import Client, {
   CommandResultMetaData,
 } from "nextcloud-node-client";
 import { validatedEnv as env } from "./validatedEnv";
-import { Logger } from "tslog";
+import { createLogger } from "./logging";
 
 export class ServerConf extends Server {}
 
@@ -20,7 +20,7 @@ export class NextClient {
   private logger;
 
   constructor(client?: Client | Server) {
-    this.logger = new Logger();
+    this.logger = createLogger();
     if (client instanceof Client) {
       this.client = client;
     } else if (client instanceof Server) {

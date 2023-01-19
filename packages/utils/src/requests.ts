@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
-import { Logger } from "tslog";
-const logger = new Logger();
+import { createLogger } from "./logging";
+const logger = createLogger();
 
 const DEFAULT_TIMEOUT = 100000; // 10 seconds
 /**

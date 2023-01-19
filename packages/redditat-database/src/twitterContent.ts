@@ -4,6 +4,9 @@ import { Media, TaskStatus } from "./types";
 import { subHours } from "date-fns";
 import { types } from "@yungsten/reddit-wrap";
 import { ytwitter } from "@yungsten/reddit-wrap";
+import { logging } from "@yungsten/utils";
+
+const logger = logging.createLogger();
 
 export class TwitterContentDBDriver {
   private twitterApi;

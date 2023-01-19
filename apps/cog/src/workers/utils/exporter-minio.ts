@@ -2,11 +2,11 @@
  * Helper functions for writing data to MinIO
  */
 import { BucketItemFromList, Client } from "minio";
-import { Logger } from "tslog";
 import { getSizeInBytes } from "../../utils/helper-funcs";
 import { env } from "../utils/configure";
+import { logging } from "@yungsten/utils";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 const MINIO_ENDPOINT = env.MINIO_ENDPOINT;
 const MINIO_PORT = env.MINIO_PORT;

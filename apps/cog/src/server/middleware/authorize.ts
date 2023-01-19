@@ -2,7 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { respondWith } from "../utils/server_utils";
 import { app } from "firebase-admin/lib/firebase-namespace-api";
 import { getFirestore } from "firebase-admin/firestore";
-import { env } from "@yungsten/utils";
+import { env, logging } from "@yungsten/utils";
+
+const logger = logging.createLogger();
 
 // eslint-disable-next-line unused-imports/no-unused-vars
 /**

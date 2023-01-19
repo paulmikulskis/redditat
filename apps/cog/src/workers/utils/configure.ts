@@ -1,7 +1,6 @@
-import { env } from "@yungsten/utils";
-import { Logger } from "tslog";
+import { env, logging } from "@yungsten/utils";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 export { env };
 
 if (env.ENVIRONMENT !== "development") {

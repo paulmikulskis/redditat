@@ -22,23 +22,27 @@ type = "stdin"
   type = "remap"
   inputs = ["main_stdin"]
   source = """
-    . = parse_regex!(.message, r'^\\s*(?P<time>\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s+(?P<level>\\S+)\\s+\\[(?P<file>.+):(?P<line>\\d+)\\s+(?P<func>.+)\\]\\s+(?P<message>.*)$');
-    .time = parse_timestamp(.time, "2006-01-02 15:04:05.999") ?? now();
-    message_parts = split(.message, ", ", limit: 2);
-    structured = parse_key_value(message_parts[1], key_value_delimiter: ":", field_delimiter: ",") ?? {};
-    .message = message_parts[0];
-    . = merge(., structured);
+    .fileLine = to_int!(.fileLine)
+    .date = parse_timestamp(.date, "%Y-%m-%dT%H:%M:%S%.3f%z") ?? now()
+    service, err = get_env_var("COG_SERVICE_BUILD_NAME")
+    .level = to_int!(.levelId)
   """
 
 [transforms.add_fields]
   type = "remap"
   inputs = ["extract_logs"]
   source = '''
-  ., err = . + {
-    "application": "cog",
-    "service": "${COG_SERVICE_BUILD_NAME:-unknown}",
-    "hostname": "${HOSTNAME:-unknown}"
-  }
+    if err != null {
+      . = merge(., {
+        "application": "cog",
+        "service": "unknown"
+      })
+    } else {
+        . |= {
+        "application": "cog",
+        "service": service
+      }
+    }
   '''
 
 [sinks.vector_home]

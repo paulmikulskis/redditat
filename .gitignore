@@ -12,3 +12,4 @@ venv
 local.env
 .next
 apps/**/.next
+**/app.log

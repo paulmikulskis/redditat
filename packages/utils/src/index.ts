@@ -11,4 +11,4 @@ export * as parsing from "./parsing";
 export * as nextcloud from "./nextcloud";
 export * as files from "./files";
 export * as redis from "./redis";
-export * as logger from "./logging";
+export * as logging from "./logging";

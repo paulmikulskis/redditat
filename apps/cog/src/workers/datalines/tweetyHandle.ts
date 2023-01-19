@@ -3,14 +3,14 @@ import {
   TweetyHandleScrapeType,
   functionName,
 } from "../../server/integrated_functions/datalines/tweetyHandle"; // importing this schema to simply help with field suggestions and typing
-import { Logger } from "tslog";
 import { ytwitter } from "@yungsten/reddit-wrap";
 import { TwitterContentDBDriver } from "@yungsten/redditat-database/dist/twitterContent";
 import { Ok, Err, Result } from "ts-results";
 import { types } from "@yungsten/reddit-wrap";
+import { logging } from "@yungsten/utils";
 import { TweetyTweet, PrismaClient } from "@prisma/client";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 /**
  * Creates a Cog Worker function that is responsible for scraping tweets from a specified Twitter handle, and then

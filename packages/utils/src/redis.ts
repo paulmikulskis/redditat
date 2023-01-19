@@ -3,9 +3,9 @@ import Redis from "ioredis";
 // https://github.com/OptimalBits/bull/issues/503
 // import EventEmitter from "events"
 import { ValidatedEnv, validatedEnv as env } from "./validatedEnv";
-import { Logger } from "tslog";
+import { createLogger } from "./logging";
 import { QueueScheduler, Queue, BaseJobOptions } from "bullmq";
-const logger = new Logger();
+const logger = createLogger();
 
 // EventEmitter.defaultMaxListeners = 20
 const extraLogging = true;

@@ -1,10 +1,9 @@
 import { boolean, z } from "zod";
-import { redis } from "@yungsten/utils";
+import { redis, logging } from "@yungsten/utils";
 import { ApiError, ApiResponse, IntegratedFunction, IntegratedCalls } from "./types";
-import { Logger } from "tslog";
 import { integratedFunctions } from "./executeFunction";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 // helper function to easily see all of the schedulable functions
 export const getScheduleableFunctions = (): IntegratedFunction[] => {

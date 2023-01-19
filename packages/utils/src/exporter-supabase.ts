@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { env } from "./index";
+import { createLogger } from "./logging";
 
 //supabase storage API docs: https://supabase.github.io/storage-api/#/
 export class YungSupabaseClient {

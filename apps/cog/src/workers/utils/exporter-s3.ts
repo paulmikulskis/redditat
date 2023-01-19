@@ -2,12 +2,12 @@
  * Helper functions for writing data to S3
  */
 import * as AWS from "aws-sdk";
-import { Logger } from "tslog";
+import { logging } from "@yungsten/utils";
 import { getSizeInBytes } from "../../utils/helper-funcs";
 import { env } from "../utils/configure";
 import { format } from "date-fns";
 
-const logger = new Logger();
+const logger = logging.createLogger();
 
 const IAM_USER_KEY = env.IAM_USER_KEY;
 const IAM_USER_SECRET = env.IAM_USER_SECRET;
