@@ -25,6 +25,8 @@ address = "http://vector.yungstentech.com:9999"
 
 that is literally the only configuration we would need to give a server somwhere to take whatever `stdin` gets from that computer, and send it to (_yet another_) instance of Vector running at YungstenTech.
 
+Here we see the first two of the three Vector objects in action: [**sources**](https://assume-role-docs--vector-project.netlify.app/docs/reference/sources/) and [**sinks**](https://assume-role-docs--vector-project.netlify.app/docs/reference/sinks/)
+
 It is super powerful that you can: **Vector** -> _send to_ -> **Vector**
 
 ## S3 Example
