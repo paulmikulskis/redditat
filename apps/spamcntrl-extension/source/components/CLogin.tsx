@@ -82,7 +82,7 @@ const CLogin: React.FC<CLoginProps> = ({ onChangeAuth }) => {
           <img src={getURL("assets/images/login_illus.svg")} />
         </div>
         <div className="w-ful flex items-center justify-center">
-          <h2 className="text-xl font-bold text-txt">Welcome Back, Parth!</h2>
+          <h2 className="text-xl font-bold text-txt">Welcome to SpamCntrl</h2>
         </div>
 
         <div className="mt-4 w-full flex items-center justify-center">
