@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import { getLatestVideos } from "../store/slices/dashboardSlice";
-import { getURL } from "../utils";
+import CEmptyData from "./CEmptyData";
 import CVideoBox from "./CVideoBox";
 import CVideoBoxSkeleton from "./CVideoBoxSkeleton";
 
@@ -20,14 +20,7 @@ const CLatestVideos: React.FC<CLatestVideosProps> = ({}) => {
           : "grid grid-cols-3 place-items-center"
       )}
     >
-      {latestVideos && latestVideos.length == 0 ? (
-        <div className="h-[124px] flex flex-col justify-center items-center relative">
-          <img className="h-[100px]" src={getURL("assets/images/nodata.png")} />
-          <span className="absolute font-bold text-[20px] text-[#aaa5ff]">
-            No Video Found
-          </span>
-        </div>
-      ) : null}
+      {latestVideos && latestVideos.length == 0 ? <CEmptyData /> : null}
 
       {latestVideos && latestVideos.length > 0
         ? latestVideos.map((video, i) => {

@@ -1,23 +1,23 @@
-import classNames from 'classnames'
-import React, { useEffect } from 'react'
-import { AppContext } from '../context'
-import { IUser } from '../models'
-import { getNavbarHiddenItems } from '../store/slices/appSlice'
-import CDotIcon from './CDotIcon'
-import CDropdownButton, { IDropdownMenuOption } from './CDropdownButton'
+import classNames from "classnames";
+import React, { useEffect } from "react";
+import { AppContext } from "../context";
+import { IUser } from "../models";
+import { getNavbarHiddenItems } from "../store/slices/appSlice";
+import CDotIcon from "./CDotIcon";
+import CDropdownButton, { IDropdownMenuOption } from "./CDropdownButton";
 
 interface CNavbarProps {
-  user?: IUser | null
-  onClickLogout?: () => void
+  user?: IUser | null;
+  onClickLogout?: () => void;
 
-  activeNavBarKey?: string
-  navbarItems?: IDropdownMenuOption[]
-  onClickNavbarItem?: (navbarItem: IDropdownMenuOption) => void
+  activeNavBarKey?: string;
+  navbarItems?: IDropdownMenuOption[];
+  onClickNavbarItem?: (navbarItem: IDropdownMenuOption) => void;
 }
 const defaultProps: CNavbarProps = {
-  activeNavBarKey: 'dashboard',
+  activeNavBarKey: "dashboard",
   navbarItems: [],
-}
+};
 
 const CNavbar: React.FC<CNavbarProps> = ({
   navbarItems,
@@ -25,25 +25,23 @@ const CNavbar: React.FC<CNavbarProps> = ({
   onClickNavbarItem,
   onClickLogout,
 }) => {
-  const { user, setActiveNavbarKey } = React.useContext(AppContext)
-
-  console.log('log: user', user)
+  const { user, setActiveNavbarKey } = React.useContext(AppContext);
 
   useEffect(() => {
     if (user) {
-      setActiveNavbarKey && setActiveNavbarKey('dashboard')
+      setActiveNavbarKey && setActiveNavbarKey("dashboard");
     }
-  }, [user])
+  }, [user]);
 
   function _onClickNavbarItem(navbar: IDropdownMenuOption) {
-    onClickNavbarItem && onClickNavbarItem(navbar)
+    onClickNavbarItem && onClickNavbarItem(navbar);
   }
 
   function onClickMenuOption(option: IDropdownMenuOption) {
-    if (option.key == 'logout') {
-      onClickLogout && onClickLogout()
+    if (option.key == "logout") {
+      onClickLogout && onClickLogout();
     } else {
-      onClickNavbarItem && onClickNavbarItem(option)
+      onClickNavbarItem && onClickNavbarItem(option);
     }
   }
 
@@ -51,14 +49,14 @@ const CNavbar: React.FC<CNavbarProps> = ({
     <div className="c-navbar bg-alt w-full px-4 flex justify-between text-sm items-center">
       {navbarItems
         ? navbarItems.map((navbar) => {
-            const isActive = activeNavBarKey == navbar.key
+            const isActive = activeNavBarKey == navbar.key;
 
             return (
               <span
                 onClick={() => _onClickNavbarItem(navbar)}
                 className={classNames(
-                  'h-full flex items-center justify-center cursor-pointer relative',
-                  isActive ? 'text-primary font-bold' : 'text-lnk font-[450]'
+                  "h-full flex items-center justify-center cursor-pointer relative",
+                  isActive ? "text-primary font-bold" : "text-lnk font-[450]"
                 )}
               >
                 {navbar.title}
@@ -67,14 +65,14 @@ const CNavbar: React.FC<CNavbarProps> = ({
                   <span
                     className="absolute"
                     style={{
-                      bottom: '6px',
+                      bottom: "6px",
                     }}
                   >
                     <CDotIcon size={3} />
                   </span>
                 )}
               </span>
-            )
+            );
           })
         : null}
 
@@ -83,28 +81,24 @@ const CNavbar: React.FC<CNavbarProps> = ({
         menuOptions={getNavbarHiddenItems()}
         buttonStyle="transparent"
         style={{
-          paddingLeft: '0px',
-          paddingRight: '0px',
+          paddingLeft: "0px",
+          paddingRight: "0px",
         }}
         menuOptionsStyle={{
-          marginTop: '8px',
-          marginBottom: '8px',
+          marginTop: "8px",
+          marginBottom: "8px",
         }}
         popupMenuStyle={{
-          width: '88px',
-          paddingLeft: '4px',
-          paddingRight: '4px',
-          right: '-10px',
-          top: '29px',
+          width: "88px",
+          paddingLeft: "4px",
+          paddingRight: "4px",
+          right: "-10px",
+          top: "29px",
         }}
         text={
           <span className="mr-1">
             {user && user.photoURL ? (
-              <img
-                className="w-6 h-6 rounded-full"
-                src={user.photoURL}
-                alt="Avatar"
-              />
+              <img className="w-6 h-6 rounded-full" src={user.photoURL} alt="Avatar" />
             ) : (
               <div className="overflow-hidden relative w-6 h-6 rounded-full">
                 <svg
@@ -125,8 +119,8 @@ const CNavbar: React.FC<CNavbarProps> = ({
         }
       />
     </div>
-  )
-}
+  );
+};
 
-CNavbar.defaultProps = defaultProps
-export default CNavbar
+CNavbar.defaultProps = defaultProps;
+export default CNavbar;

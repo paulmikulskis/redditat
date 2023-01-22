@@ -1,42 +1,37 @@
-import classNames from 'classnames'
-import React from 'react'
-import 'react-circular-progressbar/dist/styles.css'
-import { useDispatch } from 'react-redux'
-import { AppContext } from '../context'
+import classNames from "classnames";
+import React from "react";
+import "react-circular-progressbar/dist/styles.css";
+import { useDispatch } from "react-redux";
+import { AppContext } from "../context";
 import {
   getPurgingActiveButtonTabKey,
   getPurgingButtonTabs,
-  getPurgingPurgeVideoSearchResults,
   getPurgingPurgeVideoSearchText,
   setPurgingActiveButtonTabKey,
-  setPurgingPurgeVideoSearchText,
-} from '../store/slices/purgingSlice'
-import { getURL } from '../utils'
-import CButton from './CButton'
-import CButtonTabs from './CButtonTabs'
-import CIconButton from './CIconButton'
-import CInput from './CInput'
-import CPlaylistBox from './CPlaylistBox'
-import CPurgingMyVideosTab from './CPurgingMyVideosTab'
-import CPurgingOngoingPurgeTab from './CPurgingOngoingPurgeTab'
-import CPurgingSchedulePurgeTab from './CPurgingSchedulePurgeTab'
-import CSearchIcon from './CSearchIcon'
-import CVideoBox from './CVideoBox'
+} from "../store/slices/purgingSlice";
+import { getURL } from "../utils";
+import CButton from "./CButton";
+import CButtonTabs from "./CButtonTabs";
+import CIconButton from "./CIconButton";
+import CPlaylistBox from "./CPlaylistBox";
+import CPurgingMyVideosTab from "./CPurgingMyVideosTab";
+import CPurgingOngoingPurgeTab from "./CPurgingOngoingPurgeTab";
+import CPurgingQuickSearchVideo from "./CPurgingQuickSearchVideo";
+import CPurgingSchedulePurgeTab from "./CPurgingSchedulePurgeTab";
 
 interface CPurgingPageProps {}
-const defaultProps: CPurgingPageProps = {}
+const defaultProps: CPurgingPageProps = {};
 
 const CPurgingPage: React.FC<CPurgingPageProps> = ({}) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const purgingActiveButtonTabKey = getPurgingActiveButtonTabKey()
-  const purgingPurgeVideoSearchText = getPurgingPurgeVideoSearchText()
+  const purgingActiveButtonTabKey = getPurgingActiveButtonTabKey();
+  const purgingPurgeVideoSearchText = getPurgingPurgeVideoSearchText();
   const hasContentPurgeVideoSearchText = purgingPurgeVideoSearchText
     ? purgingPurgeVideoSearchText.trim().length > 0
-    : false
-  const purgingPurgeVideoSearchResults = getPurgingPurgeVideoSearchResults()
+    : false;
 
-  const { setActiveNavbarKey } = React.useContext(AppContext)
+  const { setActiveNavbarKey } = React.useContext(AppContext);
 
   return (
     <div>
@@ -46,68 +41,34 @@ const CPurgingPage: React.FC<CPurgingPageProps> = ({}) => {
           <CButton
             buttonStyle="primary"
             text="Purging History"
-            icon={<img src={getURL('assets/icons/rewind.svg')} />}
+            icon={<img src={getURL("assets/icons/rewind.svg")} />}
             onClick={() => {
-              console.log('purging history')
-              setActiveNavbarKey && setActiveNavbarKey('purging-history')
+              console.log("purging history");
+              setActiveNavbarKey && setActiveNavbarKey("purging-history");
             }}
           />
         </span>
       </div>
-      <div className="mt-3">
-        <CInput
-          onChange={(e) =>
-            dispatch(setPurgingPurgeVideoSearchText(e.target.value))
-          }
-          icon={<CSearchIcon />}
-          value={purgingPurgeVideoSearchText}
-          placeholder={'Search videos for purging...'}
-        />
-      </div>
 
-      {/* Front Page */}
-      <div
-        key="purging-search-purge-video"
-        className={classNames(
-          'w-full mt-3',
-          !hasContentPurgeVideoSearchText && 'hidden'
-        )}
-      >
-        <div className="w-full flex mb-2 justify-between items-center">
-          <span className="font-bold text-title text-txt h-full flex items-center">
-            Search Results - 5
-          </span>
-        </div>
-        <div className="w-full grid grid-cols-3 gap-[9px]">
-          {purgingPurgeVideoSearchResults.map((video) => {
-            return <CVideoBox img={video.thumbnail} title={video.videoTitle} />
-          })}
-        </div>
-      </div>
+      <CPurgingQuickSearchVideo />
 
       <div
         key="purging-front"
-        className={classNames(hasContentPurgeVideoSearchText && 'hidden')}
+        className={classNames(hasContentPurgeVideoSearchText && "hidden")}
       >
         <div className="w-full mt-3">
           <CButtonTabs
             tabs={getPurgingButtonTabs()}
             activeTabKey={purgingActiveButtonTabKey}
-            onClickTab={(tab) =>
-              dispatch(setPurgingActiveButtonTabKey(tab.key))
-            }
+            onClickTab={(tab) => dispatch(setPurgingActiveButtonTabKey(tab.key))}
           />
         </div>
 
         {/* My Videos */}
         <div className="mt-3 w-full">
-          {purgingActiveButtonTabKey == 'my-videos' && <CPurgingMyVideosTab />}
-          {purgingActiveButtonTabKey == 'schedule-purge' && (
-            <CPurgingSchedulePurgeTab />
-          )}
-          {purgingActiveButtonTabKey == 'ongoing-purge' && (
-            <CPurgingOngoingPurgeTab />
-          )}
+          {purgingActiveButtonTabKey == "my-videos" && <CPurgingMyVideosTab />}
+          {purgingActiveButtonTabKey == "schedule-purge" && <CPurgingSchedulePurgeTab />}
+          {purgingActiveButtonTabKey == "ongoing-purge" && <CPurgingOngoingPurgeTab />}
         </div>
 
         {/* Playlists */}
@@ -118,7 +79,7 @@ const CPurgingPage: React.FC<CPurgingPageProps> = ({}) => {
             </span>
             <CIconButton
               onClick={() => {
-                setActiveNavbarKey && setActiveNavbarKey('my-playlist')
+                setActiveNavbarKey && setActiveNavbarKey("my-playlist");
               }}
               icon={
                 <span className="font-medium text-xsm text-lnk h-full flex items-center">
@@ -150,16 +111,16 @@ const CPurgingPage: React.FC<CPurgingPageProps> = ({}) => {
           <CButton
             buttonStyle="primary"
             text="+ Create Playlist"
-            style={{ width: '100px' }}
+            style={{ width: "100px" }}
             onClick={() => {
-              setActiveNavbarKey && setActiveNavbarKey('create-playlist')
+              setActiveNavbarKey && setActiveNavbarKey("create-playlist");
             }}
           />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-CPurgingPage.defaultProps = defaultProps
-export default CPurgingPage
+CPurgingPage.defaultProps = defaultProps;
+export default CPurgingPage;

@@ -101,7 +101,7 @@ export async function lastNVideos(userId: string, lastN: number, options?: Reque
       if (res && res.status == 200) {
         return res.data;
       } else {
-        return [];
+        return undefined;
       }
     }
   ) as Promise<IVideo[]>;
