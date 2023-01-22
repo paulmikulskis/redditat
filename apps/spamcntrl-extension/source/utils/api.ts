@@ -34,17 +34,17 @@ export function handleError(err: any, resolve: Function, {} = {}) {
   resolve(null);
 }
 
-export function _get(url: string, search?: object) {
+export function _get(url: string, search?: object, options?: RequestInit) {
   const fixedURL = `${url}${search ? "?" + queryString.stringify(search) : ""}`;
   console.log("log: api _get", fixedURL, url, search);
   return new Promise((resolve, reject) => {
-    fetch(fixedURL)
+    fetch(fixedURL, options)
       .then((res) => handleThen(res, resolve, reject))
       .catch((err) => handleError(err, resolve, reject));
   });
 }
 
-export function _post(url: string, body?: any) {
+export function _post(url: string, body?: any, options?: RequestInit) {
   console.log("log: api _post", url, body);
   return new Promise((resolve, reject) => {
     fetch(url, {
@@ -54,13 +54,14 @@ export function _post(url: string, body?: any) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      ...options,
     })
       .then((res) => handleThen(res, resolve, reject))
       .catch((err) => handleError(err, resolve, reject));
   });
 }
 
-export function _delete(url: string, body?: any) {
+export function _delete(url: string, body?: any, options?: RequestInit) {
   console.log("log: api _delete", url, body);
   return new Promise((resolve, reject) => {
     fetch(url, {
@@ -70,6 +71,7 @@ export function _delete(url: string, body?: any) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
+      ...options,
     })
       .then((res) => handleThen(res, resolve, reject))
       .catch((err) => handleError(err, resolve, reject));
@@ -91,9 +93,9 @@ export async function viewUser(userId: string) {
   return _get(`${host}/users/${userId}`) as Promise<IUser>;
 }
 
-export async function lastNVideos(userId: string, lastN: number) {
+export async function lastNVideos(userId: string, lastN: number, options?: RequestInit) {
   const host = await getAPIHost();
-  return _get(`${host}/users/${userId}/videos/last/${lastN}`).then(
+  return _get(`${host}/users/${userId}/videos/last/${lastN}`, undefined, options).then(
     (res: any) => {
       console.log("log: res", res);
       if (res && res.status == 200) {
