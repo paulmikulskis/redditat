@@ -32,15 +32,6 @@ const CFooter: React.FC<CFooterProps> = ({ isHome }) => {
             {/* <img src="logo/horizontal-logo.svg" width="290px" /> */}
             <img src="logo/horizontal-logo.png" className="h-[100px]" />
           </div>
-          <div
-            className={classNames(
-              "mt-[19px] max-w-[350px] font-normal text-base leading-[30px] text-lnk text-center",
-              "xl:text-left"
-            )}
-          >
-            This is a big one and i consider it one of the most important things for a
-            designer.
-          </div>
         </div>
 
         <div
