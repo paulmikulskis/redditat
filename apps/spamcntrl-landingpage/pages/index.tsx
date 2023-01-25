@@ -66,8 +66,15 @@ export default function Home() {
 
               <CButton
                 className="mt-8"
-                text="Download Extension"
-                style={{ borderRadius: "10px", width: "208px", height: "53px" }}
+                // text="Download Extension"
+                text="Coming Soon"
+                style={{
+                  borderRadius: "10px",
+                  width: "auto",
+                  height: "53px",
+                  paddingLeft: "34px",
+                  paddingRight: "34px",
+                }}
                 buttonStyle="alt"
               />
             </div>
@@ -107,10 +114,13 @@ export default function Home() {
           <div className="mt-[80px] flex justify-center">
             <CButton
               buttonStyle={"primary"}
-              text="Get Started"
+              // text="Get Started"
+              text="Coming Soon"
               style={{
-                width: "177px",
                 height: "53px",
+                width: "auto",
+                paddingLeft: "47px",
+                paddingRight: "47px",
               }}
             />
           </div>
@@ -179,15 +189,18 @@ export default function Home() {
             >
               <CButton
                 className={classNames("mb-4", "xl:mt-0 xl:mb-0 xl:mr-6")}
-                text="Download"
+                // text="Download"
+                text="Coming Soon"
                 style={{
                   fontFamily: "Gelion",
                   fontSize: "16px",
                   fontWeight: 500,
-                  width: "167px",
                   height: "65px",
                   background: "#fff",
                   color: "#4416BA",
+                  width: "auto",
+                  paddingLeft: "48px",
+                  paddingRight: "48px",
                 }}
               />
               <CButton

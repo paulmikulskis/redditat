@@ -1,23 +1,20 @@
-import classNames from 'classnames'
-import React from 'react'
-import CChip from './CChip'
-import CPlanCard, { CPlanCardProps } from './CPlanCard'
-import CSwitch from './CSwitch'
+import classNames from "classnames";
+import React from "react";
+import CChip from "./CChip";
+import CPlanCard, { CPlanCardProps } from "./CPlanCard";
+import CSwitch from "./CSwitch";
 
 export interface CPricingPlansProps {
-  pricingPlans?: CPlanCardProps[]
+  pricingPlans?: CPlanCardProps[];
 }
 const defaultProps: CPricingPlansProps = {
   pricingPlans: [
     {
-      planCardStyle: 'alt',
+      planCardStyle: "alt",
       title: <span className="h-[30px]"></span>,
       image: (
         <div className="mt-[88px] mb-[47px] flex justify-center">
-          <img
-            className="w-[93.85px] h-[75px]"
-            src={'/images/paper-plane.png'}
-          />
+          <img className="w-[93.85px] h-[75px]" src={"/images/paper-plane.png"} />
         </div>
       ),
       price: (
@@ -30,11 +27,9 @@ const defaultProps: CPricingPlansProps = {
           </span>
         </div>
       ),
-      features: [
-        'Try out all the pro features.',
-        'You can purge up to 5 videos.',
-      ],
-      buttonText: 'Get Started',
+      features: ["Try out all the pro features.", "You can purge up to 5 videos."],
+      // buttonText: 'Get Started',
+      buttonText: "Coming Soon",
       decor: (
         <img
           className="absolute w-[29px] h-[38px] top-[172px] left-[-15px]"
@@ -43,8 +38,8 @@ const defaultProps: CPricingPlansProps = {
       ),
     },
     {
-      planCardStyle: 'primary',
-      title: 'Pro Tier',
+      planCardStyle: "primary",
+      title: "Pro Tier",
       image: (
         <div className="mt-[80px] mb-[40px] flex justify-center">
           <img className="w-[109.51px] h-[90px]" src="/images/helicopter.png" />
@@ -71,21 +66,22 @@ const defaultProps: CPricingPlansProps = {
         </div>
       ),
       features: [
-        'Up to 1,000 comment deletions / Month.',
-        'Up to 5 scheduled playlists.',
-        '30-day retention of stats and intel.',
+        "Up to 1,000 comment deletions / Month.",
+        "Up to 5 scheduled playlists.",
+        "30-day retention of stats and intel.",
       ],
-      buttonText: 'Buy Now',
+      buttonText: "Coming Soon",
+      // buttonText: "Buy Now",
       decor: (
         <span>
           <CChip
             style={{
-              borderRadius: '25.82px',
-              width: '128px',
-              height: '48px',
+              borderRadius: "25.82px",
+              width: "128px",
+              height: "48px",
               fontWeight: 500,
-              fontFamily: 'Gelion',
-              fontSize: '20px',
+              fontFamily: "Gelion",
+              fontSize: "20px",
             }}
             className="bg-[#FF804A] text-[#FFF] absolute left-0 right-0 mx-auto top-[-15px]"
           >
@@ -95,11 +91,11 @@ const defaultProps: CPricingPlansProps = {
       ),
     },
     {
-      planCardStyle: 'alt',
-      title: 'Enterprise Tier',
+      planCardStyle: "alt",
+      title: "Enterprise Tier",
       image: (
         <div className="mt-[88px] mb-[47px] flex justify-center">
-          <img className="w-[141.65px] h-[75px]" src={'/images/plane.png'} />
+          <img className="w-[141.65px] h-[75px]" src={"/images/plane.png"} />
         </div>
       ),
       price: (
@@ -110,11 +106,12 @@ const defaultProps: CPricingPlansProps = {
         </div>
       ),
       features: [
-        'Unlimited comment deletions.',
-        'Unlimited scheduled playlists.',
-        'Quarterly retention with permanent annual summaries.',
+        "Unlimited comment deletions.",
+        "Unlimited scheduled playlists.",
+        "Quarterly retention with permanent annual summaries.",
       ],
-      buttonText: 'Buy Now',
+      buttonText: "Coming Soon",
+      // buttonText: "Buy Now",
       decor: (
         <img
           className="absolute w-[41.35px] h-[40px] top-[523px] right-[-17.23px]"
@@ -123,60 +120,58 @@ const defaultProps: CPricingPlansProps = {
       ),
     },
   ],
-}
+};
 
 const CPricingPlans: React.FC<CPricingPlansProps> = ({ pricingPlans }) => {
-  const [activeIndex, setActiveIndex] = React.useState<number>(0)
-  const [touchStart, setTouchStart] = React.useState(0)
-  const [touchEnd, setTouchEnd] = React.useState(0)
-  const [isYearly, setIsYearly] = React.useState<boolean>(false)
+  const [activeIndex, setActiveIndex] = React.useState<number>(0);
+  const [touchStart, setTouchStart] = React.useState(0);
+  const [touchEnd, setTouchEnd] = React.useState(0);
+  const [isYearly, setIsYearly] = React.useState<boolean>(false);
 
   function onChangeSwitch(bool: boolean) {
-    setIsYearly(bool)
+    setIsYearly(bool);
   }
 
   function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
-    setTouchStart(e.targetTouches[0].clientX)
+    setTouchStart(e.targetTouches[0].clientX);
   }
 
   function handleTouchMove(e: React.TouchEvent<HTMLDivElement>) {
-    setTouchEnd(e.targetTouches[0].clientX)
+    setTouchEnd(e.targetTouches[0].clientX);
   }
 
   function handleTouchEnd() {
     if (touchStart - touchEnd > 150) {
       // do your stuff here for left swipe
-      moveSliderRight()
+      moveSliderRight();
     }
 
     if (touchStart - touchEnd < -150) {
       // do your stuff here for right swipe
-      moveSliderLeft()
+      moveSliderLeft();
     }
   }
 
   function moveSliderRight() {
     if (pricingPlans && pricingPlans.length > 0) {
       setActiveIndex(
-        activeIndex == pricingPlans.length - 1
-          ? pricingPlans.length - 1
-          : activeIndex + 1
-      )
+        activeIndex == pricingPlans.length - 1 ? pricingPlans.length - 1 : activeIndex + 1
+      );
     }
   }
 
   function moveSliderLeft() {
     if (pricingPlans && pricingPlans.length > 0) {
-      setActiveIndex(activeIndex == 0 ? 0 : activeIndex - 1)
+      setActiveIndex(activeIndex == 0 ? 0 : activeIndex - 1);
     }
   }
 
   const activePricingPlan =
     pricingPlans && pricingPlans.length > 0
       ? pricingPlans.find((_, index) => {
-          return index == activeIndex
+          return index == activeIndex;
         })
-      : null
+      : null;
 
   return (
     <>
@@ -191,8 +186,8 @@ const CPricingPlans: React.FC<CPricingPlansProps> = ({ pricingPlans }) => {
 
       <div
         className={classNames(
-          'mt-[99px] px-[104px] hidden justify-center space-x-[31px]',
-          'xl:flex'
+          "mt-[99px] px-[104px] hidden justify-center space-x-[31px]",
+          "xl:flex"
         )}
       >
         {pricingPlans &&
@@ -211,12 +206,12 @@ const CPricingPlans: React.FC<CPricingPlansProps> = ({ pricingPlans }) => {
                 isYearly={isYearly}
                 yearlyPrice={pricingPlan.yearlyPrice}
               />
-            )
+            );
           })}
       </div>
 
-      <div className={classNames('block', 'xl:hidden')}>
-        <div className={classNames('justify-center px-8 mt-8 flex')}>
+      <div className={classNames("block", "xl:hidden")}>
+        <div className={classNames("justify-center px-8 mt-8 flex")}>
           {activePricingPlan && (
             <CPlanCard
               planCardStyle={activePricingPlan.planCardStyle}
@@ -238,28 +233,28 @@ const CPricingPlans: React.FC<CPricingPlansProps> = ({ pricingPlans }) => {
           <div className="mt-10 space-x-[20px]">
             {pricingPlans &&
               pricingPlans.map((pricingPlan, index) => {
-                const active = index == activeIndex
+                const active = index == activeIndex;
                 return (
                   <span
                     key={index}
                     className={classNames(
-                      'rounded-little bg-[#33C286] inline-block',
+                      "rounded-little bg-[#33C286] inline-block",
                       active
-                        ? 'w-[30px] h-[10px]'
-                        : 'w-[10px] h-[10px] bg-opacity-20 cursor-pointer'
+                        ? "w-[30px] h-[10px]"
+                        : "w-[10px] h-[10px] bg-opacity-20 cursor-pointer"
                     )}
                     onClick={() => {
-                      setActiveIndex(index)
+                      setActiveIndex(index);
                     }}
                   ></span>
-                )
+                );
               })}
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-CPricingPlans.defaultProps = defaultProps
-export default CPricingPlans
+CPricingPlans.defaultProps = defaultProps;
+export default CPricingPlans;
