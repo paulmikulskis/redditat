@@ -32,6 +32,8 @@
     "@nivo/core": "^0.80.0",
     "@nivo/pie": "^0.80.0",
     "@reduxjs/toolkit": "^1.8.3",
+    "@sentry/browser": "^7.31.1",
+    "@sentry/tracing": "^7.31.1",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@types/chrome": "^0.0.193",
     "@types/lodash": "^4.14.182",
