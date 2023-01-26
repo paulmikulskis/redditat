@@ -2,7 +2,7 @@ name: production deploy of landing page
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   Deploy:
     name: Production Deploy
