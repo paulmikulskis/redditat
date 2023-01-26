@@ -23,7 +23,12 @@ export default function ContactUs() {
   });
 
   function onClickContactUs(emailFormData: IEmailFormData) {
-    window.location.href = `mailto:${emailFormData.email}?subject=${emailFormData.subject}&body=${emailFormData.body}%0D%0A%0D%0ARegards,%20${emailFormData.name}`;
+    window.location.href = `mailto:contacts@spamcntrl.com?cc=${
+      emailFormData.email
+    }&subject=${emailFormData.subject}&body=${emailFormData.body.replaceAll(
+      "\n",
+      "%0D%0A"
+    )}%0D%0A%0D%0ARegards,%20${emailFormData.name}`;
   }
 
   function onChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
