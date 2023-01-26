@@ -1,75 +1,75 @@
-import React from 'react'
-import CButton from './CButton'
-import classNames from 'classnames'
-import CIconButton from './CIconButton'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useAuth } from '../contexts/AuthContext'
+import React from "react";
+import CButton from "./CButton";
+import classNames from "classnames";
+import CIconButton from "./CIconButton";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { useAuth } from "../contexts/AuthContext";
 
-export type TNavbarStyle = 'primary' | 'alt'
+export type TNavbarStyle = "primary" | "alt";
 
 export interface INavbarItem {
-  key: string
-  title: string
-  path: string
+  key: string;
+  title: string;
+  path: string;
 }
 
 export interface CNavbarProps {
-  navbarItems?: INavbarItem[]
-  navbarStyle?: TNavbarStyle
+  navbarItems?: INavbarItem[];
+  navbarStyle?: TNavbarStyle;
 }
 const defaultProps: CNavbarProps = {
-  navbarStyle: 'primary',
+  navbarStyle: "primary",
   navbarItems: [
-    { key: 'home', title: 'Home', path: '/' },
-    { key: 'contact', title: 'Contact', path: '/contact' },
-    { key: 'about', title: 'About', path: '/about' },
+    { key: "home", title: "Home", path: "/" },
+    { key: "contact", title: "Contact", path: "/contact" },
+    { key: "about", title: "About", path: "/about" },
   ],
-}
+};
 
 const CNavbar: React.FC<CNavbarProps> = ({ navbarItems, navbarStyle }) => {
-  const { user, login, logout } = useAuth()
-  const router = useRouter()
+  const { user, login, logout } = useAuth();
+  const router = useRouter();
 
-  const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false)
+  const [isMenuOpen, setIsMenuOpen] = React.useState<boolean>(false);
 
   function onClickDropdownMenu() {
-    setIsMenuOpen(true)
+    setIsMenuOpen(true);
   }
 
   function onClickCloseDropdownMenu() {
-    setIsMenuOpen(false)
+    setIsMenuOpen(false);
   }
 
   function onClickLoginLogout() {
     if (user == null) {
-      login()
+      login();
     } else {
-      logout()
+      logout();
     }
   }
 
   return (
     <div
       className={classNames(
-        'w-full flex justify-between px-8 pt-[43px] items-center',
-        'xl:px-[104px]'
+        "w-full flex justify-between px-8 pt-[43px] items-center",
+        "xl:px-[104px]"
       )}
     >
       <span
         className={classNames(
-          'font-semibold font-poppins text-[34px] leading-[34.35px] cursor-pointer',
-          navbarStyle === 'primary' && 'text-alt',
-          navbarStyle === 'alt' && 'text-primary'
+          "font-semibold font-poppins text-[34px] leading-[34.35px] cursor-pointer",
+          navbarStyle === "primary" && "text-alt",
+          navbarStyle === "alt" && "text-primary"
         )}
       >
-        {navbarStyle === 'primary' && (
+        {navbarStyle === "primary" && (
           <img
             src="logo/horizontal-logo-white.png"
             className="mt-[-20px] mb-[-20px] h-[100px]"
           />
         )}
-        {navbarStyle === 'alt' && (
+        {navbarStyle === "alt" && (
           <img
             src="logo/horizontal-logo.png"
             className="mt-[-20px] mb-[-20px] h-[100px]"
@@ -78,25 +78,25 @@ const CNavbar: React.FC<CNavbarProps> = ({ navbarItems, navbarStyle }) => {
       </span>
       <span
         className={classNames(
-          'font-medium font-poppins items-center text-title hidden',
-          'md:flex'
+          "font-medium font-poppins items-center text-title hidden",
+          "md:flex"
         )}
       >
         {navbarItems &&
           navbarItems.map((ni, index) => {
-            const isActive = router.asPath == ni.path
-            const isLast = index == navbarItems.length - 1
+            const isActive = router.asPath == ni.path;
+            const isLast = index == navbarItems.length - 1;
             return (
               <Link
                 key={ni.key}
                 className={classNames(
                   // isLast ? 'mr-[32px]' : 'mr-[47px]',
-                  'mr-[47px]',
-                  isActive ? 'font-bold' : 'font-medium',
-                  navbarStyle === 'primary' && 'text-alt',
-                  navbarStyle === 'alt' &&
-                    (isActive ? 'text-txt' : 'text-lnk hover:text-txt'),
-                  'relative leading-[21px] cursor-pointer'
+                  "mr-[47px]",
+                  isActive ? "font-bold" : "font-medium",
+                  navbarStyle === "primary" && "text-alt",
+                  navbarStyle === "alt" &&
+                    (isActive ? "text-txt" : "text-lnk hover:text-txt"),
+                  "relative leading-[21px] cursor-pointer"
                 )}
                 href={ni.path}
               >
@@ -105,40 +105,46 @@ const CNavbar: React.FC<CNavbarProps> = ({ navbarItems, navbarStyle }) => {
                 {isActive && (
                   <span
                     className={classNames(
-                      'absolute left-0 right-0 mx-auto bottom-[-14px] w-[5px] h-[5px] rounded-full',
-                      navbarStyle === 'primary' && 'bg-alt',
-                      navbarStyle === 'alt' && 'bg-primary'
+                      "absolute left-0 right-0 mx-auto bottom-[-14px] w-[5px] h-[5px] rounded-full",
+                      navbarStyle === "primary" && "bg-alt",
+                      navbarStyle === "alt" && "bg-primary"
                     )}
                   ></span>
                 )}
               </Link>
-            )
+            );
           })}
         <span
           className={classNames(
-            'mr-[32px]',
-            navbarStyle === 'primary' && 'text-alt',
-            navbarStyle === 'alt' && 'text-lnk hover:text-txt',
-            'relative leading-[21px] cursor-pointer'
+            "mr-[32px]",
+            navbarStyle === "primary" && "text-alt",
+            navbarStyle === "alt" && "text-lnk hover:text-txt",
+            "relative leading-[21px] cursor-pointer"
           )}
           onClick={onClickLoginLogout}
         >
-          {user == null ? 'Log In' : 'Log Out'}
+          {user == null ? "Log In" : "Log Out"}
         </span>
         <span>
           <CButton
-            text="Get Started"
-            buttonStyle={navbarStyle === 'alt' ? 'primary' : 'alt'}
+            // text="Get Started"
+            text="Coming Soon"
+            buttonStyle={navbarStyle === "alt" ? "primary" : "alt"}
+            style={{
+              width: "auto",
+              paddingLeft: "26px",
+              paddingRight: "26px",
+            }}
           />
         </span>
       </span>
 
       {/* Menu Dropdown for mobile*/}
-      <span className={classNames('inline-block', 'md:hidden')}>
+      <span className={classNames("inline-block", "md:hidden")}>
         <CButton
           text={<img src="/icons/menu.svg" />}
           buttonStyle="alt"
-          style={{ width: '44px' }}
+          style={{ width: "44px" }}
           onClick={onClickDropdownMenu}
         />
         {isMenuOpen && (
@@ -153,16 +159,16 @@ const CNavbar: React.FC<CNavbarProps> = ({ navbarItems, navbarStyle }) => {
             <div className="mt-4 px-4 flex flex-col">
               {navbarItems &&
                 navbarItems.map((ni, index) => {
-                  const isActive = router.asPath == ni.path
-                  const isLast = index == navbarItems.length - 1
+                  const isActive = router.asPath == ni.path;
+                  const isLast = index == navbarItems.length - 1;
                   return (
                     <>
                       <Link
                         key={ni.key}
                         className={classNames(
-                          isLast ? 'mr-[32px]' : 'mr-[47px]',
-                          isActive ? 'font-bold' : 'font-medium',
-                          'text-[24px] font-poppins relative leading-[21px] cursor-pointer text-txt'
+                          isLast ? "mr-[32px]" : "mr-[47px]",
+                          isActive ? "font-bold" : "font-medium",
+                          "text-[24px] font-poppins relative leading-[21px] cursor-pointer text-txt"
                         )}
                         href={ni.path}
                       >
@@ -173,15 +179,15 @@ const CNavbar: React.FC<CNavbarProps> = ({ navbarItems, navbarStyle }) => {
                         <span className="my-4 border-t border-t-[#cdcdcd] w-full"></span>
                       )}
                     </>
-                  )
+                  );
                 })}
             </div>
           </div>
         )}
       </span>
     </div>
-  )
-}
+  );
+};
 
-CNavbar.defaultProps = defaultProps
-export default CNavbar
+CNavbar.defaultProps = defaultProps;
+export default CNavbar;
