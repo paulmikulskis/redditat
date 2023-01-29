@@ -49,7 +49,7 @@ export default function ContactUs() {
         dispatch(
           setNotifData({
             type: "error",
-            message: `We're sorry, there seems to be a problem. Your message was not sent. `,
+            message: err,
           })
         );
       });

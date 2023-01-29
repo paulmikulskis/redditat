@@ -48,17 +48,22 @@ export async function sendContactUsForm(
   contactUsFormData: IContactUsFormData
 ) {
   return new Promise(async (resolve, reject) => {
-    if (firebase) {
-      const db = getFirestore(firebase.firebaseApp);
+    if (firebase && navigator.onLine) {
       try {
+        const db = getFirestore(firebase.firebaseApp);
         const ref = await addDoc(collection(db, "contact_us_form"), {
           ...contactUsFormData,
           createdDate: serverTimestamp(),
         });
+
+        console.log("log: sendContactUsForm ref", ref);
         resolve(ref);
       } catch (err) {
-        reject(null);
+        console.log("log: sendContactUsForm error", err);
+        reject(`We're sorry, there seems to be a problem. Your message was not sent.`);
       }
+    } else {
+      reject(`We're sorry, there seems to be a problem with your internet connection.`);
     }
   });
 }
