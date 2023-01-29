@@ -5,6 +5,7 @@ import {
   where,
   getDocs,
   addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { CLScan } from "../models/CLScan";
 import { CLMyStats } from "../models/CLMyStats";
@@ -50,7 +51,10 @@ export async function sendContactUsForm(
     if (firebase) {
       const db = getFirestore(firebase.firebaseApp);
       try {
-        const ref = await addDoc(collection(db, "contact_us_form"), contactUsFormData);
+        const ref = await addDoc(collection(db, "contact_us_form"), {
+          ...contactUsFormData,
+          createdDate: serverTimestamp(),
+        });
         resolve(ref);
       } catch (err) {
         reject(null);
