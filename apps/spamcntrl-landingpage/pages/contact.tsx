@@ -8,6 +8,7 @@ import CNavbar from "../components/CNavbar";
 import CPage from "../components/CPage";
 import CPanel from "../components/CPanel";
 import { useAuth } from "../contexts/AuthContext";
+import { sendEmail } from "../lib/api";
 import { sendContactUsForm } from "../lib/firebase-utils";
 import { setNotifData } from "../store/slices/appSlice";
 
@@ -34,8 +35,14 @@ export default function ContactUs() {
   function onClickContactUs(e: React.FormEvent) {
     e.preventDefault();
 
-    sendContactUsForm(firebase, contactUsFormData)
-      .then((ref) => {
+    Promise.allSettled([
+      sendEmail(contactUsFormData),
+      sendContactUsForm(firebase, contactUsFormData),
+    ]).then((values) => {
+      const emailValue = values[0];
+      const firestoreValue = values[1];
+
+      if (emailValue.status == "fulfilled" && firestoreValue.status == "fulfilled") {
         setContactUsFormData(defaultFormData);
         dispatch(
           setNotifData({
@@ -44,15 +51,26 @@ export default function ContactUs() {
               "Thank you for reaching out! Your message has been successfully sent. We will get back to you as soon as possible.",
           })
         );
-      })
-      .catch((err) => {
-        dispatch(
-          setNotifData({
-            type: "error",
-            message: err,
-          })
-        );
-      });
+      } else {
+        if (emailValue.status === "rejected") {
+          dispatch(
+            setNotifData({
+              type: "error",
+              message: emailValue.reason,
+            })
+          );
+        }
+
+        if (firestoreValue.status === "rejected") {
+          dispatch(
+            setNotifData({
+              type: "error",
+              message: firestoreValue.reason,
+            })
+          );
+        }
+      }
+    });
   }
 
   function onChangeEmail(e: React.ChangeEvent<HTMLInputElement>) {
