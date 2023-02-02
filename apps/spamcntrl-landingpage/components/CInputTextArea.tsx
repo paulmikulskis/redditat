@@ -5,12 +5,22 @@ interface CInputTextAreaProps {
   placeholder?: string;
   label?: string;
   onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  value?: string;
+  name?: string;
+  required?: boolean;
 }
 const defaultProps: CInputTextAreaProps = {
   placeholder: "Search Videos...",
+  value: "",
 };
 
-const CInputTextArea: React.FC<CInputTextAreaProps> = ({ label, onChange, ...props }) => {
+const CInputTextArea: React.FC<CInputTextAreaProps> = ({
+  label,
+  onChange,
+  value,
+  required,
+  ...props
+}) => {
   return (
     <>
       {label && <div className="text-lnk text-base mb-2 w-full text-left">{label}</div>}
@@ -29,6 +39,8 @@ const CInputTextArea: React.FC<CInputTextAreaProps> = ({ label, onChange, ...pro
           rows={4}
           {...props}
           onChange={onChange}
+          required={required}
+          value={value}
         />
       </div>
     </>
