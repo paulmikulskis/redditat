@@ -1,25 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
+import { getOrigin } from "../lib/html-util";
 
 export function useCustomHeaderUser() {
-  const [email, setEmail] = useState<string | null>(null)
+  const [email, setEmail] = useState<string | null>(null);
 
-  const origin =
-    typeof window !== 'undefined' && window.location.origin
-      ? window.location.origin
-      : ''
+  const origin = getOrigin();
 
-  const checkHeadersUrl = `${origin}/api/headers`
+  const checkHeadersUrl = `${origin}/api/headers`;
   useEffect(() => {
     fetch(checkHeadersUrl)
       .then((res) => {
-        return res.json()
+        return res.json();
       })
       .then((json) => {
         if (json.hasHeaders) {
-          setEmail(json.email)
+          setEmail(json.email);
         }
-      })
-  }, [])
+      });
+  }, []);
 
-  return [email]
+  return [email];
 }

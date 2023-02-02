@@ -1,78 +1,78 @@
-import classNames from 'classnames'
-import React from 'react'
+import classNames from "classnames";
+import React from "react";
 
-type TInputType = 'modal' | 'normal'
+type TInputType = "modal" | "normal";
 
 interface CInputProps {
-  name?: string
-  type?: TInputType
-  className?: string
-  placeholder?: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  value?: string | number | readonly string[] | undefined
-  icon?: React.ReactNode
-  style?: object
-  label?: string
-  customAddons?: React.ReactNode
-  removeBottomBorderOnFocus?: boolean
-  onClickClear?: () => void
+  name?: string;
+  inputType?: TInputType;
+  className?: string;
+  placeholder?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  value?: string | number | readonly string[] | undefined;
+  icon?: React.ReactNode;
+  style?: object;
+  label?: string;
+  customAddons?: React.ReactNode;
+  removeBottomBorderOnFocus?: boolean;
+  onClickClear?: () => void;
+  required?: boolean;
+  type?: React.HTMLInputTypeAttribute;
 }
 const defaultProps: CInputProps = {
-  placeholder: 'Search Videos...',
-  type: 'normal',
-  name: 'name',
+  placeholder: "Search Videos...",
+  inputType: "normal",
+  name: "name",
   icon: null,
   removeBottomBorderOnFocus: false,
-}
+};
 
 const CInput: React.FC<CInputProps> = ({
   icon,
   style,
-  type,
+  inputType,
   label,
   customAddons,
   removeBottomBorderOnFocus,
   onClickClear,
+  type,
   ...props
 }) => {
-  const isNormal = type == 'normal'
-  const isModal = type == 'modal'
+  const isNormal = inputType == "normal";
+  const isModal = inputType == "modal";
 
   return (
     <>
-      {isModal && (
-        <div className="text-lnk text-base mb-2 w-full text-left">{label}</div>
-      )}
+      {isModal && <div className="text-lnk text-base mb-2 w-full text-left">{label}</div>}
       <div
         className={classNames(
-          'h-auto relative w-full rounded-little bg-white flex flex-col',
+          "h-auto relative w-full rounded-little bg-white flex flex-col",
 
           removeBottomBorderOnFocus &&
-            'focus-within:rounded-b-none hover:rounded-b-none focus-within:z-10 hover:z-10',
+            "focus-within:rounded-b-none hover:rounded-b-none focus-within:z-10 hover:z-10",
 
           isModal &&
-            'bg-bgc border border-bgc focus-within:border-primary focus-within:bg-alt'
+            "bg-bgc border border-bgc focus-within:border-primary focus-within:bg-alt"
         )}
         style={style}
       >
         <div
           className={classNames(
-            'w-full h-full flex items-center peer',
-            isNormal && 'h-8 text-sm px-[14px]',
-            isModal && 'h-[44px] text-base'
+            "w-full h-full flex items-center peer",
+            isNormal && "h-8 text-sm px-[14px]",
+            isModal && "h-[44px] text-base"
           )}
         >
-          {icon && (
-            <span className="mr-2 flex h-full items-center">{icon}</span>
-          )}
+          {icon && <span className="mr-2 flex h-full items-center">{icon}</span>}
           <input
             className={classNames(
-              'w-full h-full outline-none bg-transparent placeholder:font-[450] text-txt font-bold placeholder:text-lnk',
+              "w-full h-full outline-none bg-transparent placeholder:font-[450] text-txt font-bold placeholder:text-lnk",
 
-              isNormal && 'placeholder:text-sm',
-              isModal && 'placeholder:text-base px-3 py-[6px]'
+              isNormal && "placeholder:text-sm",
+              isModal && "placeholder:text-base px-3 py-[6px]"
             )}
             {...props}
+            type={type}
           />
 
           {onClickClear && (
@@ -80,7 +80,7 @@ const CInput: React.FC<CInputProps> = ({
               onClick={onClickClear}
               className="absolute right-4 mt-[0px] mb-[0px] cursor-pointer"
             >
-              <img src={'assets/icons/cross.png'} />
+              <img src={"assets/icons/cross.png"} />
             </span>
           )}
         </div>
@@ -88,8 +88,8 @@ const CInput: React.FC<CInputProps> = ({
         {customAddons}
       </div>
     </>
-  )
-}
+  );
+};
 
-CInput.defaultProps = defaultProps
-export default CInput
+CInput.defaultProps = defaultProps;
+export default CInput;
