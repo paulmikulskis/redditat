@@ -1,12 +1,16 @@
-name: production deploy of landing page
+name: 🚀 production deploy of SpamCntrl landing page
 on:
-  push:
+  workflow_dispatch:
+  pull_request:
     branches:
-      - master
+      - main
+    types:
+      - closed
 jobs:
   Deploy:
     name: Production Deploy
     runs-on: ubuntu-latest
+    if: (github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'deploy-spampage') || github.event_name == 'workflow_dispatch')
     steps:
       - name: checkout repo
         uses: actions/checkout@v2.3.4
@@ -15,6 +19,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
+          file: apps/spamcntrl-landingpage/Dockerfile
           push: true
           tags: registry.yungstentech.com/spamcntrl-landingpage:latest
           build-args: |
