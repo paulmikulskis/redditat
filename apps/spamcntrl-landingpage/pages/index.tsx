@@ -41,9 +41,6 @@ export default function Home() {
                 "xl:h-[216px] xl:mt-[162px] xl:inline-block"
               )}
             >
-              <CChip className="bg-[#33C286] bg-opacity-30 text-[#33C286]">
-                Youtube Purge
-              </CChip>
               <div
                 className={classNames(
                   "mt-4 font-bold text-alt text-[32px] leading-[40px] text-center",

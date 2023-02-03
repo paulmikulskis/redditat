@@ -48,7 +48,7 @@ const defaultProps: CPricingPlansProps = {
       price: (
         <div className="text-center mt-2">
           <span className="font-semibold text-[48px] leading-[57.59px] text-alt">
-            $19.99
+            $24.99
           </span>
           <span className="font-normal text-[20px] leading-[23.99px] text-[#7D62C0]">
             /month
@@ -58,7 +58,7 @@ const defaultProps: CPricingPlansProps = {
       yearlyPrice: (
         <div className="text-center mt-2">
           <span className="font-semibold text-[48px] leading-[57.59px] text-alt">
-            $199.99
+            $279.99
           </span>
           <span className="font-normal text-[20px] leading-[23.99px] text-[#7D62C0]">
             /year
