@@ -268,7 +268,7 @@ export function exportPurgingHistoryToCsv(
       csvText += `\n${csvLines.map((l) => `"${l}"`).join(",")}`;
     });
 
-    const filename = `U2ube Spam Purge - Purging History_${new Date().getTime()}.csv`;
+    const filename = `SpamCntrl - Purging History_${new Date().getTime()}.csv`;
     saveFileAs(csvText, filename);
     resolve(`Purging history was successfully exported to ${filename}`);
   });

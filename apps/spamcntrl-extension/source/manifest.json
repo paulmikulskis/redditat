@@ -3,7 +3,7 @@
   "__firefox__manifest_version": 2,
   "key": "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC1fPkswdRDAnGhxT3q5M5V3wHrSGehqQVaWW/iyZPnZVWHn//f1LJRmP7v4QLyFdQsQsyztRzN7ohmA6Z3+IDUelfeYBWa1FWbRkbzsoxtj7wwU8LhzLBN1M63zO2LIcpuzGJgNPLBZJgCxOn56J/NSobHCvLOdVeY9bW+n2gncZdJ4fK0DgDY9N16MCWiSViO7nSOl5qVSHueYSVWUmy/o/dhd8tFA27Zm89vI9bLAgX9DNkomzXSfk20/fxRAj8JZgBOxldxuxmfGIzxiiHnKq/9XHfcklLwDocK4oon+CjDj/b9b70g18046dlPKv0msG0LhRpiFXKY6hzLHKMBAgMBAAECggEAHptreGld70kfuc0GYrFgvOmlrLTiyUg0f2a68E/XkjwsPvm0UN7RjeJUCEd11DbrN+WyGRKPv4kdVrsB3ZS6wVq6q+WfbyOlJlElUR8JAMcvUSUnJiZ7izy6+hNk8kRqG+J7KsdzMztQSZNE9GEPZjNN5I6LoVb3xXOWyYWfrpr4UcTWlDmIt8BNMOnbsDwnE+iLyj2949dBRzmWCf2JKiWYDor+EkZi09dJeEUqXvja30whUmxCtRE8H6f12WiyZHGb2g1Egty+Xye3wBCLOCeAR5LzRQz6W+Q8emEB9NVEA97PzSo37kqAGdeyDgb1dH0Jede7jymq3/S8SwkPGQKBgQDdtjh2KyF4/WWQpHwdgISz9+pzP7r4pNU6ZPmWMNnFw6799CSLwCethTZrVF4HqQeZBgMoCzAuaoIkGdAplz7DRNY98rIt8tv9Y/pVLcNNfgmhFhAw1Tq8TeoTweYx0fHcQvYtS4YwC75oKOht4BEuO86ETNLXrmbaYYwrc70qNQKBgQDRjkL5Y55fCg6xhwIzpsfX+Uo3d1ZG/bULUJHhxpL49mdSQDc4H8GpHrQWw8W8gdRlnnoqJc0GbQA/CKFDaaUBsyqvJ45Fir9xMTDjhHHIgC6WIlg4ny0TidfSP1PSI1cyPq9n4bIHdab/0AxDDqFIxmQAGF0nRMmukJ6v1RbPHQKBgBOROXp0ZAfhlU0mty2DYjLf9nklbsLzCT6WGtD+jrm9g3w2R+NtmhLeZuciEwpqCJmgxjaKhj4SeFnnTU/eYVOqh54ABWm4vWGnqThLSalVLlRhNhyZNQ3Zcoc73a0X8liWMFPfDoC/CJb4xUqtM9b4wEk83n7ajYlIgq5zEIbhAoGAE929wbDNAcuNSw02izkDdxkeDRYWKtLAiBsSSWou4sVRVD3cPkjcbjEH96SFqXJRdXTJthcxUauhu1gRGbf5OakHoeVJGpSlw5BbRyZ2NwDX6cnFvVBx0Ilf2YHBa4mIKa5BqMJ/wy9HLrdFglHvvlt4fX3Rzvg5eoAhWyADco0CgYEAisbfdaECkJP+PAawSdJhOqbSKTFYj0z8SMx9OBqU9zcfyAvz4I8KhSD6h5L85HMxX5cKdUSl8zjY7TF+6HsUGBATffj4DXca+nzqpEdOxN3VUdxytrFtrcOSqUoacR8bm3j5dJSzEmEuq8k+vP1+W8ANCIKS63rrYTZUj2Z9plg=",
 
-  "name": "U2ube Spam Purge",
+  "name": "SpamCntrl",
   "version": "0.0.0",
 
   "icons": {
@@ -11,9 +11,9 @@
     "48": "assets/icons/favicon-48.png",
     "128": "assets/icons/favicon-128.png"
   },
-  "description": "Template for web extensions.",
-  "homepage_url": "https://github.com/doppelgunner",
-  "short_name": "Template",
+  "description": "We make youtube spam removal simple.",
+  "homepage_url": "https://spamcntrl.com/",
+  "short_name": "SpamCntrl",
 
   "__firefox__permissions": [
     "storage",
@@ -32,9 +32,9 @@
 
   "__firefox__content_security_policy": "script-src 'self'; object-src 'self'",
 
-  "__chrome|firefox__author": "doppelgunner",
+  "__chrome|firefox__author": "yungsten",
   "__opera__developer": {
-    "name": "doppelgunner"
+    "name": "yungsten"
   },
 
   "__firefox__applications": {
@@ -53,7 +53,7 @@
       "48": "assets/icons/favicon-48.png",
       "128": "assets/icons/favicon-128.png"
     },
-    "default_title": "homeescope",
+    "default_title": "SpamCntrl",
     "__opera__chrome_style": false,
     "__firefox__browser_style": false
   },
