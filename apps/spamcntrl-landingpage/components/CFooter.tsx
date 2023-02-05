@@ -43,9 +43,6 @@ const CFooter: React.FC<CFooterProps> = ({ isHome }) => {
           <div className="cursor-pointer font-normal text-base leading-[19.2px] text-lnk">
             <Link href="/">Home</Link>
           </div>
-          <div className="cursor-pointer mt-[15px] font-normal text-base leading-[19.2px] text-lnk">
-            Features
-          </div>
         </div>
 
         <div
@@ -72,10 +69,7 @@ const CFooter: React.FC<CFooterProps> = ({ isHome }) => {
             <Link href="/privacy-policy">Privacy Policy</Link>
           </div>
           <div className="cursor-pointer mt-[15px] font-normal text-base leading-[19.2px] text-lnk">
-            Terms & Condition
-          </div>
-          <div className="cursor-pointer mt-[15px] font-normal text-base leading-[19.2px] text-lnk">
-            FAQ
+            <Link href="/terms-and-condition">Terms & Condition</Link>
           </div>
         </div>
       </div>
