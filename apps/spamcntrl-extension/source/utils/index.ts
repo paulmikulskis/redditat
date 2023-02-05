@@ -162,8 +162,8 @@ export function getLastNDigits(num: number | string, nDigits: number = 2) {
   return nString.substring(nString.length - nDigits);
 }
 
-export function openLink(url: string) {
-  return chrome.tabs.create({ url: url, active: false });
+export function openLink(url: string, opt?: object) {
+  return chrome.tabs.create({ url: url, active: false, ...opt });
 }
 
 export function hasYoutubeAuth(user: IUser) {
