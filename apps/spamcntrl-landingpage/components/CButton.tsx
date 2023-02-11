@@ -63,6 +63,7 @@ const CButton: React.FC<CButtonProps> = ({
       disabled={disabled}
       ref={buttonRef}
       className={classNames(
+        disabled ? "cursor-not-allowed opacity-50" : "",
         "font-semibold font-poppins text-title flex justify-center items-center rounded-lg h-[41px] w-[129px]",
         buttonStyle == "tab" ? "text-primary bg-tabs" : "",
         buttonStyle == "tab-primary"

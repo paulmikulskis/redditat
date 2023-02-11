@@ -1,6 +1,7 @@
 import { User } from "firebase/auth";
 import { getOrigin } from "./html-util";
 import queryString from "query-string";
+import { IUser } from "../models/interfaces";
 
 export async function getAPIHost() {
   if (process.env.NODE_ENV == "production") {
@@ -54,6 +55,11 @@ export async function newUser(user: User) {
     id: user.uid,
     email: user.email,
   });
+}
+
+export async function viewUser(userId: string, options?: RequestInit) {
+  const host = await getAPIHost();
+  return _get(`${host}/users/${userId}`, undefined, options);
 }
 
 /**

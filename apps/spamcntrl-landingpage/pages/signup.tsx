@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { User } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import CButton from "../components/CButton";
@@ -7,45 +8,82 @@ import CNavbar from "../components/CNavbar";
 import CPage from "../components/CPage";
 import CPanel from "../components/CPanel";
 import { useAuth } from "../contexts/AuthContext";
-import { getAuthYoutubeURL, newUser } from "../lib/api";
+import { getAuthYoutubeURL, newUser, viewUser } from "../lib/api";
+import { hasYoutubeAuth } from "../lib/html-util";
+import { IUser } from "../models/interfaces";
 import { setNotifData } from "../store/slices/appSlice";
 
 export default function MyStats() {
+  const [hasLinkedAccount, setHasLinkedAccount] = useState<boolean>(false);
+  const [disabledButton, setDisabledButton] = useState<boolean>(true);
   const { user, login } = useAuth();
   const dispatch = useDispatch();
 
-  function onClickLogin() {
-    login()
-      .then((user) => {
-        //create firestore account
-        newUser(user)
-          .then((res) => {
-            dispatch(
-              setNotifData({
-                type: "success",
-                message:
-                  "Congratulations! Your account is now in the care of our dedicated team of professionals.",
+  useEffect(() => {
+    if (user) {
+      const controller = new AbortController();
+      viewUser(user.uid, { signal: controller.signal }).then(async (res) => {
+        const contentType = res.headers.get("content-type");
+
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          if (res.status == 200) {
+            const _user = (await res.json()) as IUser;
+            if (hasYoutubeAuth(_user)) {
+              setHasLinkedAccount(true);
+            } else {
+              setHasLinkedAccount(false);
+            }
+            setDisabledButton(false);
+          }
+
+          if (res.status != 200) {
+            newUser(user)
+              .then((res) => {
+                dispatch(
+                  setNotifData({
+                    type: "success",
+                    message:
+                      "Congratulations! Your account is now in the care of our dedicated team of professionals.",
+                  })
+                );
+                setDisabledButton(false);
               })
-            );
-          })
-          .catch((err) => {
-            dispatch(
-              setNotifData({
-                type: "error",
-                message:
-                  "There seems to be an error in creating your account. Please contact our support team.",
-              })
-            );
-          });
-      })
-      .catch((err) => {
-        dispatch(
-          setNotifData({
-            type: "error",
-            message: err,
-          })
-        );
+              .catch((err) => {
+                dispatch(
+                  setNotifData({
+                    type: "error",
+                    message:
+                      "There seems to be an error in creating your account. Please contact our support team.",
+                  })
+                );
+              });
+          }
+        } else {
+          dispatch(
+            setNotifData({
+              type: "error",
+              message:
+                "You have exceeded your rate limit. Please contact the support team.",
+            })
+          );
+        }
       });
+
+      return () => {
+        controller.abort();
+      };
+    }
+  }, [user?.uid]);
+
+  function onClickLogin() {
+    login().catch((err) => {
+      dispatch(
+        setNotifData({
+          type: "error",
+          message: err,
+        })
+      );
+    });
   }
 
   async function onClickLinkYoutubeAccount() {
@@ -117,12 +155,17 @@ export default function MyStats() {
               </div>
 
               <div className={classNames("mt-4 flex justify-center", "xl:block")}>
-                <CButton
-                  onClick={onClickLinkYoutubeAccount}
-                  text="Link Youtube Account"
-                  buttonStyle="primary"
-                  style={{ paddingLeft: "20px", paddingRight: "20px", width: "auto" }}
-                />
+                {!hasLinkedAccount ? (
+                  <CButton
+                    onClick={onClickLinkYoutubeAccount}
+                    text="Link Youtube Account"
+                    buttonStyle="primary"
+                    style={{ paddingLeft: "20px", paddingRight: "20px", width: "auto" }}
+                    disabled={disabledButton}
+                  />
+                ) : (
+                  <div className="text-green-600">Thank you for joining!</div>
+                )}
               </div>
             </div>
           )}
