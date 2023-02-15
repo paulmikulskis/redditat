@@ -1,0 +1,223 @@
+The Temporal Platform explained.
+
+Temporal is a scalable and reliable runtime for Reentrant Processes called Temporal "Workflow Executions".
+The Temporal Platform consists of a Temporal "Cluster" and "Worker Processes". 
+Together these components create a runtime for Workflow Executions.
+The Temporal Cluster is open source and can be operated by you. 
+The Temporal Cloud is a set of Clusters operated by us, the company that creates Temporal.
+
+Worker Processes are hosted by you and execute your code. 
+They communicate with a Temporal Cluster via gRPC.
+
+A Temporal Application is a set of Temporal Workflow Executions. 
+Each Temporal Workflow Execution has exclusive access to its local state,
+executes concurrently to all other Workflow Executions, and communicates with 
+other Workflow Executions and the environment via message passing.
+
+A Temporal Application can consist of millions to billions of Workflow Executions. 
+Workflow Executions are lightweight components. A Workflow Execution consumes few compute 
+resources; in fact, if a Workflow Execution is suspended, such as when it is in a waiting state, 
+the Workflow Execution consumes no compute resources at all.
+
+Reentrant Process
+A Temporal Workflow Execution is a Reentrant Process. 
+A Reentrant Process is resumable, recoverable, and reactive.
+ - Resumable: Ability of a process to continue execution after execution was suspended on an awaitable.
+ - Recoverable: Ability of a process to continue execution after execution was suspended on a failure.
+ - Reactive: Ability of a process to react to external events.
+
+Therefore, a Temporal Workflow Execution executes a Temporal "Workflow Definition", 
+also called a Temporal "Workflow Function", your application code, exactly once and to 
+completion—whether your code executes for seconds or years, in the presence of arbitrary 
+load and arbitrary failures.
+
+A Temporal SDK is a language-specific library that offers APIs to do the following:
+ - Construct and use a Temporal Client
+ - Develop Workflow Definitions
+ - Develop Worker Programs
+A Temporal SDK enables you to write your application code using the full power of the programming language, while the Temporal Platform handles the durability, reliability, and scalability of the application.
+
+Temporal Failures are representations (in the SDKs and Event History) of various types of errors that occur in the system.
+
+Failure handling is an essential part of development. For more information, including the 
+difference between application-level and platform-level failures, see our guide, "Handling Failure From First Principles". 
+For the practical application of those concepts in Temporal, see our guide, "Failure Handling in Practice".
+
+For languages that throw (or raise) errors (or exceptions), throwing an error that is not a 
+Temporal Failure from a Workflow fails the Workflow Task 
+(and the Task will be retried until it succeeds), whereas throwing a Temporal Failure 
+(or letting a Temporal Failure propagate from Temporal calls, like an Activity Failure 
+from an Activity call) fails the Workflow Execution. For more information, see the "Application Failure" type.
+
+A Workflow Definition is the code that defines the constraints of a Workflow Execution.
+A Workflow Definition is often also referred to as a Workflow Function. 
+In Temporal's documentation, a Workflow Definition refers to the source for the instance of a 
+Workflow Execution, while a Workflow Function refers to the source for the instance of a Workflow Function Execution.
+
+An Activity is a normal function or object method that executes a single, well-defined action (either short or long running), 
+such as calling another service, transcoding a media file, or sending an email message.
+Workflow code orchestrates the execution of Activities, persisting the results. 
+If an Activity Function Execution fails, any future execution starts from initial state 
+(except Heartbeats). Therefore, an Activity function is allowed to contain any code without restrictions.
+Activity Functions are executed by Worker Processes. When the Activity Function returns, 
+the Worker sends the results back to the Temporal Cluster as part of the 
+ActivityTaskCompleted Event. The Event is added to the Workflow Execution's Event History.
+
+An Activity Definition is the code that defines the constraints of an Activity Task Execution.
+The term 'Activity Definition' is used to refer to the full set of primitives in any given 
+language SDK that provides an access point to an Activity Function Definition——the method or 
+function that is invoked for an Activity Task Execution. 
+Therefore, the terms Activity Function and Activity Method refer to the source of an instance of an execution.
+Temporal recommends that Activities be idempotent.
+Activity Definitions are executed as normal functions.
+In the event of failure, the function begins at its initial state when retried (except when Activity Heartbeats are established).
+An Activity Definition can support as many parameters as needed.
+All values passed through these parameters are recorded in the Event History of the 
+Workflow Execution. Return values are also captured in the Event History for the calling Workflow Execution.
+An Activity Type is the mapping of a name to an Activity Definition.
+By default, an Activity Execution has no time limit.
+If an Activity Execution fails (because it exhausted all retries, threw a non-retryable error, or was canceled), 
+the error is returned to the Workflow, which decides how to handle it.
+
+A "Worker Program" is the static code that defines the constraints of the Worker Process, developed using the APIs of a Temporal SDK.
+A "Worker Entity" is the individual Worker within a Worker Process that listens to a specific Task Queue.
+A Worker Entity listens and polls on a single Task Queue. A Worker Entity contains both a Workflow Worker and an Activity Worker so that it may make progress of either a Workflow Execution or an Activity Execution.
+Workers are stateless, so any Workflow Execution in a blocked state can be safely removed 
+from a Worker. Later on, it can be resurrected on the same or different Worker when the need 
+arises (in the form of an external event). Therefore, a single Worker can handle millions of open 
+Workflow Executions, assuming it can handle the update rate and that a slightly higher latency is not a concern.
+A Worker Process is responsible for polling a Task Queue, dequeueing a Task, executing your 
+code in response to a Task, and responding to the Temporal Cluster with the results.
+
+A "Namespace" is a unit of isolation within the Temporal Platform.
+A single Namespace is still multi-tenant.
+Namespaces are created on the Temporal Cluster, and provide a range of controls to achieve isolation on Workflow Executions.
+
+A Workflow Id is a customizable, application-level identifier for a Workflow Execution 
+that is unique to an Open Workflow Execution within a Namespace.
+A Workflow Id is meant to be a business-process identifier such as customer identifier or order identifier.
+It is not possible for a new Workflow Execution to spawn with the same Workflow Id as 
+another Open Workflow Execution, regardless of the Workflow Id Reuse Policy. 
+An attempt to spawn a Workflow Execution with a Workflow Id that is the same as the 
+Id of a currently Open Workflow Execution results in a Workflow "execution already started" error.
+
+A Workflow Execution effectively executes once to completion, while a Workflow Function Execution 
+occurs many times during the life of a Workflow Execution.
+We strongly recommend that you write a Workflow Definition in a language that has a 
+corresponding Temporal SDK.
+
+A critical aspect of developing Workflow Definitions is ensuring they exhibit certain 
+deterministic traits – that is, making sure that the same Commands are emitted in the 
+same sequence, whenever a corresponding Workflow Function Execution 
+(instance of the Function Definition) is re-executed.
+
+The execution semantics of a Workflow Execution include the re-execution of a Workflow Function, 
+which is called a Replay. The use of Workflow APIs in the function is what 
+generates Commands. Commands tell the Cluster which Events to create and 
+add to the Workflow Execution's Event History. When a Workflow Function executes, the 
+Commands that are emitted are compared with the existing Event History. If a corresponding 
+Event already exists within the Event History that maps to the generation of that Command in 
+the same sequence, and some specific metadata of that Command matches with some specific metadata of the Event, 
+then the Function Execution progresses.
+
+For example, using an SDK's "Execute Activity" API generates the ScheduleActivityTask Command. 
+When this API is called upon re-execution, that Command is compared with the Event that is in 
+the same location within the sequence. The Event in the sequence must be an ActivityTaskScheduled Event, 
+where the Activity name is the same as what is in the Command.
+
+If a generated Command doesn't match what it needs to in the existing Event History, then the 
+Workflow Execution returns a non-deterministic error.
+
+The following are the two reasons why a Command might be generated out of sequence or the wrong 
+Command might be generated altogether:
+ - Code changes are made to a Workflow Definition that is in use by a running Workflow Execution.
+ - There is intrinsic non-deterministic logic (such as inline random branching).
+ 
+The Workflow Definition can change in very limited ways once there is a Workflow Execution 
+depending on it. To alleviate non-deterministic issues that arise from code changes, we 
+recommend using Workflow Versioning.
+
+For example, let's say we have a Workflow Definition that defines the following sequence:
+
+ 1. Start and wait on a Timer/sleep.
+ 2. Spawn and wait on an Activity Execution.
+ 3. Complete.
+We start a Worker and spawn a Workflow Execution that uses that Workflow Definition. 
+The Worker would emit the StartTimer Command and the Workflow Execution would become suspended.
+
+Before the Timer is up, we change the Workflow Definition to the following sequence:
+
+ 1. Spawn and wait on an Activity Execution.
+ 2. Start and wait on a Timer/sleep.
+ 3. Complete.
+When the Timer fires, the next Workflow Task will cause the Workflow Function to re-execute. 
+The first Command the Worker sees would be ScheduleActivityTask Command, which wouldn't match 
+up to the expected TimerStarted Event.
+
+The Workflow Execution would fail and return a non-deterministic error.
+
+The following are examples of minor changes that would not result in 
+non-determinism errors when re-executing a History which already contain the Events:
+
+ - Changing the duration of a Timer (unless changing from a duration of 0).
+ - Changing the arguments to:
+   * The Activity Options in a call to spawn an Activity Execution (local or nonlocal).
+   * The Child Workflow Options in a call to spawn a Child Workflow Execution.
+   * Call to Signal an External Workflow Execution.
+ - Adding a Signal Handler for a Signal Type that has not been sent to this Workflow Execution.
+
+A Workflow Execution can be either Open or Closed.  Here are the statuses:
+ (Open) Running: The only Open status for a Workflow Execution. When the Workflow Execution is Running, it is either actively progressing or is waiting on something.
+ (Closed) Cancelled: The Workflow Execution successfully handled a cancellation request.
+ (Closed) Completed: The Workflow Execution has completed successfully.
+ (Closed) Continued-As-New: The Workflow Execution Continued-As-New.
+ (Closed) Failed: The Workflow Execution returned an error and failed.
+ (Closed) Terminated: The Workflow Execution was terminated.
+ (Closed) Timed Out: The Workflow Execution reached a timeout limit.
+
+----------------------------------------------------------------
+
+As you can see in this Workflow definition, we have statements that do things such as "throw" an "ApplicationFailure".
+
+An "ApplicationFailure" is a specific type from the "@temporalio/workflow" package.  
+This Error type.  We use this error type so that we can fail the workflow, and 
+get the message and telemetry about the error in the Temporal UI within the Workflow and 
+Acitvity explorer, or via our CloudWatch logs from the ECS Task that is running the docker 
+containers which contain our Temporal Worker Application code.
+Workflow and Activity code use Application Failures to communicate application-specific failures 
+that happen. This is the only type of Failure created and thrown by user code.
+Only Workflow errors that are Temporal Failures cause the Worklow Execution to fail; 
+all other errors cause the Workflow Task to fail and be retried (except for Go, where any 
+error returned from the Workflow fails the Execution, and a panic fails the Task). 
+Most types of Temporal Failures automatically occur, like a Cancelled Failure when the 
+Workflow is Cancelled or an Activity Failure when an Activity Fails. You can also explicitly 
+fail the Workflow Execution by throwing (or returning, depending on the SDK) an Application Failure.
+
+In Activities, you can either throw an Application Failure or another Error to fail the 
+Activity Task. In the latter case, the error is converted to an Application Failure. 
+During conversion, the following Application Failure fields are set:
+ - "type" is set to the error's type name.
+ - "message" is set to the error message.
+ - "non_retryable" is set to "false".
+ - "details" are left unset.
+ - "cause" is a Failure converted from the error's cause property.
+ - stack trace is copied.
+
+When an Activity Execution fails, the Application Failure from the last Activity Task is the 
+cause field of the ActivityFailure thrown in the Workflow.
+
+When an Activity or Workflow throws an Application Failure, the Failure's type field is 
+matched against a Retry Policy's list of non-retryable errors to determine whether to retry the 
+Activity or Workflow. Activities and Workflow can also avoid retrying by setting an Application 
+Failure's "non_retryable" flag to "true".
+
+When Cancellation of a Workflow or Activity is requested, SDKs represent the cancellation to 
+the user in language-specific ways. For example, in TypeScript, in some cases a Cancelled 
+Failure is thrown directly by a Workflow API function, and in other cases the Cancelled Failure 
+is wrapped in a different Failure. To check both types of cases, TypeScript has the isCancellation helper.
+
+When a Workflow or Activity is successfully Cancelled, a Cancelled Failure is the "cause" 
+field of the Activity Failure or "Workflow failed" error.
+
+A Timeout Failure represents the timeout of an Activity or Workflow Execution.
+When an Activity times out, the last Heartbeat details it emitted is attached.

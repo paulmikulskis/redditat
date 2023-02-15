@@ -1,0 +1,56 @@
+# Install dependencies only when needed
+FROM node:16-bullseye-slim as builder
+RUN apt-get update && apt-get install -y openssl pkg-config libpixman-1-dev libcairo2-dev libxt-dev libjpeg-dev libgif-dev libpango1.0-dev
+RUN apt-get install -y python3 g++ make
+# build-time arguments that NextJS needs when transpiling:
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_API_KEY
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_API_KEY ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_API_KEY}
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_AUTH_DOMAIN
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_AUTH_DOMAIN ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_AUTH_DOMAIN}
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_PROJECT_ID
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_PROJECT_ID ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_PROJECT_ID}
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_STORAGE_BUCKET
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_STORAGE_BUCKET ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_STORAGE_BUCKET}
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_MESSAGING_SENDER_ID
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_MESSAGING_SENDER_ID ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_MESSAGING_SENDER_ID}
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID}
+ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID
+ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID}
+ARG MYSTATS_AUTHKEY
+ENV MYSTATS_AUTHKEY ${MYSTATS_AUTHKEY}
+# sets yarn to version 3.x
+ENV NODE_ENV production
+WORKDIR /builder
+RUN yarn global add turbo
+RUN yarn set version stable
+# set yarn to the latest version (3.x)
+RUN yarn plugin import https://gitlab.com/Larry1123/yarn-contrib/-/raw/master/packages/plugin-production-install/bundles/@yarnpkg/plugin-production-install.js
+# Install dependencies based on the preferred package manager
+COPY . .
+RUN turbo prune --scope=@yungsten/spamcntrl-langingpage --docker
+RUN yarn set version stable
+RUN yarn install
+RUN yarn build --filter=@yungsten/spamcntrl-langingpage
+# Using Yarn plugin-production-install to copy only production dependencies
+# https://gitlab.com/Larry1123/yarn-contrib/-/tree/master/packages/plugin-production-install
+# NOTE: on the GitLab, the guy mentions this yarn script name will change in the near future..
+# if the deploy breaks, check the linked GitLab page and see if this dependency has changed
+RUN yarn prod-install --pack /deploy/dependencies
+# Copy other needed files
+RUN cp -r .next /deploy
+
+# OPTIMIZED PRODUCTION BUILD ---------
+FROM node:16-bullseye-slim AS runner
+WORKDIR /runner
+# Copy over the pruned dependencies for this project
+COPY --from=builder /deploy/dependencies .
+# Copy over the build javascript bundle NextJS produced
+COPY --from=builder /deploy/.next .next
+
+
+EXPOSE 3000
+ENV PORT 3000
+
+# Run the NextJS start script
+CMD ["yarn", "--cwd", "apps/spamcntrl-landingpage", "next", "start"]

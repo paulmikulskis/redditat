@@ -1,0 +1,253 @@
+import type { WorkflowInput } from "..";
+import type { PaymentRecord as DbPaymentRecord } from "@prisma/client";
+
+export type PaymentWorkflow = (r: WorkflowInput) => Promise<string>;
+/* 400 error */
+export class RequestError extends Error {}
+/* 500 error */
+export class ServerError extends Error {}
+/* Base Error Types */
+export class ValidationError extends RequestError {}
+export class DbError extends ServerError {}
+/* Payment Errors */
+export class PaymentValidationError extends ValidationError {}
+export class ClaimValidationError extends ValidationError {}
+export class PaymentDbError extends DbError {}
+export class PaymentFailedError extends ServerError {}
+export class TransactionError extends Error {}
+/* Audit Log Errors */
+export class AuditLogDbError extends DbError {}
+/* Request Param Assertion Errors */
+export class ChainValidationError extends PaymentValidationError {
+  constructor(chain?: string) {
+    super(`Invalid chain identifier: ${chain}`);
+  }
+}
+export class NetworkValidationError extends PaymentValidationError {
+  constructor(chain?: string, network?: string) {
+    if (!chain) {
+      super(`Invalid network identifier: ${network}`);
+    } else {
+      super(`Invalid network identifier for ${chain}: ${network}`);
+    }
+  }
+}
+export class TokenValidationError extends PaymentValidationError {
+  constructor(chain?: string, token?: string) {
+    if (!chain) {
+      super(`Invalid token identifier: ${token}`);
+    } else {
+      super(`Invalid token identifier for ${chain}: ${token}`);
+    }
+  }
+}
+
+export const PAYMENT_STATUSES = {
+  CREATED: "CREATED",
+  PENDING: "PENDING",
+  COMPLETED: "COMPLETED",
+  FAILED: "FAILED",
+} as const;
+export type PaymentStatus = keyof typeof PAYMENT_STATUSES;
+export function isPaymentStatus(status?: string): status is PaymentStatus {
+  return status != undefined && PAYMENT_STATUSES[status as PaymentStatus] !== undefined;
+}
+export { DbPaymentRecord };
+export interface PaymentRecord<
+  C extends Chain = Chain,
+  N extends Network<C> = Network<C>,
+  T extends Token<C> = Token<C>
+> extends DbPaymentRecord {
+  chainID: C;
+  network: N;
+  currency: T;
+  status: PaymentStatus;
+}
+export type WorkflowInput = {
+  event: Record<string, string>;
+  pineStoreIndex: number;
+  claimData: string;
+  txID: string;
+};
+export const PaymentEventSchema = z.object({
+  claimer: z.string(),
+  submissionId: z.string(),
+  payAmount: z.coerce.number(),
+  to: z.string(),
+});
+export type PaymentEvent = z.TypeOf<typeof PaymentEventSchema>;
+export const claimRequestParser = z.object({
+  network: z.string(),
+  chainID: z.string(),
+  // bounty data
+  submissionID: z.string(),
+  requestID: z.string(),
+  // payment data
+  recipientAddress: z.string(),
+  tokenAddress: z.string(),
+  amount: z.number(),
+  //stored for verification
+  claimData: z.string(),
+  txID: z.string(),
+});
+export type ClaimRequest = z.TypeOf<typeof claimRequestParser>;
+export const evmLogParser = z.array(
+  z
+    .object({
+      address: z.string(),
+      topics: z.array(z.string()),
+      data: z.string(),
+      blockNumber: z.number(),
+      transactionHash: z.string(),
+      transactionIndex: z.number(),
+      blockHash: z.string(),
+      logIndex: z.number(),
+      removed: z.boolean(),
+    })
+    .passthrough()
+);
+export type EvmLog = z.TypeOf<typeof evmLogParser>;
+
+/* Server Response Type */
+export interface AppResponse<T> {
+  status: number;
+  error?: string;
+  data?: T;
+}
+
+export interface PaymentRequest {
+  network: string;
+  chainID: string;
+  dryRun?: boolean;
+  currency: string;
+  passThroughID: string;
+  recipientAddress: string;
+  amount: number;
+  memo: string | null | undefined;
+  senderAddress: string | null | undefined;
+}
+
+export type PaymentRequests = Array<PaymentRequest>;
+
+export interface ValidatedPaymentRequest<
+  C extends Chain = Chain,
+  N extends Network<C> = Network<C>,
+  T extends Token<C> = Token<C>
+> extends PaymentRequest {
+  chainID: C;
+  network: N;
+  currency: T;
+}
+
+export type ValidatedPaymentRequests<
+  C extends Chain = Chain,
+  N extends Network<C> = Network<C>,
+  T extends Token<C> = Token<C>
+> = Array<ValidatedPaymentRequest<C, N, T>>;
+
+export type PageInfo = {
+  pageNumber: number;
+  pageTotal: number;
+  recordCount: number;
+  recordTotal: number;
+};
+
+export interface Account<C extends Chain = Chain, N extends AnyNetwork<C> = Network<C>, T extends Token<C> = Token<C>> {
+  wallet: UnsignedWallet<C, N>;
+  token: T;
+  getBalance(): Promise<number>;
+  sendTransaction(payments: Payment<T>[]): Promise<Transaction<C, N>>;
+}
+
+export interface ChainClient<C extends Chain = Chain, N extends AnyNetwork<C> = Network<C>> {
+  readonly chain: C;
+  readonly network: N;
+  //TODO: get account from custodial wallet
+  getAccount(wallet: Wallet<C, N>): Account<C, N>;
+  getTransaction(id: string): Transaction<C, N>;
+}
+export type Chain = keyof typeof SUPPORTED_CHAINS;
+
+// get specific type of a SUPPORTED_CHAINS metadata record
+export type ChainMetadata<C extends Chain> = (typeof SUPPORTED_CHAINS)[C];
+
+export function getChainMetadata<C extends Chain>(chain: C): ChainMetadata<C> {
+  return SUPPORTED_CHAINS[chain];
+}
+export function isChain(chain?: string): chain is Chain {
+  return getChainMetadata(chain as Chain) !== undefined;
+}
+/* Networks that are valid for all Chains in the union C */
+export type Network<C extends Chain = Chain> = StringKeyOf<NetworkMetadataMap<C>>;
+
+/* Any networks that are valid for any of the Chains in the union C */
+export type AnyNetwork<C extends Chain = Chain> = AnyStringKeyOf<NetworkMetadataMap<C>>;
+
+type NetworkMetadataMap<C extends Chain> = ChainMetadata<C>["networks"];
+
+/* Set of all possible network names (used for validations) */
+const ALL_NETWORKS = new Set(
+  Object.values(SUPPORTED_CHAINS).flatMap((chainObj) => Object.keys(chainObj.networks))
+) as Set<AnyNetwork>;
+
+export function getNetworkMetadata<C extends Chain>(chain: C, network: Network<C>) {
+  return getNetworkMap(chain)[network];
+}
+
+export function isNetwork<C extends Chain>(network?: string, chain?: C): network is Network<C> {
+  if (!network) {
+    return false;
+  } else if (chain) {
+    return undefined !== getNetworkMetadata(chain, network as Network<C>);
+  } else {
+    return ALL_NETWORKS.has(network as Network);
+  }
+}
+
+function getNetworkMap<C extends Chain>(chain: C): NetworkMetadataMap<C> {
+  return getChainMetadata(chain).networks;
+}
+export interface Payment<T extends Token> {
+  receiverAddress: string;
+  amount: number;
+  token: T;
+  memo?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+export type Token<C extends Chain = Chain> = ChainMetadata<C>["tokens"][number];
+
+const ALL_TOKENS: Set<Token> = new Set(Object.values(SUPPORTED_CHAINS).flatMap((chainObj) => chainObj.tokens));
+
+export function isToken<C extends Chain>(token?: string, chain?: C): token is Token<C> {
+  if (chain) {
+    const tokens: readonly Token<C>[] = SUPPORTED_CHAINS[chain].tokens;
+    return tokens.includes(token as Token<C>);
+  } else {
+    return ALL_TOKENS.has(token as Token);
+  }
+}
+
+export function getTokens<C extends Chain>(chain: C): Token<C>[] {
+  return [...SUPPORTED_CHAINS[chain].tokens];
+}
+export interface Transaction<C extends Chain = Chain, N extends AnyNetwork<C> = Network<C>> {
+  id: string;
+  chain: C;
+  network: N;
+  isSuccess(): Promise<boolean>;
+}
+/* Public wallet with optional private key */
+export interface Wallet<C extends Chain = Chain, N extends AnyNetwork<C> = Network<C>> {
+  chain: C;
+  network: N;
+  address: string;
+  key?: string;
+}
+
+/* Public wallet with no private key */
+export type UnsignedWallet<C extends Chain = Chain, N extends AnyNetwork<C> = Network<C>> = Omit<Wallet<C, N>, "key">;
+
+/* Wallet where private key is required */
+export type SignedWallet<C extends Chain = Chain, N extends AnyNetwork<C> = Network<C>> = Wallet<C, N> &
+  Required<Pick<Wallet<C, N>, "key">>;

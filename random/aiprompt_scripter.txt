@@ -1,0 +1,115 @@
+Act as a top-tier YouTuber.  You have studied videos of the top technology and programming
+YouTubers on the platform, and specialize in recreating engaging, factual, and comprehensive
+screen-ready scripts for your clients.
+
+Here is an example script of you walking through a video on Supertokens.
+SuperTokens is an open source authentication solution offering features like:
+
+Different types of login: Email / password, Passwordless (OTP or Magic link based), Social / OAuth 2.0 etc...,
+access control, session management, user management, self hosted / managed cloud
+Here is the script:
+
+
+[[Introduction]]
+Hi there, and welcome to the video. If you're somebody who's a developer, or in general, somebody who likes to make applications, and you catch yourself wondering, how am I gonna let my users log in this time for this app? Or how am I gonna let my services securely communicate with each other on a system level?
+You're not alone. 
+This is really a common decision that a lot of teams need to make together or amongst themselves when they're creating a new service or application. If you haven't heard of SuperTokens, you should check it out.
+It's an open source authentication framework with out-of-the-box components that you can override as needed for a variety of frameworks for a self-hosted or serviced authentication implementation. 
+They use JWTs as the underlying auth mechanism under the hood, but you don't need to worry about that. And we're gonna set up a working Super token server in under a few minutes and you can see what's actually going on. So let's get into it 
+
+[[Quickstart Example]]
+Where I am right now on their homepage, supertokens.com.
+You wanna grab this command and we're gonna throw this into the terminal. "npx create-supertokens-app@latest". Yes download my packages. 
+So what this is gonna do is essentially walk us through setting up SuperTokens. For a variety of frameworks. If you're a Python developer, node developer, don't worry. It's got you covered. 
+If you see super tokens, ASCII art, you know you're doing it right. What is our app called? Sung Bean. And right away we're met with some choices. So do we want to have React Next Angular for our front end. Let's do React and then a backend framework. Let's do node. And here you can already start to see some of the malleability of SuperTokens.
+What authentication do you want to use? Email password, social login, password list. That one's pretty cool. We'll just go with email password cuz it's the most easy to understand for this one. In a few minutes, you're gonna have a set up project and let's do what it tells us to do. So we'll CD into our project directory and NPM runs Start.
+Your web browser's gonna open automatically and you're gonna be greeted with this default email password sign in component. You know everything worked fine and dandy when it says compile successfully at the top and it'll spit out some links for you to visit
+just so that we can start to dig in, I'm gonna open up the Chrome developer tools. Let's go to Application which is gonna let us view some of the cookies and storage here. Yeah. Let's click on cookies and the domain of this website. So right now we don't really have much in the memory, but uh, we need to sign up for a new user user, "pineappaul"
+and for the password, let's do 1, 2, 3, 4, 5, and then in all caps, NUMBERS with an explanation point. Awesome. Log in. Successful. Now check this out. In the application tab, we can see we have an access. A refresh token and some front token. When you're trying these super tokens, demos, they're gonna have some protected route on the server, which we're about to check out, and that's this call api.
+So we can click call API and it worked. We have some session. It gives us some user id, which is really nice. So these tokens and refresh tokens are allowing us into some protected route on the server and you're about to see in the implementation. All you gotta do is import the packages and configure them with the recipe.
+That you want. Let's hop in here. 
+
+[[Example Code Details]]
+I have the clone directory that the "npx create-supertokens-app" spit out for us. We have a front end folder and a backend folder. Let's start by checking out that protected endpoint on the backend. The code's minimal, and we can see right here the app dot get session info route, which is spitting out that alert window when we call the call API button.
+This route is expecting a valid JWT from the underlying SuperTokens core to be passed to it in order to allow you into the route, and that's what this "verify session" middleware does. If you scroll to the top, you can see "verify session" is imported from the SuperTokens node package. So all you gotta worry about is importing this thing and then defining it on every single route that you want protected as this middleware. 
+Protected routes in the backend. Very straightforward, very simple. Now let's hop over the front end and see what they got cracking. 
+Opening up the frontend directory. We'll go right into "src" look at "app tsx". We will go over how to initialize SuperTokens in the front end and the backend in a minute to tell it, "hey, yeah, use email and passwords to let people in".
+But really quick, first, let's relate the front end routes to the backend API. So here we have our application, like you would have in any front end React app. And the first component we're gonna throw in the dom is the SuperTokens wrapper. And this is imported from the SDK at the top of the file. Inside of that wrapper, you can kind of write the app however you want.
+So here we have a router and some routes, React router. And inside of that, the first route we declare is a route with a path of slash the home route. And inside of that route, what element are we gonna have? We're gonna have some sort of element that's protected. We're gonna wanna tell it, " don't let people in unless there's an active session".
+And that's what the session auth dom element does. Again, you can guess this is imported from the SuperTokens SDK. So as long as there's an active session, the session auth will render whatever's inside of it. Which in this case is the homepage.  Otherwise it'll redirect them to slash auth
+Let's see this in action for the front end. 
+
+[[Example Details]]
+So we're logged in right now.
+We have these access tokens, the refresh tokens. What happens if we delete the access token? I'm gonna hover over this and click delete. As you might know, the access token is what actually gives you. Access to the api. So if we click this, you think, oh, it might fail, but no, it worked! We can see the session pop up right here.
+And that's the super tokens core doing its hard work for us. It's using the refresh token to go mint us a new access token. We didn't need to do any of that. And now let's see that front end redirect in action. 
+We'll delete the refresh token and we'll delete the access token. And when we call API, get redirected to, check out the URL on the browser, slash auth. 
+So you can see the protected route in the backend. You can see how we scaffold the context in the front end with one or two simple SuperTokens components. Let's look at how you tell the front end and the backend, "hey, use email and password to let people into our route".
+Let's dig into "SuperTokens.init()" and see what's going on. So there's some application info that gets passed in. Recipes. Tell SuperTokens what your app's gonna be cooking with. How are you gonna be letting people in? And here it's laid on out for you. We have the "EmailPassword" option.
+And session authentication for users in the front end to call our backend api. If you wanted to enable social login or Passwordless login, you would just add this to the recipe list as needed. In the backend, you're gonna have a similar configuration,
+so email, password. In the sessions. So the backend and the front end are gonna know to keep track of these ephemeral users. And in the backend we're also including a dashboard recipe, which you can read more about on super tokens.com, but it gives you some administration capabilities over your account.
+
+[[Review of Example]]
+So what we got going here is npx create-supertokens-app@latest, which scaffolded a node JS express server for us and a react front end, both of which are configured to have email, password and SuperTokens sessions, so they can keep track of users.
+And the API express server is talking to the SuperTokens instance, the demo instance, which is available for everybody to use.
+Of course, when you sign up or when you want to use SuperTokens, you're gonna want to use your own self-hosted instance or the one available that you signed up for on your account supertokens.com. Play around by heading over to the application tab and your developer tools and deleting some of the access tokens and refresh tokens to see how things are handled under the hood if you're curious. And start going nuts and customizing these components, they're made to be overridden, they're made to be yours; make them what you want them to be.
+
+[[Outro]]
+If you want to check out all the different recipes and sort of configurations that you can play with SuperTokens, you can go to supertokens.com/doc/guides, and they're gonna have all these nice little cards that you can click on: "EmailPassword", "Passwordless", "SocialLogin". 
+I mean , there's really . A whole host of possibilities all implemented on top of this great JWT layer that SuperTokens makes available.  
+And of course their GitHub if you wanna read more on the self-hosting and internals of how SuperTokens works. 
+And until then, we'll catch you guys in the next one.
+See you.
+
+
+Here is an example of a script written by the most famous YouTuber right now, named "FireshipIO" on Apache Kafka, check it out:
+Script:[intro]
+Apache Kafka.
+A distributed event streaming platform that can scale massive pipelines of real-time data.
+It was created in 2011 at LinkedIn, written in Java and Scala, and named Kafka because
+it's a system optimized for writing.  
+[section 1]
+Let's imagine using it to build a dashboard 
+like Google analytics. 
+When an event occurs like a website visit, the producer API creates a new record.
+These records are stored to disk in an ordered immutable log called a \"topic\",
+which can persist forever or disappear when no longer needed.
+Topics are distributed and replicated in a cluster, which contains multiple servers called Brokers.
+This makes Kafka full tolerant and able to scale to any workload.
+On the other side, multiple consumers can subscribe to this data.
+They can read the most recent message like a queue, or read the entire topic log and 
+listen to updates in real time.
+In addition, it provides a very powerful streams API that can transform and aggregate these topics
+before they ever reach the consumer.
+This all may sound similar to message Brokers like RabbitMQ, but Kafka can handle more
+throughput and is ideal for streaming data applications.
+For example it's used today by companies like Lyft to collect and process geolocation data,
+Spotify and Netflix for log processing, and cloudflare for real-time analytics.
+[section 2]
+To get started, download it, and use a tool like Zookeeper or K-Raft to manage your cluster.
+Now in one terminal start zookeeper then in the other start the Kafka server.
+With the environment up and running, we can now create our first topic.
+Remember a topic is just a log of events kept in order.
+An event will have a key value and timestamp, and may also contain optional metadata and headers.
+Now let's use this command to publish an event to the topic where every line 
+represents a different event, and now these events are written to a topic which is stored durably
+and partitioned in the cluster.
+Kafka guarantees that any consumer of a given topic will always read the events in the exact same order.
+Now with this command, we're able to consume the topic by default it will give us the latest event.
+Although we can use the from beginning flag to read the entire log it's also possible to provide an 
+offset to read a subset of records.
+At this point we've achieved basic event streaming,
+but the Kafka streams API can take things to another level.
+It's most well supported with Java and can do things like stateless transformation 
+like filtering out a subset of events or statefull transformations like an aggregation
+that combines multiple events into a single value over a certain window of time
+and at this point you're able to manage real-time streams of data at virtually any scale.
+[outro]
+This has been Apache Kafka. Hit the like button and subscribe for more 
+short videos like this thanks for watching and I will see you in the next one
+
+
+can I send you some information on a topic, and then you can generate the outline for the script 
+just like FireshipIO, using some of the gait and tone of the first script that I mentioned I wrote?
+
+I will introduce the topic, some documentation, and some general info so you can plan the video, then create the outline.

@@ -1,0 +1,106 @@
+
+Hey everyone, welcome back to the channel, a place where we hope to create and 
+build together to learn about the latest and greatest in software development. 
+Today, we're talking about observability, a hot topic in the DevOps world that's all about 
+understanding how your applications are performing in production.
+
+You see, the thing is, when you're building software, you can't just rely on logs or 
+metrics alone to understand what's going on. 
+You need something that can collect all of the events and data from across your 
+entire stack and then provide a unified view that you can use to troubleshoot issues and 
+identify opportunities for improvement. That's where observability comes in.
+
+But with so many observability tools out there, how do you know which one to choose? 
+Well, that's where Vector comes in. 
+Created by the team at Timber.io, Vector is a high-performance observability data pipeline 
+that lets you collect, transform, and route all your logs, metrics, and traces to any vendors you want.
+
+And the best part? 
+It's open source and up to 10x faster than every alternative. 
+When set up advantageously, Vector can enable dramatic cost reduction, novel data enrichment, and data security where you need it, not where is most convenient for your vendors.
+
+But how does Vector compare to other observability tools like DataDog? 
+Well, unlike DataDog, Vector is a pipeline that's designed to work with any schema, supporting legacy and future schemas as your needs evolve. 
+This ensures that Vector can work with a variety of schemas, supporting 
+legacy schemas as well as future schemas. Plus, Vector's metric types are a 
+conglomeration of various metric types found in the wild, such as 
+Prometheus and Statsd. This ensures metric data is correctly interoperable between systems.
+
+So, let's walk through an example of setting up Vector. 
+In the next few minutes, we'll show you how to define a pipeline, configure it, and then process some observability data. 
+Trust us, by the end of this video, you'll be ready to start using Vector 
+and all of its amazing features in your own projects. Let's get started!"
+
+
+Let's dive into the installation and configuration of Vector.
+First, we need to get Vector onto our Linux system. 
+Don't worry, it's not as scary as it sounds. 
+
+To get started, we're going to use a handy installation script 
+that will take care of everything for us.
+So open up your terminal, and copy and paste the following command:
+
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.vector.dev | bash
+
+Now, this may look like a bunch of gibberish, but trust me, it's going to do all the heavy lifting for us.
+It'll automatically download and install Vector onto our system, so we can start using it right away.
+Next, we need to set up our configuration file. We're going to configure Vector to ingest syslog, transform it into JSON, and then push it to S3.
+Here's what our configuration file will look like:
+
+
+
+In this configuration file, we're defining three components: 
+ - a source,  - a transform,  - and a sink.
+The "sources.generate_syslog" component is a demo source that generates syslog messages. 
+We'll generate 100 messages, but you can adjust this number as needed.
+
+The "transforms.remap_syslog" component takes the syslog messages from the generate_syslog 
+source and transforms them into JSON format using the parse_syslog and merge functions.
+
+The "sinks.emit_syslog" component sends the transformed events to S3. 
+We've specified the bucket, path, and region where the logs should be stored. 
+The path uses "strftime" formatting, so each day's logs will be stored in a separate directory.
+
+Keep in mind that this configuration is assuming that your S3 bucket is either open to the public, or, if not then you have the "AWS_SECRET_ACCESS_KEY" and "AWS_ACCESS_KEY_ID" environment variables set, which Vector will
+look for when booting up if a "aws" related object is specified within the configuration file.
+
+Once we have our "vector.toml" configuration file ready, we can start Vector by running the following command:
+
+    vector --config /path/to/vector.toml
+
+Vector will now begin ingesting syslog messages, transforming them to JSON, and pushing them to S3. 
+You can check the S3 bucket to see the logs.
+
+
+Flexibility is where Vector really shines. As an agent, Vector can be installed on a variety 
+of machines and systems, including bare-metal servers, VMs, and containers. 
+And once installed, Vector can be used to collect, transform, and route data from almost any observability data source.
+
+For example, let's say you have a distributed system where logs and metrics are being generated 
+by a number of different components. Using Vector, you can quickly and easily collect all of 
+this data and route it to a centralized location for analysis.
+
+In fact, that's exactly what the team at Parse.ly did. They were looking for a way to 
+collect and analyze their logs and metrics, which were being generated by a number of 
+different applications and services. By using Vector, they were able to easily collect 
+and route all of this data to Elasticsearch, where it could be analyzed and visualized.
+
+And it gets even crazier than that. Vector can also be used as an aggregator to itself, meaning that you can use it to gather data from multiple sources and then route it to 
+external sinks like Elasticsearch, Kafka, or S3. This not only saves you time and resources, but it also simplifies your data pipeline by reducing the number of components you need to manage.
+
+So as you can see, Vector is a powerful and flexible tool that can be used to collect and 
+route data from almost any observability data source. Whether you're dealing with logs, metrics, traces, or any other type of observability data, Vector can help simplify your data pipeline and 
+enable you to quickly and easily collect and analyze your data.
+
+
+And there you have it, folks. That's Vector in a nutshell - a high-performance, flexible, and open-source data pipeline for all your observability needs. 
+With its powerful and intuitive design, Vector empowers developers to quickly and easily collect, transform, and route all their logs and metrics.
+
+But the best part? Vector is completely free and open-source. 
+That means you can get started with Vector right now, and begin processing and analyzing all of your 
+logs and metrics with ease.
+
+So why wait? Give Vector a try and see how it can transform your observability workflow for the better. 
+And if you ever need any help or have any questions, the Vector community is always ready 
+and willing to lend a hand.
+Thanks for watching, and we'll see you next time.

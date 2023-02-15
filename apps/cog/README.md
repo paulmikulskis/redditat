@@ -278,3 +278,29 @@ The `startup.sh` script has a few environment variables that it will look for on
 | `RUN_WITH_VECTOR`         | "false"                  | Whether or not to run the Vector logging agent.                                                 |
 
 > NOTE: though this startup script was developed for Cog, it is totally malleable in the sense that you can set `APPLICATION_NAME` to be whatever app you want in a typical monorepo setup, and this startup script will play nice with a Docker build using turborepo.
+
+<hr>
+
+### What happens when the API boots up?
+
+```mermaid
+sequenceDiagram
+participant Cog API
+participant Schedule file
+participant Redis
+participant BullJS Workers
+participant BaaS
+
+Note over Cog API: Start
+Cog API->>+BaaS: Initialize Backend-as-a-Service client (if needed)
+BaaS-->>-Cog API: BaaS Client
+Cog API->>+Schedule file: Read schedule.json
+Schedule file-->>-Cog API: Schedule data
+Cog API->>+Redis: Initialize Redis client
+Redis-->>-Cog API: Redis client
+Cog API->>+Redis: Instantiate scheduled workflows
+Redis->>+BullJS Workers: Workers begin on scheduled
+Note over Cog API: Finish
+```
+
+

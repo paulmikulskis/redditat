@@ -13,3 +13,4 @@ local.env
 .next
 apps/**/.next
 **/app.log
+.history
