@@ -281,7 +281,7 @@ The `startup.sh` script has a few environment variables that it will look for on
 
 <hr>
 
-### What happens when the API boots up?
+## What happens when the API boots up?
 
 ```mermaid
 sequenceDiagram
@@ -303,4 +303,19 @@ Redis->>+BullJS Workers: Workers begin on scheduled
 Note over Cog API: Finish
 ```
 
+<hr>
 
+## How does the API process incoming requests?
+```mermaid
+graph TD;
+  A[API Request] -->|Create IntegratedFunction| B[Save IntegratedFunction];
+  B -->|Input Validation| C{Valid?};
+  C -->|Yes| D{Scheduleable?};
+  C -->|No| E[Return Error Response];
+  D -->|Yes| H[Schedule Job to Run Repeatedly];
+  D -->|No| G[Schedule Job to Run Once];
+  H --> F[Add Job to Redis BullJS];
+  G --> F[Add Job to Redis BullJS];
+  F --> I[Redis BullJS Worker]
+  I -->|Execute IntegratedFunction| J[Return Response?];
+```
