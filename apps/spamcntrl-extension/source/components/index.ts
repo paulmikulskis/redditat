@@ -1,7 +1,6 @@
-import CHeader from './CHeader'
-import CLogin from './CLogin'
-import CAlert from './CAlert'
-import CAuthenticated from './CAuthenticated'
-import CCardPage from './CCardPage'
+import CHeader from "./CHeader";
+import CLogin from "./CLogin";
+import CAlert from "./CAlert";
+import CAuthenticated from "./CAuthenticated";
 
-export { CHeader, CLogin, CAlert, CAuthenticated, CCardPage }
+export { CHeader, CLogin, CAlert, CAuthenticated };
