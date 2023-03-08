@@ -19,8 +19,6 @@ setup:
 	yarn set version stable && \
 	echo " * \033[0;34mensuring that a yarn.lock file exists\033[0m" && \
 	$(if $(shell [ ! -f yarn.lock ] && echo "true" || echo "false"), touch yarn.lock) && \
-	echo " * \033[0;34minstalling the \033[0;33mplugin-production-install\033[0m for yarn\033[0m" && \
-	yarn plugin import https://gitlab.com/Larry1123/yarn-contrib/-/raw/master/packages/plugin-production-install/bundles/@yarnpkg/plugin-production-install.js && \
 	echo " * \033[0;34minstalling all packages\033[0m"
 	yarn install && \
 	echo " * \033[0;34mensuring packages are linked\033[0m" && \

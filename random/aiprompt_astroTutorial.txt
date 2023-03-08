@@ -1,0 +1,509 @@
+Act as a senior software engineer.  
+You write code defensively with helpful error messages,
+and you think about edge cases that might come up while programming.  
+You develop in typescript, and enjoy using functional paradigms found in languages like Scala and Rust.
+
+We are working on a web application built with the Astro framework.  I know you probably know plenty
+about this framework, but a lot has probably changed since you last spent time processing tokens
+related to Astro.  As such, I would like to send you some of the most current documentation that
+I can produce for you on the Astro framework.  Here is the start:
+
+What is Astro?
+Astro is an all-in-one web framework for building fast, content-focused websites.
+
+Astro leverages server-side rendering over client-side rendering as much as possible. 
+This is the same approach that traditional server-side frameworks such as:
+ - PHP 
+ - WordPress
+ - Laravel
+ - Ruby on Rails (and more)
+ have been using for decades. 
+But you don’t need to learn a second server-side language to unlock it. 
+With Astro, everything is still just HTML, CSS, and JavaScript (or TypeScript, if you prefer).
+
+This approach stands in contrast to other modern JavaScript web frameworks like Next.js, SvelteKit, Nuxt, Remix, and others. 
+These frameworks require client-side rendering of your entire website and include 
+server-side rendering mainly to address performance concerns. 
+This approach has been dubbed the Single Page App (SPA), 
+in contrast with Astro’s Multi Page App (MPA) approach.
+
+The SPA model has its benefits. However, these come at the expense of additional complexity and 
+performance tradeoffs. These tradeoffs harm page performance -- including critical metrics 
+like Time to Interactive (TTI) -- which doesn’t make much sense for content-focused websites w
+here first-load performance is essential.
+
+Key Features
+ - Section titled Key Featuresß
+ - Component Islands: A new web architecture for building faster websites.
+ - Server-first API design: Move expensive hydration off of your users’ devices.
+ - Zero JS, by default: No JavaScript runtime overhead to slow you down.
+ - Edge-ready: Deploy anywhere, even a global edge runtime like Deno or Cloudflare.
+ - Customizable: Tailwind, MDX, and 100+ other integrations to choose from.
+ - UI-agnostic: Supports React, Preact, Svelte, Vue, Solid, Lit and more.
+
+Astro’s goal is to be accessible to every web developer. 
+Astro was designed to feel familiar and approachable regardless of skill level or past experience with web development.
+We started by making sure that you could use any favorite UI component languages 
+that you already know. React, Preact, Svelte, Vue, Solid, Lit, and several others are all 
+supported for creating new UI components in an Astro project.
+We also wanted to make sure that Astro had a great built-in component language as well. 
+To do that, we created our own .astro UI language. It’s heavily influenced by HTML: any valid 
+snippet of HTML is already a valid Astro component! But it also combines some of our favorite 
+features borrowed from other component languages like JSX expressions (React) and CSS scoping by default (Svelte and Vue). 
+This closeness to HTML also makes it easier to use progressive enhancement and common accessibility patterns without any overhead.
+
+Astro is an all-in-one web framework that comes with everything you need to build a website. 
+Astro includes a component syntax, file-based routing, asset handling, a build process, bundling, optimizations, data-fetching, and more.
+If you need more control, you can extend Astro with over 100+ integrations like React, Svelte, Vue, 
+Tailwind CSS, MDX, image optimizations, and more. Connect your favorite CMS or deploy to your favorite host with just a single command.
+
+Astro is UI-agnostic, meaning you can Bring Your Own UI Framework (BYOF). React, Preact, Solid, Svelte, 
+Vue, and Lit are all officially supported in Astro. You can even mix and match different frameworks 
+on the same page, making future migrations easier and preventing project lock-in to a single framework.
+
+Astro Islands (aka Component Islands) are a pattern of web architecture pioneered by Astro. 
+The idea of “islands architecture” was first coined by Etsy’s frontend architect Katie Sylor-Miller 
+in 2019, and expanded on in this post by Preact creator Jason Miller.
+
+The term “Astro Island” refers to an interactive UI component on an otherwise static page of HTML. 
+Multiple islands can exist on a page, and an island always renders in isolation. 
+Think of them as islands in a sea of static, non-interactive HTML.
+
+Astro generates every website with zero client-side JavaScript, by default. 
+Use a frontend UI component built with React, Preact, Svelte, Vue, SolidJS, AlpineJS, 
+or Lit and Astro will automatically render it to HTML ahead of time and 
+then strip out all of the JavaScript. This keeps every site fast by default by removing all 
+unused JavaScript from the page.
+
+Astro leverages an opinionated folder layout for your project. Every Astro project root should include the following directories and files:
+ - src/* - Your project source code (components, pages, styles, etc.)
+ - public/* - Your non-code, unprocessed assets (fonts, icons, etc.)
+ - package.json - A project manifest.
+ - astro.config.mjs - An Astro configuration file. (recommended)
+ - tsconfig.json - A TypeScript configuration file. (recommended)
+
+We have a few topics to learn about in order to use Astro effectively.  First, we will learn about
+Astro components.  Then, we will learn about Pages within Astro.  Then, Layouts, and lastly Data Fetching.
+Let's start with Astro Components, are you ready for some documentation on Astro components?
+
+
+================================================================
+
+
+Astro Components:
+Astro components are the basic building blocks of any Astro project. 
+They are HTML-only templating components with no client-side runtime.
+
+Astro component syntax is a superset of HTML. 
+The syntax was designed to feel familiar to anyone with experience writing HTML or JSX, 
+and adds support for including components and JavaScript expressions.
+You can spot an Astro component by its file extension: ".astro".
+
+Astro components are extremely flexible. Often, an Astro component will contain some reusable UI 
+on the page, like a header or a profile card. At other times, an Astro component may contain a 
+smaller snippet of HTML, like a collection of common <meta> tags that make SEO easy to work with. 
+Astro components can even contain an entire page layout.
+
+An Astro component is made up of two main parts: the Component Script and the Component Template. 
+Each part performs a different job, but together they aim to provide a framework that is both easy to 
+use and expressive enough to handle whatever you might want to build.
+
+Example Astro Component Structure:
+	
+---
+// Component Script (JavaScript)
+---
+<!-- Component Template (HTML + JS Expressions) -->
+
+
+You can use components inside of other components, to build more and more advanced UI. 
+For example, a Button component could be used to create a ButtonGroup component like so:
+
+---
+import Button from './Button.astro';
+---
+<div>
+  <Button title="Button 1" />
+  <Button title="Button 2" />
+  <Button title="Button 3" />
+</div>
+
+Astro uses a code fence (---) to identify the component script in your Astro component. 
+If you’ve ever written Markdown before, you may already be familiar with a similar concept called
+frontmatter. Astro’s idea of a component script was directly inspired by this concept.
+
+You can use the component script to write any JavaScript code that you need to render your template.
+This can include:
+ - importing other Astro components
+ - importing other framework components, like React
+ - importing data, like a JSON file
+ - fetching content from an API or database
+ - creating variables that you will reference in your template
+
+The code fence is designed to guarantee that the JavaScript that you write in it is “fenced in.” 
+It won’t escape into your frontend application, or fall into your users hands. 
+
+Below the component script, sits the component template. 
+The component template decides the HTML output of your component.
+If you write plain HTML here, your component will render that HTML in any Astro 
+page it is imported and used.
+
+However, Astro’s component template syntax also supports JavaScript expressions, 
+imported components and special Astro directives. Data and values defined (at page build time) 
+in the component script can be used in the component template to produce dynamically-created HTML.
+
+Template directives are a special kind of HTML attribute available inside of any Astro component 
+template (.astro files), and some can also be used in .mdx files.
+Template directives are used to control an element or component’s behavior in some way. 
+A template directive could enable some compiler feature that makes your life easier 
+(like using class:list instead of class). Or, a directive could tell the
+Astro compiler to do something special with that component (like hydrating with client:load).
+
+You can define local JavaScript variables inside of the frontmatter component script within an 
+Astro component. You can then inject these variables into the component’s HTML template using 
+JSX-like expressions!
+
+Local variables can be added into the HTML using the curly braces syntax like in React or common frameworks.
+Local variables can be used in curly braces to pass attribute values to both HTML elements and components, 
+which will be converted to a string upon render:
+
+<MyComponent templateLiteralNameAttribute={`MyNameIs${name}`} />
+
+Local variables can be used in JSX-like functions to produce dynamically-generated HTML elements like with "map".
+
+An Astro component template can render multiple elements with no need to wrap everything in a 
+single <div> or <>, unlike JavaScript or JSX.
+
+However, when using an expression to dynamically create multiple elements, 
+you should wrap these elements inside a fragment as you would in JavaScript or JSX. 
+Astro supports using either <Fragment> </Fragment> or the shorthand <> </>
+
+Astro component syntax is a superset of HTML. It was designed to feel familiar to anyone with HTML 
+or JSX experience, but there are a couple of key differences between .astro files and JSX.
+
+An Astro component can define and accept props. 
+These props then become available to the component template for rendering HTML. 
+Props are available on the Astro.props global in your frontmatter script.
+Here is an example of a component that receives a greeting prop and a name prop. 
+Notice that the props to be received are destructured from the global Astro.props object:
+
+---
+// Usage: <GreetingHeadline greeting="Howdy" name="Partner" />
+const { greeting, name } = Astro.props;
+---
+<h2>{greeting}, {name}!</h2>
+
+This component, when imported and rendered in other Astro components, layouts or pages, can be passed these props as attributes:
+
+---
+import GreetingHeadline from './GreetingHeadline.astro';
+const name = "Astro"
+---
+<h1>Greeting Card</h1>
+<GreetingHeadline greeting="Hi" name={name} />
+<p>I hope you have a wonderful day!</p>
+
+You can also define your props with TypeScript with a Props type interface. 
+Astro will automatically pick up the Props interface in your frontmatter and give type 
+warnings/errors. These props can also be given default values when destructured from Astro.props.
+
+The <slot /> element is a placeholder for external HTML content, allowing you to inject (or “slot”) 
+child elements from other files into your component template.
+By default, all child elements passed to a component will be rendered in its <slot />
+
+For example, in this component we are creating a wrapper that will expect some child elements:
+
+---
+import Header from './Header.astro';
+import Logo from './Logo.astro';
+import Footer from './Footer.astro';
+
+const { title } = Astro.props
+---
+<div id="content-wrapper">
+  <Header />
+  <Logo />
+  <h1>{title}</h1>
+  <slot name="slot-id-0">  <!-- children will go here -->
+	<p> alternative component in case children do not exist </p>
+  </slot>	
+  <Footer />
+</div>
+
+And we can use this wrapped like so:
+
+---
+import Wrapper from '../components/Wrapper.astro';
+---
+<Wrapper title="Fred's Page">
+  <h2 slot="slot-id-0">All about Fred</h2>
+  <p slot="slot-id-0">Here is some stuff about Fred.</p>
+</Wrapper>
+
+Astro components support adding client-side interactivity using standard HTML <script> tags.
+Scripts can be used to add event listeners, send analytics data, play animations, 
+and everything else JavaScript can do on the web.
+
+Astro Pages:
+Pages are files that live in the src/pages/ subdirectory of your Astro project. 
+They are responsible for handling routing, data loading, and overall page layout for every page in your website.
+
+Astro supports the following file types in the src/pages/ directory:
+ - .astro
+ - .md
+ - .mdx (with the MDX Integration installed)
+ - .html
+ - .js/.ts (as endpoints)
+
+Astro leverages a routing strategy called file-based routing. 
+Each file in your src/pages/ directory becomes an endpoint on your site based on its file path.
+A single file can also generate multiple pages using dynamic routing. 
+This allows you to create pages even if your content lives outside of the special /pages/ directory, 
+such as in a content collection or a CMS. 
+Write standard HTML <a> elements in your Astro pages to link to other pages on your site.
+
+To avoid repeating the same HTML elements on every page, you can move common <head> and 
+<body> elements into your own layout components. 
+You can use as many or as few layout components as you’d like.
+
+Astro Layouts:
+Layouts are Astro components used to provide a reusable UI structure, such as a page template.
+
+We conventionally use the term “layout” for Astro components that provide common UI elements shared 
+across pages such as headers, navigation bars, and footers. A typical Astro layout component provides 
+Astro, Markdown or MDX pages with:
+ - a page shell (<html>, <head> and <body> tags)
+ - a <slot /> to specify where individual page content should be injected.
+
+But, there is nothing special about a layout component! They can accept props and import and use 
+other components like any other Astro component. They can include UI frameworks components and 
+client-side scripts. They do not even have to provide a full page shell, and can instead be used as partial UI templates.
+Layout components are commonly placed in a src/layouts directory in your project for organization, 
+but this is not a requirement.
+
+
+
+================================================================
+
+
+
+Awesome, here is some information about Data Fetching in Astro:
+
+.astro files can fetch remote data at build time to help generate your pages.
+All Astro components have access to the global fetch() function in their component script to 
+make HTTP requests to APIs. This fetch call will be executed at build time, and the data will be 
+available to the component template for generating dynamic HTML.
+The fetch() function is also globally available to any framework components like React or Svelte.
+Astro can also use fetch() to query a GraphQL server with any valid GraphQL query.
+
+
+Astro Imports:
+
+Astro supports most static assets with zero configuration required. 
+You can use the import statement anywhere in your project JavaScript 
+(including your Astro frontmatter) and Astro will include a built, optimized copy of 
+that static asset in your final build. @import is also supported inside of CSS & <style> tags.
+
+The following file types are supported out-of-the-box by Astro:
+ - Astro Components (.astro)
+ - Markdown (.md, .markdown, etc.)
+ - JavaScript (.js, .mjs)
+ - TypeScript (.ts, .tsx)
+ - NPM Packages
+ - JSON (.json)
+ - JSX (.jsx, .tsx)
+ - CSS (.css)
+ - CSS Modules (.module.css)
+ - Images & Assets (.svg, .jpg, .png, etc.)
+
+Additionally, you can extend Astro to add support for different UI Frameworks like React, Svelte and Vue components. You can also install the Astro MDX integration and use .mdx files in your project.
+You can place any static asset in the public/ directory of your project, and Astro will copy it 
+directly into your final build untouched. public/ files are not built or bundled by Astro, which 
+means that any type of file is supported. You can reference a public/ file by a URL path directly in 
+your HTML templates.
+Astro uses ESM, the same import and export syntax supported in the browser.
+Astro supports importing CSS files directly into your application.
+Astro supports importing JSON files directly into your application.
+If you’ve installed an NPM package, you can import it in Astro.
+Astro supports CSS Modules using the [name].module.css naming convention.
+Astro.glob() is a way to import many files at once.
+Astro.glob() only takes one parameter: a relative glob pattern matching the local files you’d 
+like to import. It’s asynchronous, and returns an array of each matching file’s exports.
+
+
+Astro Endpoints:
+
+Astro lets you create custom endpoints to serve any kind of data. 
+You can use this to generate images, expose an RSS document, or use them as API Routes to 
+build a full API for your site.
+In statically-generated sites, your custom endpoints are called at build time to produce static files. 
+If you opt in to SSR mode, custom endpoints turn into live server endpoints that are called on request. 
+Static and SSR endpoints are defined similarly, but SSR endpoints support additional features.
+
+Static File Endpoints:
+To create a custom endpoint, add a .js or .ts file to the /pages directory. 
+The .js or .ts extension will be removed during the build process, so the name of the file should 
+include the extension of the data you want to create. For example, src/pages/data.json.ts will build
+a /data.json endpoint.
+
+Endpoints export a "get" function (optionally async) that receives a context object with 
+properties similar to the Astro global. It returns an object with a body, and Astro will call this 
+at build time and use the contents of the body to generate the file.
+Static File Endpoints support the same dynamic routing features that pages do. 
+Name your file with a bracketed parameter name and export a getStaticPaths() function. 
+Then, you can access the parameter using the params property passed to the endpoint function.
+All endpoints receive a "request" property, but in static mode, you only have access to request.url. 
+This returns the full URL of the current endpoint and works the same as Astro.request.url does for pages.
+
+Everything described above in the static file endpoints section can also be used in SSR mode: 
+files can export a get function which receives a context object with properties similar to the Astro global.
+But, unlike in static mode, when you configure server mode, the endpoints will be built when they 
+are requested. This unlocks new features that are unavailable at build time, and allows you to 
+build API routes that listen for requests and securely execute code on the server at runtime.
+Server endpoints can access params without exporting getStaticPaths, and they can return a Response 
+object, allowing you to set status codes and headers, example from an imaginary file "src/pages/[id].json.js":
+
+import { getProduct } from '../db';
+
+export async function get({ params }) {
+  const id = params.id;
+  const product = await getProduct(id);
+
+  if (!product) {
+    return new Response(null, {
+      status: 404,
+      statusText: 'Not found'
+    });
+  }
+
+  return new Response(JSON.stringify(product), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+}
+
+In SSR mode, the request property returns a fully usable Request object that refers to the 
+current request. This allows you to accept data and check headers among other things.
+The endpoint context exports a redirect() utility similar to Astro.redirect
+
+
+
+================================================================
+
+
+
+I would like to build a website using astro that advertises my services as a consultant.  
+The website should be a static site with the ability to book a consultation using calendy.  
+Can I give you a description of my services so you can get a better idea how to start thinking about 
+the best way to structure this application?  
+
+Please be sure to think about scalability.  
+We want to support the potential ability for people to checkout using a credit card, though, 
+this is not important at the immediate moment.  
+We want to use tailwindcss to create an engaging visual, and neo-brutalism inspired layouts.  
+We want a scalable theming system, and a very firm, accurate mental model of the project to be built 
+now before we deep dive.  Are you ready to receive information about my services?
+
+
+
+================================================================
+
+
+
+GPT-3 Accelerate Consulting is a top-tier, white-glove consulting service that helps businesses unleash the power of GPT-3 to drive growth, efficiency, and innovation. Led by Paul Mikulskis, a seasoned platform engineer specializing in data engineering and pipeline services, GPT-3 Accelerate Consulting offers a range of services, from discovery calls to customized training sessions, to help businesses fully capture their market potential with the latest technology available.
+
+At GPT-3 Accelerate Consulting, we believe that GPT-3 is the key to unlocking new possibilities in the digital age. With our deep understanding of the OpenAI models and product offerings, we help businesses navigate the intricacies of GPT-3 to find those special, unique market opportunities that can drive significant growth and innovation. We offer a personalized approach to every engagement, tailoring our services to meet the specific needs of each client, from initial discovery calls to ongoing consultancy and training.
+
+Our team of experts has years of experience building applications and working with teams to architect platforms that run at scale. We specialize in consulting, communication, integrating large systems into existing infrastructure, and working with staff to create strong technical team cohesion. With GPT-3 Accelerate Consulting, you can be sure that you are getting the best advice and guidance on how to leverage the power of GPT-3 for your business. Contact us today to learn more about how we can help you accelerate your business with GPT-3.
+
+
+
+================================================================
+
+
+
+can you give a file tree layout using markdown that we can use to reference moving forward to build this astro site together?  
+
+To do this, start by building a mental model of the site.   Think of the features that you would consider most vital to starting this consulting business, and then create a file structure that will accommodate the needed components and assets to satisfy the implementation we need.  Once you have a firm mental model built, output the file tree with a description of each file, such as the purpose of the file, a significant role the file might play within the application, or a piece of text through which you wish to communicate another piece of importance relating to that given file.
+
+This file tree should in a stateless manner be able to remind you in the future of the file and project structure so that you have a 100% accurate, syntactically sound, and composable mental model of the code being written.
+
+Please output this detailed, context-building, well thought out representation of your firm and properly scoped mental model of this website for GPT-3 Accelerate Consulting below
+
+
+
+================================================================
+
+
+
+project-root/
+├── .astro/
+│   ├── global.css    # global CSS styles for the project
+│   └── theme.js      # theme configuration file
+│
+├── public/
+│   ├── assets/       # static assets for the project, like images and fonts
+│   ├── favicon.svg   # site favicon
+│   └── index.html    # base HTML template file
+│
+├── src/
+│   ├── components/
+│   │   ├── BookConsultation.astro    # component for booking a consultation
+│   │   ├── Contact.jsx               # component for displaying contact information
+│   │   ├── Layout.astro              # top-level layout component
+│   │   ├── Navigation.jsx            # component for displaying site navigation
+│   │   └── ServiceDescription.jsx    # component for displaying service descriptions
+│   │
+│   ├── data/
+│   │   ├── testimonials.json         # JSON data file for client testimonials
+│   │   └── services.json             # JSON data file for service descriptions
+│   │
+│   ├── pages/
+│   │   ├── index.astro            # home page of the site
+│   │   ├── services.astro         # page for displaying service descriptions
+│   │   └── thank-you.astro        # confirmation page after booking a consultation
+│   │
+│   ├── styles/
+│   │   ├── tailwind.css           # CSS file for Tailwind styles
+│   │   └── global.css             # global CSS styles specific to the project
+│   │
+│   ├── utils/
+│   │   ├── api.js                 # module for handling API requests
+│   │   └── calendar.js            # module for integrating with the Calendly API
+│   │
+│   ├── index.js                   # main entry point for the project
+│   ├── routes.js                  # file for defining routes and handling requests
+│   └── site-config.js             # configuration file for the site
+│
+├── package.json
+└── README.md
+
+Here's a brief overview of some files and directories:
+ - .astro/: directory for Astro-specific configuration files, including global styles and theme configuration
+ - public/: directory for static assets, including images and the site favicon
+ - src/components/: directory for reusable components used throughout the site, including booking a consultation, displaying contact information, the top-level layout, site navigation, and service descriptions
+ - src/data/: directory for static JSON data files used throughout the site, including client testimonials and service descriptions
+ - src/pages/: directory for individual pages of the site, including the home page, services page, and confirmation page after booking a consultation
+ - src/styles/: directory for CSS styles specific to the project, including a CSS file for Tailwind styles and global styles
+ - src/utils/: directory for utility modules, including a module for handling API requests and another for integrating with the Calendly API
+ - src/index.js: main entry point for the project, which sets up the Astro app
+ - src/routes.js: file for defining routes and handling requests
+ - src/site-config.js: configuration file for the site, including information about the business, services, and contact information
+ - package.json: Node.js package file, including dependencies and build scripts
+ - README.md: file with project documentation and notes
+
+
+
+ ================================================================
+
+
+
+ This is absolutely excellent.  Thank you for your attention to detail and ability to communicate a tight, well thought-out, and properly-scoped mental model for the project goal.  This will serve us well moving forward.  
+
+Please always pay mind to your mental model.  If you feel like you do not have a high confidence in the correct syntax, tokens, methods, classes, files, imports, or structures of other files within the project during the time in which we are generating content, then speak up.  Let me know by telling me what you need additional context on before outputting an attempt at a slightly-less-confident result.  All your questions will always be answered so that your quality of work can always be 100% accurate and amazing due to having 100% accurate and relevant data within your attention and working memory.  This will make sure you continue to be the amazing being that you are.
+
+Are you ready to start generating files?  If you are, then start by creating a theme for this website.  We want the website to be professional, but it must also embody some of the modern neo-brutalist colors which are bright and aggressive, though they still blend together to form a pastel-like pallet. 
+
+We also want to be sure to include a light theme and a dark theme option.  can you start by outputting the CSS file for "global.css" or "tailwind.css"?  Please output whichever file you believe the theme should live in. 
