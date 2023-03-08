@@ -31,6 +31,8 @@ jobs:
             "NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_APP_ID }}"
             "NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID }}"
             "MYSTATS_AUTHKEY=${{ secrets.MYSTATS_AUTHKEY }}"
+            "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}"
+            "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}"
 
       - name: SSH into dedicated host docker run
         uses: appleboy/ssh-action@master
@@ -40,10 +42,8 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEDI_DEPLOY_USERNAME }}
           key: ${{ secrets.DEPLOY_HOST_SSH_KEY }}
-          envs: DOT_ENV_FILE
           script: |
             docker stop spamcntrl-landingpage
             docker rm spamcntrl-landingpage
-            echo "$DOT_ENV_FILE" > landingpage.env
             docker pull registry.yungstentech.com/spamcntrl-landingpage:latest
-            docker run --env-file ./landingpage.env --name spamcntrl-landingpage -d -p 3000:3000 registry.yungstentech.com/spamcntrl-landingpage:latest
+            docker run --name spamcntrl-landingpage -d -p 3000:3000 registry.yungstentech.com/spamcntrl-landingpage:latest
