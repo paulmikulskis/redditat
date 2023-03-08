@@ -69,7 +69,7 @@ const CFooter: React.FC<CFooterProps> = ({ isHome }) => {
             <Link href="/privacy-policy">Privacy Policy</Link>
           </div>
           <div className="cursor-pointer mt-[15px] font-normal text-base leading-[19.2px] text-lnk">
-            <Link href="/terms-and-condition">Terms & Condition</Link>
+            <Link href="/terms-and-condition">Terms & Conditions</Link>
           </div>
         </div>
       </div>

@@ -66,8 +66,8 @@ const defaultProps: CPricingPlansProps = {
         </div>
       ),
       features: [
-        "Up to 1,000 comment deletions / Month.",
-        "Up to 5 scheduled playlists.",
+        "Up to 1,000 actions per month to review and moderate comments.",
+        "Up to 5 scheduled workflows.",
         "30-day retention of stats and intel.",
       ],
       buttonText: "Coming Soon",
@@ -106,8 +106,8 @@ const defaultProps: CPricingPlansProps = {
         </div>
       ),
       features: [
-        "Unlimited comment deletions.",
-        "Unlimited scheduled playlists.",
+        "Unlimited actions per month to review and moderate comments.",
+        "Unlimited scheduled workflows.",
         "Quarterly retention with permanent annual summaries.",
       ],
       buttonText: "Coming Soon",
