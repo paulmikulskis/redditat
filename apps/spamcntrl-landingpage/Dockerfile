@@ -19,38 +19,22 @@ ARG NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID
 ENV NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID ${NEXT_PUBLIC_SPAMPAGE_FIREBASE_MEASUREMENT_ID}
 ARG MYSTATS_AUTHKEY
 ENV MYSTATS_AUTHKEY ${MYSTATS_AUTHKEY}
-# sets yarn to version 3.x
+ARG EMAIL_USERNAME
+ENV EMAIL_USERNAME ${EMAIL_USERNAME}
+ARG EMAIL_PASSWORD
+ENV EMAIL_PASSWORD ${EMAIL_PASSWORD}
 ENV NODE_ENV production
-WORKDIR /builder
+WORKDIR /app
 RUN yarn global add turbo
 RUN yarn set version stable
-# set yarn to the latest version (3.x)
-RUN yarn plugin import https://gitlab.com/Larry1123/yarn-contrib/-/raw/master/packages/plugin-production-install/bundles/@yarnpkg/plugin-production-install.js
-# Install dependencies based on the preferred package manager
 COPY . .
 RUN turbo prune --scope=@yungsten/spamcntrl-langingpage --docker
 RUN yarn set version stable
 RUN yarn install
 RUN yarn build --filter=@yungsten/spamcntrl-langingpage
-# Using Yarn plugin-production-install to copy only production dependencies
-# https://gitlab.com/Larry1123/yarn-contrib/-/tree/master/packages/plugin-production-install
-# NOTE: on the GitLab, the guy mentions this yarn script name will change in the near future..
-# if the deploy breaks, check the linked GitLab page and see if this dependency has changed
-RUN yarn prod-install --pack /deploy/dependencies
-# Copy other needed files
-RUN cp -r .next /deploy
-
-# OPTIMIZED PRODUCTION BUILD ---------
-FROM node:16-bullseye-slim AS runner
-WORKDIR /runner
-# Copy over the pruned dependencies for this project
-COPY --from=builder /deploy/dependencies .
-# Copy over the build javascript bundle NextJS produced
-COPY --from=builder /deploy/.next .next
-
 
 EXPOSE 3000
 ENV PORT 3000
 
 # Run the NextJS start script
-CMD ["yarn", "--cwd", "apps/spamcntrl-langingpage", "next", "start"]
+CMD ["yarn", "--cwd", "apps/spamcntrl-landingpage", "next", "start"]
