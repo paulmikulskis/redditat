@@ -6,7 +6,7 @@ import {
 } from '../store/slices/purgeHistorySlice'
 import CLinkButton from './CLinkButton'
 import CLoader from './CLoader'
-import { ResponsivePie } from '@nivo/Pie'
+import { ResponsivePie } from '@nivo/pie'
 import _ from 'lodash'
 
 interface CTotalScannedCommentsWidgetProps {}

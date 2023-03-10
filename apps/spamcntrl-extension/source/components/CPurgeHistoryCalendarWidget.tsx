@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { ResponsiveTimeRange } from '@nivo/Calendar'
+import { ResponsiveTimeRange } from '@nivo/calendar'
 import _ from 'lodash'
 import moment from 'moment'
 import {

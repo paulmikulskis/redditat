@@ -1,6 +1,6 @@
 {
   "name": "redditat",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@3.4.1",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
@@ -30,6 +30,8 @@
     "turbo": "^1.7.0"
   },
   "dependencies": {
+    "@nivo/calendar": "^0.80.0",
+    "@nivo/pie": "^0.80.0",
     "core-js-pure": "^3.27.1",
     "ffmpeg-static": "^5.1.0",
     "global": "^4.4.0",
